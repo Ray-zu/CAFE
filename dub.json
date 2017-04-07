@@ -1,7 +1,9 @@
 {
 	"name": "cafe",
 	"authors": [
-		"aoitofu"
+		"aoitofu",
+        "Aodaruma",
+        "SEED264"
 	],
 	"dependencies": {
 		"qte5": "~>0.0.7"
