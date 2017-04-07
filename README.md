@@ -30,7 +30,7 @@ Windows環境では同じディレクトリにQt5のDLLが必要です。
 
 ## Author
 
-[aoitofu](https://twitter.com/_aoi_tofu_)
-[Aodaruma](https://twitter.com/Aodaruma_)
+[aoitofu](https://twitter.com/_aoi_tofu_)  
+[Aodaruma](https://twitter.com/Aodaruma_)  
 [SEED264](https://twitter.com/SEED264)
 
