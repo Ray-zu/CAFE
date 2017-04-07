@@ -26,7 +26,7 @@ Windows環境では同じディレクトリにQt5のDLLが必要です。
 
 ## Licence
 
-[GNU Public License v3.0](https://github.com/aoitofu/CAFE/LICENSE)
+[GNU Public License v3.0](https://github.com/aoitofu/CAFE/blob/master/LICENSE)
 
 ## Author
 
