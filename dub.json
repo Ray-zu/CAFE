@@ -1,14 +1,14 @@
 {
-	"name": "cafe",
-	"authors": [
-		"aoitofu",
+    "name": "cafe",
+    "authors": [
+        "aoitofu",
         "Aodaruma",
         "SEED264"
-	],
-	"dependencies": {
-		"qte5": "~>0.0.7"
-	},
-	"description": "Creator's Advanced Film Editor",
-	"copyright": "Copyright © 2017, aoitofu",
-	"license": "GNU General Public License v3.0"
+    ],
+    "dependencies": {
+        "qte5": "~>0.0.7"
+    },
+    "description": "Creator's Advanced Film Editor",
+    "copyright": "Copyright © 2017, aoitofu",
+    "license": "GNU General Public License v3.0"
 }
