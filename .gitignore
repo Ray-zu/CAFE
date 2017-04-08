@@ -1,7 +1,16 @@
+# dubのデフォルト設定
 .dub
 docs.json
 __dummy.html
+
+# コンパイル時の中間ファイル
 *.o
 *.obj
+
+# ライブラリファイル
 *.dll
-*.exe
+*.so
+
+# 実行ファイル
+cafe.exe
+cafe
