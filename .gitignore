@@ -3,6 +3,9 @@
 docs.json
 __dummy.html
 
+# エディタのスワップファイル
+*.swp
+
 # コンパイル時の中間ファイル
 *.o
 *.obj
