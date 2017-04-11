@@ -85,6 +85,16 @@ float calcEasing ( EasingType type, Frame cur, FrameLen dur, float st, float add
             float t = (cur*1.0) / (dur*1.0);
             return add*t*t + st;
 
+        case EasingType.QuadraticEasingOut:
+            float t = (cur*1.0) / (dur*1.0);
+            return -add*t*(t-2) + st;
+
+        case EasingType.QuadraticEasingIO:
+            float t = (cur*1.0) / (dur*1.0);
+            if ( t < 1 ) return add/2*t*t + st;
+            t--;
+            return -add/2 * (t*(t-2) - 1) + st;
+
         default: throw new Exception( "Not Implemented" );
     }
 }
