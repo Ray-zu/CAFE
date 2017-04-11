@@ -60,6 +60,7 @@ class CalculateEasingFault : Error
     }
 }
 
+
 /+ 名前長いわ! +/
 private alias error = CalculateEasingFault;
 
@@ -70,30 +71,44 @@ private alias error = CalculateEasingFault;
    dur  : 総フレーム数
    st   : 開始値
    add  : 加算値 ( st + addが最終的な結果になる )
+
+   式は http://gizma.com/easing/ を参考にしました。
 +/
 float calcEasing ( EasingType type, Frame cur, FrameLen dur, float st, float add )
 {
-    enum OverFrameIndex = "frame index is over than duration";
+    enum InvalidFrameIndex = "frame index is invalid";
 
-    if ( cur >= dur ) throw new error( OverFrameIndex );
+    if ( cur >= dur || cur < 0 ) throw new error( InvalidFrameIndex );
+    float ratio = (cur*1.0) / (dur*1.0);
 
     switch ( type ) {
-        case EasingType.Linear: /+ 直線移動 +/
+        case EasingType.Linear:
             return add * (cur*1.0) / (dur*1.0) + st;
 
         case EasingType.QuadraticEasingIn:
-            float t = (cur*1.0) / (dur*1.0);
-            return add*t*t + st;
+            return add*ratio*ratio + st;
 
         case EasingType.QuadraticEasingOut:
-            float t = (cur*1.0) / (dur*1.0);
-            return -add*t*(t-2) + st;
+            return -add*ratio*(ratio-2) + st;
 
         case EasingType.QuadraticEasingIO:
-            float t = (cur*1.0) / (dur*1.0);
-            if ( t < 1 ) return add/2*t*t + st;
-            t--;
-            return -add/2 * (t*(t-2) - 1) + st;
+            if ( ratio < 1 ) return add/2*ratio*ratio + st;
+            ratio--;
+            return -add/2 * (ratio*(ratio-2) - 1) + st;
+
+        case EasingType.CubicEasingIn:
+            return add*ratio*ratio*ratio + st;
+
+        case EasingType.CubicEasingOut:
+            ratio--;
+            return add*(ratio*ratio*ratio + 1) + st;
+
+        case EasingType.CubicEasingIO:
+            if ( ratio < 1 ) return add/2*ratio*ratio*ratio + st;
+            ratio -= 2;
+            return add/2*(ratio*ratio*ratio + 2) + st;
+
+            /+ TODO +/
 
         default: throw new Exception( "Not Implemented" );
     }
