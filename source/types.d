@@ -18,10 +18,13 @@
 module cafe.types;
 
 /+ フレーム数(ある一点)を表します。 +/
-alias Frame = int;
+alias Frame = uint;
 
 /+ フレーム数(長さ)を表します。 +/
 alias FrameLen = int;
 
 /+ レイヤーの位置を表します。 +/
-alias LayerIndex = int;
+alias LayerIndex = uint;
+
+/* 角度を表します。 */
+alias Radian = int;
