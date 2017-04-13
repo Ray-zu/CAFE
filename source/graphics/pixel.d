@@ -73,4 +73,18 @@ struct Pixel
         {
             return a.normalize;
         }
+
+        @property auto nullPixel ()
+        {
+            return normalizedAlpha == ubyte.max;
+        }
+
+        void blend ( BlendType type, Pixel src )
+        {
+            if ( nullPixel ) { this = src; return; }
+
+            switch ( type ) {
+                default: throw new Exception( "Not Implemented" );
+            }
+        }
 }
