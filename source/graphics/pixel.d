@@ -22,15 +22,24 @@ import std.algorithm,
 debug = 1;
 
 /* ビット数値を正規化します。 */
-@property auto normalize ( int n )
+private @property auto normalize ( int n )
 {
     return max( min( ubyte.max, n ), ubyte.min ).to!ubyte;
+}
+
+/* 値を255で割り、ブレンド式用に正規化します。 */
+private @property auto floating ( int n )
+{
+    return (n*1.0) / (ubyte.max*1.0);
 }
 
 /+ 正規化のテスト +/
 debug ( 1 ) unittest {
     assert( ( 114514).normalize == ubyte.max );
     assert( (-114514).normalize == ubyte.min );
+
+    assert( (255).floating == 1.0 );
+    assert( (  0).floating == 0.0 );
 }
 
 
@@ -47,38 +56,19 @@ enum BlendType
 
 
 /* 画素データを表します。
-   RGBデータはそれぞれ2byte型ですが、画像化する際に255-0の間に正規化されます。
+   RGBAデータはそれぞれ2byte型ですが、画像化する際に255-0の間に正規化されます。
 */
 struct Pixel
 {
     public:
         short r, g, b, a;
 
-        @property auto normalizedR ()
-        {
-            return r.normalize;
-        }
-
-        @property auto normalizedG ()
-        {
-            return g.normalize;
-        }
-
-        @property auto normalizedB ()
-        {
-            return b.normalize;
-        }
-
-        @property auto normalizedAlpha ()
-        {
-            return a.normalize;
-        }
-
         @property auto nullPixel ()
         {
             return normalizedAlpha == ubyte.max;
         }
 
+        /+ 引数のピクセルを前面に、ブレンドします +/
         void blend ( BlendType type, Pixel src )
         {
             if ( nullPixel ) { this = src; return; }
