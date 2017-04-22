@@ -19,30 +19,6 @@ module cafe.graphics.pixel;
 import std.algorithm,
        std.conv;
 
-debug = 1;
-
-/* ビット数値を正規化します。 */
-private @property auto normalize ( int n )
-{
-    return max( min( ubyte.max, n ), ubyte.min ).to!ubyte;
-}
-
-/* 値を255で割り、ブレンド式用に正規化します。 */
-private @property auto floating ( int n )
-{
-    return (n*1.0) / (ubyte.max*1.0);
-}
-
-/+ 正規化のテスト +/
-debug ( 1 ) unittest {
-    assert( ( 114514).normalize == ubyte.max );
-    assert( (-114514).normalize == ubyte.min );
-
-    assert( (255).floating == 1.0 );
-    assert( (  0).floating == 0.0 );
-}
-
-
 /* ブレンドモードを表します。
    ブレンドモードは追加予定
 */
