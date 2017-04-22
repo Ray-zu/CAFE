@@ -39,16 +39,9 @@ struct Pixel
     public:
         short r, g, b, a;
 
-        @property auto nullPixel ()
-        {
-            return normalizedAlpha == ubyte.max;
-        }
-
         /+ 引数のピクセルを前面に、ブレンドします +/
         void blend ( BlendType type, Pixel src )
         {
-            if ( nullPixel ) { this = src; return; }
-
             switch ( type ) {
                 default: throw new Exception( "Not Implemented" );
             }
