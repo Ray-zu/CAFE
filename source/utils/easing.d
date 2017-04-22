@@ -108,6 +108,17 @@ float calcEasing ( EasingType type, Frame cur, FrameLen dur, float st, float add
             ratio -= 2;
             return add/2*(ratio*ratio*ratio + 2) + st;
 
+        case EasingType.QuarticEasingIn:
+            return add*ratio*ratio*ratio*ratio + st;
+
+        case EasingType.QuarticEasingOut:
+            ratio--;
+            return -add * (ratio*ratio*ratio*ratio - 1) + st;
+
+        case EasingType.QuarticEasingIO:
+            if ( ratio < 1 ) return add/2*ratio*ratio*ratio*ratio + st;
+            ratio -= 2;
+            return -add/2 * (ratio*ratio*ratio*ratio - 2) + st;
             /+ TODO +/
 
         default: throw new Exception( "Not Implemented" );
