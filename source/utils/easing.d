@@ -119,8 +119,20 @@ float calcEasing ( EasingType type, Frame cur, FrameLen dur, float st, float add
             if ( ratio < 1 ) return add/2*ratio*ratio*ratio*ratio + st;
             ratio -= 2;
             return -add/2 * (ratio*ratio*ratio*ratio - 2) + st;
-            /+ TODO +/
 
+        case EasingType.QuinticEasingIn:
+            return add*ratio*ratio*ratio*ratio*ratio;
+
+        case EasingType.QuinticEasingOut:
+            ratio--;
+            return add * (ratio*ratio*ratio*ratio*ratio + 1) + st;
+
+        case EasingType.QuinticEasingIO:
+            if ( ratio < 1 ) return add/2*ratio*ratio*ratio*ratio*ratio + st;
+            ratio -= 2;
+            return add/2 * (ratio*ratio*ratio*ratio*ratio + 2) + st;
+
+            /+ TODO +/
         default: throw new Exception( "Not Implemented" );
     }
 }
