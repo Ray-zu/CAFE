@@ -19,9 +19,9 @@ module cafe.graphics.pixel;
 import std.algorithm,
        std.conv;
 
-/* ブレンドモードを表します。
+/+ ブレンドモードを表します。
    ブレンドモードは追加予定
-*/
++/
 enum BlendType
 {
     Normal,             // 通常
@@ -31,9 +31,9 @@ enum BlendType
 }
 
 
-/* 画素データを表します。
+/+ 画素データを表します。
    RGBAデータはそれぞれ2byte型ですが、画像化する際に255-0の間に正規化されます。
-*/
++/
 struct Pixel
 {
     public:
