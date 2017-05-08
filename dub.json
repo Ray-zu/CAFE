@@ -5,13 +5,22 @@
         "Aodaruma",
         "SEED264"
     ],
+
     "dependencies": {
+        "cafe:renderer": "*",
+        "cafe:gui": "*"
     },
+    "subPackages": [
+        "./renderer/",
+        "./gui/"
+    ],
+
     "description": "Creator's Advanced Film Editor",
     "copyright": "Copyright © 2017, aoitofu",
     "license": "GNU General Public License v3.0",
 
     "dflags": [
-        "-unittest"
+        "-unittest",
+        "-m64"
     ]
 }

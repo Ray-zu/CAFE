@@ -4,14 +4,11 @@
  + ------------------------------------------------------------ +
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
-module cafe.app;
+module gui.main;
 import std.stdio;
-import gui.main;
-import renderer.main;
 
-void main()
+/+ 名前空間の確認用 +/
+void hello_gui ()
 {
-    // 名前空間が正常に設定できているか確認
-    hello_renderer;
-    hello_gui;
+    "Hello from gui !!".writeln;
 }

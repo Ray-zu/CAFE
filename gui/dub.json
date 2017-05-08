@@ -1,0 +1,10 @@
+{
+	"name": "gui",
+    "targetType": "sourceLibrary",
+	"authors": [
+		"aoitofu"
+	],
+	"description": "GUI Manager for CAFE",
+	"copyright": "Copyright © 2017, aoitofu",
+	"license": "GNU General Public License v3.0"
+}
