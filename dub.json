@@ -7,20 +7,14 @@
     ],
 
     "dependencies": {
-        "cafe:renderer": "*",
-        "cafe:gui": "*"
+        "dlangui": "~>0.9.56"
     },
-    "subPackages": [
-        "./renderer/",
-        "./gui/"
-    ],
 
     "description": "Creator's Advanced Film Editor",
     "copyright": "Copyright © 2017, aoitofu",
     "license": "GNU General Public License v3.0",
 
     "dflags": [
-        "-unittest",
-        "-m64"
+        "-unittest"
     ]
 }

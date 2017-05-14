@@ -5,13 +5,17 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.app;
-import std.stdio;
-import gui.main;
-import renderer.main;
+import dlangui;
 
-void main()
+mixin APP_ENTRY_POINT;
+
+extern(C) int UIAppMain(string[] args)
 {
-    // 名前空間が正常に設定できているか確認
-    hello_renderer;
-    hello_gui;
+    Platform.instance.uiLanguage="en";
+    Platform.instance.uiTheme="theme_default";
+
+    auto window = Platform.instance.createWindow("CAFEdit",null);
+    window.mainWidget = new FrameLayout;
+    window.show;
+    return Platform.instance.enterMessageLoop();
 }

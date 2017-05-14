@@ -16,7 +16,7 @@ CAFE(Creator's Advanced Film Editor)は、AviUtlの後継として考案され�
 
 ## Install
 
-    dub build                   # 64bit only
+    dub -a x86_64                  # 64bit only
 
 ## Licence
 
