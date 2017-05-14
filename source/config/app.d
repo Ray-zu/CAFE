@@ -9,7 +9,7 @@ import std.format,
        std.json;
 
 /+ ビルド以降変化しない設定値 +/
-enum STATIC_CONFIG_JSON = parseJSON( import( "app.json" ) );
+private enum STATIC_CONFIG_JSON = parseJSON( import( "app.json" ) );
 
 /+ アプリケーションの基本情報 +/
 class AppConfig
