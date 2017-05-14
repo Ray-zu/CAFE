@@ -9,6 +9,9 @@
     "dependencies": {
         "dlangui": "~>0.9.56"
     },
+    "stringImportPaths": [
+        "./config"
+    ],
 
     "description": "Creator's Advanced Film Editor",
     "copyright": "Copyright © 2017, aoitofu",
