@@ -5,6 +5,10 @@
 		"aoitofu"
 	],
 
+    "dependencies": [
+        "dlangui": "~>0.9.56"
+    ],
+
 	"description": "GUI Manager for CAFE",
 	"copyright": "Copyright © 2017, aoitofu",
 	"license": "GNU General Public License v3.0"
