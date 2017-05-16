@@ -6,6 +6,11 @@
  + ------------------------------------------------------------ +/
 module cafe.project.timeline.PropertyKeepableObject;
 
-template PropertyKeepableObject ()
+/+ プロパティを保持できるオブジェクトの共通部分   +
+ + 引数にはプロパティの型と名前の宣言リストを渡す +/
+template PropertyKeepableObject ( string defines )
 {
+    // プロパティ変数の定義
+    public struct Properties { mixin( defines ); }
+    private Properties properties;
 }
