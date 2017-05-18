@@ -24,6 +24,9 @@ template PropertyKeepableObject ( string defines )
 /+ プロパティテーブルを生成するコード文字列を返す +/
 private @property generatePropertyTable ( string defines )
 {
+    auto defs = defines.assocFromDefines;
+    // TODO
+    throw new Exception( "Not Implemented" );
 }
 
 /+ 型と名前の宣言リストから連想配列を生成
