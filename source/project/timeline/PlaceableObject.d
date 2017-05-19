@@ -36,11 +36,11 @@ template PlaceableObject ()
         {
             auto old_st_frame  = this.start_frame;
             auto new_st_frame  = start_frame;
-            auto diff_st_frame = old_st_frame.to!int - new_st_frame.to!int;
+            auto diff_st_frame = cast(int)old_st_frame - cast(int)new_st_frame;
 
-            if ( frameLength.to!int + diff_st_frame > 0 ) {
+            if ( frameLength + diff_st_frame > 0 ) {
                 frame_length += diff_st_frame;
-                this.start_frame = new_start_frame;
+                this.start_frame = new_st_frame;
                 return true;
             }
 
