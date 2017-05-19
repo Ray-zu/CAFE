@@ -4,12 +4,12 @@
  + ------------------------------------------------------------ +
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
-module cafe.project.timeline.PleaceableObject;
+module cafe.project.timeline.PlaceableObject;
 import std.conv;
 
 /+ タイムラインに配置できるオブジェクト                +
  + 主にオブジェクトの開始/終了フレームやレイヤ数を管理 +/
-template PleaceableObject ()
+template PlaceableObject ()
 {
     private:
         /+ タイムライン上の位置情報 +/
