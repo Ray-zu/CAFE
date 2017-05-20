@@ -22,11 +22,13 @@ class Property ( T )
 
         @property value () { return val; }
 
+        /+ 文字列からプロパティを更新 +/
         void fromString ( string v )
         {
-            throw new Exception( "Not Implemented" );
+            val = v.to!T;
         }
 
+        /+ プロパティを文字列化 +/
         override @property string toString ()
         {
             return val.to!string;
