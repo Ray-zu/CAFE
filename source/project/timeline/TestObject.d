@@ -11,6 +11,7 @@ import cafe.project.timeline.PlaceableObject,
 class TestObject
 {
     mixin PlaceableObject;
+    mixin PropertyKeepableObject;
 
     unittest {
         auto hoge = new TestObject;
