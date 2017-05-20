@@ -9,17 +9,13 @@ import std.conv,
        std.traits;
 
 /+ プロパティ情報 +/
-class Property ( T )
+abstract class Property ( T )
     if ( isScalarType!T )
 {
     private:
         T val;
 
     public:
-        this ( T init ) {
-            val = init;
-        }
-
         @property value () { return val; }
 
         /+ 文字列からプロパティを更新 +/
@@ -33,6 +29,12 @@ class Property ( T )
         {
             return val.to!string;
         }
+}
+
+/+ 数値プロパティ +/
+class NumericProperty ( T ) : Property!T
+    if ( isNumericType!T )
+{
 }
 
 /+ プロパティを保持できるオブジェクトの共通部分 +/
