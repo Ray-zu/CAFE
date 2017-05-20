@@ -5,16 +5,21 @@
 + Please see /LICENSE.                                         +
 + ------------------------------------------------------------ +/
 module cafe.project.timeline.PropertyKeepableObject;
-import std.conv;
+import std.conv,
+       std.traits;
 
 /+ プロパティ情報 +/
-abstract class Property ( alias S, T )
+class Property ( T )
+    if ( isType!T )
 {
     private:
         T val;
 
     public:
-        @property name  () { return S;   }
+        this ( T init ) {
+            val = init;
+        }
+
         @property value () { return val; }
 
         void fromString ( string v )
