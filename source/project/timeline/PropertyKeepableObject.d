@@ -10,7 +10,7 @@ import std.conv,
 
 /+ プロパティ情報 +/
 class Property ( T )
-    if ( isType!T )
+    if ( isScalarType!T )
 {
     private:
         T val;
