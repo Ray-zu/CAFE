@@ -15,6 +15,5 @@ class TestObject
 
     unittest {
         auto hoge = new TestObject;
-        auto huge = new Property!int( 0 );
     }
 }
