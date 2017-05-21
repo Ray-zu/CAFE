@@ -4,11 +4,11 @@
  + ------------------------------------------------------------ +
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
-module cafe.project.timeline.Time;
+module cafe.project.Frame;
 import std.conv;
 
-/+ タイムライン上での時間の長さを表します +/
-class TimeLength
+/+ フレーム数を表します +/
+class FrameLength
 {
     public:
         uint frame;
@@ -20,16 +20,16 @@ class TimeLength
         }
 
         unittest {
-            auto t = new TimeLength( 5 );
+            auto t = new FrameLength( 5 );
             assert( cast(uint)t == 5 );
         }
 }
 
-/+ タイムライン上でのある1フレームを表します +/
-class Time
+/+ ある1フレームを表します +/
+class FrameCount
 {
     private:
-        TimeLength total;
+        FrameLength total;
         uint frame;
 
     public:
@@ -57,14 +57,14 @@ class Time
             frame = i;
         }
 
-        this ( TimeLength t, uint i )
+        this ( FrameLength t, uint i )
         {
             total = t;
             frame = i;
         }
 
         unittest {
-            auto hoge = new Time( new TimeLength( 100 ), 50 );
+            auto hoge = new FrameCount( new FrameLength( 100 ), 50 );
             assert( hoge.value == 50 );
             assert( hoge.valueRatio == 0.5 );
             hoge.value = 75;
