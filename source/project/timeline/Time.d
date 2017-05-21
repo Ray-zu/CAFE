@@ -62,4 +62,12 @@ class Time
             total = t;
             frame = i;
         }
+
+        unittest {
+            auto hoge = new Time( new TimeLength( 100 ), 50 );
+            assert( hoge.value == 50 );
+            assert( hoge.valueRatio == 0.5 );
+            hoge.value = 75;
+            assert( hoge.valueRatio == 0.75 );
+        }
 }
