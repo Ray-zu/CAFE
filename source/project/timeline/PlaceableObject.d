@@ -19,6 +19,6 @@ template PlaceableObject ()
 
     public:
         /+ プロパティ取得 +/
-        @property frame    () { return frame_period;              }
-        @property layerId  () { return layer_id;                  }
+        @property frame    () { return frame_period; }
+        @property layerId  () { return layer_id;     }
 }
