@@ -7,7 +7,8 @@
 module cafe.project.ObjectPlacingInfo;
 import std.conv;
 
-private template SingleValueProperty (T)
+/+ ひとつの変数を持つプロパティクラスの雛形 +/
+private class SingleValueProperty (T)
 {
     private:
         T val;
@@ -27,31 +28,15 @@ private template SingleValueProperty (T)
         }
 }
 
-
-
 /+ フレーム数(長さ)                      +
  + 0から始まるフレーム総数を表現します。 +
  + 例:シーン全体の長さ                   +/
-class FrameLength
-{
-    mixin SingleValueProperty!uint;
-    unittest {
-        auto t = new FrameLength( 500 );
-        assert( t.value == 500 );
-    }
-}
+ alias FrameLength = SingleValueProperty!uint;
 
 /+ フレーム数(一点)             +
  + ある１フレームを表現します。 +
  + 例:再生中フレーム            +/
- class FrameAt
-{
-    mixin SingleValueProperty!uint;
-    unittest {
-        auto f = new FrameAt( 120 );
-        assert( f.value == 120 );
-    }
-}
+ alias FrameAt = SingleValueProperty!uint;
 
 /+ フレーム数(一点)              +
  + ある一フレームを表現します。  +
@@ -62,7 +47,7 @@ class FrameLength
         FrameLength parent_length;
 
     public:
-        @property uint value ()
+        override @property uint value ()
         {
             if ( val >= parentLength.value )
                 val = parentLength.value - 1;
@@ -132,15 +117,7 @@ class FrameLength
 }
 
 /+ レイヤID +/
-class LayerId
-{
-    mixin SingleValueProperty!uint;
-    unittest {
-        auto i = new LayerId( 5 );
-        assert( i.value == 5 );
-    }
-}
-
+alias LayerId = SingleValueProperty!uint;
 
 /+ オブジェクトの配置情報(レイヤ数/開始・終了フレーム数) +/
 class ObjectPlacingData
