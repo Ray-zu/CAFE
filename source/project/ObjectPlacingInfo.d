@@ -130,3 +130,38 @@ class FrameLength
             assert( f.length.value == 30 );
         }
 }
+
+/+ レイヤID +/
+class LayerId
+{
+    mixin SingleValueProperty!uint;
+    unittest {
+        auto i = new LayerId( 5 );
+        assert( i.value == 5 );
+    }
+}
+
+
+/+ オブジェクトの配置情報(レイヤ数/開始・終了フレーム数) +/
+class ObjectPlacingData
+{
+    private:
+        LayerId layer_id;
+        FramePeriod frame_period;
+
+    public:
+        @property layer () { return layer_id;     }
+        @property frame () { return frame_period; }
+
+        this ( LayerId l, FramePeriod f )
+        {
+            layer_id = l;
+            frame_period = f;
+        }
+
+        unittest {
+            auto p = new FramePeriod( new FrameLength( 100 ),
+                    new FrameAt( 50 ), new FrameLength( 20 ) );
+            auto i = new ObjectPlacingData( new LayerId( 5 ), p );
+        }
+}
