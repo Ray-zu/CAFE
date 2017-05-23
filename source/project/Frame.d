@@ -29,6 +29,8 @@ private template FrameTime ()
         }
 }
 
+
+
 /+ フレーム数(長さ)                      +
  + 0から始まるフレーム総数を表現します。 +
  + 例:シーン全体の長さ                   +/
@@ -59,90 +61,74 @@ class FrameLength
  class FrameIn : FrameAt
 {
     private:
-        FrameLength total;
-
-        auto valueNormalize ( uint f )
-        {
-            if ( length.value >= f ) f = length.value - 1;
-            if ( 0 < f ) f = 0;
-            return f;
-        }
+        FrameLength parent_length;
 
     public:
         @property uint value ()
         {
-            return valueNormalize(value);
+            if ( val >= parentLength.value )
+                val = parentLength.value - 1;
+            return val;
         }
-        @property void value ( uint f )
-        {
-            super.value = valueNormalize(f);
-        }
-
-        @property length () { return total; }
+        @property parentLength () { return parent_length; }
 
         this ( FrameLength t, uint f )
         {
-            total = t;
+            parent_length = t;
             super( f );
         }
 
         unittest {
             auto f = new FrameIn( new FrameLength(500), 100 );
             assert( f.value == 100 );
-            assert( f.length.value == 500 );
+            assert( f.parentLength.value == 500 );
         }
 }
 
-/+ フレーム数(期間)                                  +
- + 任意のフレームから始まるフレーム総数を表現します。
- + オブジェクトのタイムライン上での位置+/
+/+ フレーム数(期間)                                   +
+ + 任意のフレームから始まるフレーム総数を表現します。 +
+ + 例:オブジェクトのタイムライン上での位置と大きさ    +/
  class FramePeriod
 {
     private:
-        FrameLength total;
-        FrameAt start_frame;
-        FrameAt end_frame;
-
-        FrameAt frameNormalize ( FrameAt f ) // 型指定しないとコンパイルエラー(バグ？)
-        {
-            if ( f.value >= length.value ) f.value = length.value - 1;
-            if ( f.value < 0 ) f.value = 0;
-            return f;
-        }
+        FrameLength parent_length;
+        FrameAt     start_frame;
+        FrameLength frame_length;
 
     public:
-        @property parentLength () { return total;                       }
-        @property start        () { return frameNormalize(start_frame); }
-        @property end          () { return frameNormalize(end_frame  ); }
+        @property parentLength () { return parent_length; }
 
-        @property start ( FrameAt f )
+        @property start ()
         {
-            if ( f.value >= end_frame.value ) throw new Exception( "Invalid Period" );
-            start_frame = frameNormalize(f);
-        }
-        @property end ( FrameAt f )
-        {
-            if ( f.value <= start_frame.value ) throw new Exception( "Invalid Period" );
-            end_frame = frameNormalize(f);
+            if ( start_frame.value >= parent_length.value )
+                start_frame.value = parent_length.value - 1;
+            return start_frame;
         }
 
-        this ( FrameLength t, FrameAt s, FrameAt e )
+        @property end ()
         {
-            total = t;
-            start = s;
-            end = e;
+            return new FrameAt( start.value + length.value );
         }
 
         @property length ()
         {
-            return new FrameLength( end.value - start.value );
+            auto endframe = start.value + frame_length.value;
+            if ( endframe >= parentLength.value ) frame_length.value = 1;
+            return frame_length;
+        }
+
+        this ( FrameLength t, FrameAt s, FrameLength l )
+        {
+            parent_length = t;
+            start_frame = s;
+            frame_length = l;
         }
 
         unittest {
-            auto f = new FramePeriod( new FrameLength(100), new FrameAt(20), new FrameAt(50) );
+            auto f = new FramePeriod( new FrameLength(100), new FrameAt(50), new FrameLength(30) );
             assert( f.parentLength.value == 100 );
-            assert( f.start.value == 20 );
-            assert( f.end.value == 50 );
+            assert( f.start.value == 50 );
+            assert( f.end.value == 80 );
             assert( f.length.value == 30 );
         }
 }
