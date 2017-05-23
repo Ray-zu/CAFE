@@ -4,21 +4,19 @@
  + ------------------------------------------------------------ +
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
-module cafe.project.Frame;
-import std.conv,
-       std.format;
+module cafe.project.ObjectPlacingInfo;
+import std.conv;
 
-/+ フレーム数関係を表すクラスの共通部分 +/
-private template FrameTime ()
+private template SingleValueProperty (T)
 {
     private:
-        uint val;
+        T val;
 
     public:
-        @property value ()         { return val; }
-        @property value ( uint f ) { val = f;    }
+        @property value ()      { return val; }
+        @property value ( T f ) { val = f;    }
 
-        this ( uint f )
+        this ( T f )
         {
             value = f;
         }
@@ -36,7 +34,7 @@ private template FrameTime ()
  + 例:シーン全体の長さ                   +/
 class FrameLength
 {
-    mixin FrameTime;
+    mixin SingleValueProperty!uint;
     unittest {
         auto t = new FrameLength( 500 );
         assert( t.value == 500 );
@@ -48,7 +46,7 @@ class FrameLength
  + 例:再生中フレーム            +/
  class FrameAt
 {
-    mixin FrameTime;
+    mixin SingleValueProperty!uint;
     unittest {
         auto f = new FrameAt( 120 );
         assert( f.value == 120 );

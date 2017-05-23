@@ -5,7 +5,7 @@
 + Please see /LICENSE.                                         +
 + ------------------------------------------------------------ +/
 module cafe.project.timeline.PropertyKeepableObject;
-import cafe.project.Frame;
+import cafe.project.ObjectPlacingInfo;
 import std.conv,
        std.traits;
 

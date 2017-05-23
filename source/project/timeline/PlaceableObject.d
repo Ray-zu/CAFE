@@ -11,7 +11,7 @@ import std.conv;
  + 主にオブジェクトの開始/終了フレームやレイヤ数を管理 +/
 template PlaceableObject ()
 {
-    import cafe.project.Frame;
+    import cafe.project.ObjectPlacingInfo;
 
     private:
         FramePeriod frame_period;
