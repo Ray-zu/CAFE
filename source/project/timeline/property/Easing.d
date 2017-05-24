@@ -11,6 +11,7 @@ import std.conv;
 /+ イージング関数の一覧 +/
 enum EasingType
 {
+    None,
     Linear
 }
 
@@ -69,6 +70,22 @@ private template EasingFunctionConstructor ()
         }
 }
 
+/+ イージングなし +/
+class NoneEasing : EasingFunction
+{
+    mixin EasingFunctionConstructor;
+    public:
+        override float at ( FrameAt )
+        {
+            return start;
+        }
+
+        unittest {
+            auto hoge = new NoneEasing( 0, 75, new FrameLength(20) );
+            assert( hoge.at( new FrameAt(10) ) == 0 );
+        }
+}
+
 /+ simple linear tweening +/
 class LinearEasing : EasingFunction
 {
@@ -81,7 +98,6 @@ class LinearEasing : EasingFunction
         }
 
         unittest {
-            import std.stdio;
             auto hoge = new LinearEasing( 0, 75, new FrameLength(20) );
             assert( hoge.at( new FrameAt(10) ) == 37.5 );
         }
