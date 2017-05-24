@@ -8,6 +8,12 @@ module cafe.project.timeline.property.Easing;
 import cafe.project.ObjectPlacingInfo;
 import std.conv;
 
+/+ イージング関数の一覧 +/
+enum EasingType
+{
+    Linear
+}
+
 /+ イージング関数のベースクラス +/
 abstract class EasingFunction
 {
@@ -42,6 +48,15 @@ abstract class EasingFunction
         }
 
         float at ( FrameAt f );
+
+        /+ EasingTypeから対応するイージング関数のインスタンスを返す +/
+        static EasingFunction create ( EasingType t, float s, float e, FrameLength d )
+        {
+            switch ( t ) {
+                case EasingType.Linear: return new LinearEasing( s, e, d );
+                default: assert( false );
+            }
+        }
 }
 
 /+ イージング関数クラスの共通コンストラクタ +/
