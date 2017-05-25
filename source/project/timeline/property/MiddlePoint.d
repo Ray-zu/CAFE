@@ -18,10 +18,15 @@ class MiddlePoint (T)
         FramePeriod frame_period;
 
     public:
-        @property value  () { return st_value;     }
-        @property frame  () { return frame_period; }
+        @property value  () { return st_value;        }
+        @property frame  () { return frame_period;    }
+        @property easing () { return EasingType.None; }
 
-        @property value  ( T i ) { st_value = i; }
+        @property value ( T i ) { st_value = i; }
+        @property easing ( EasingType )
+        {
+            throw new Exception( "You can't do easing to this property." );
+        }
 
         this ( T s, FramePeriod f )
         {
