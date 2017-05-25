@@ -50,12 +50,13 @@ abstract class EasingFunction
 
         float at ( FrameAt f );
 
-        /+ EasingTypeから対応するイージング関数のインスタンスを返す +/
+        /+ EasingTypeから対応するイージング関数のインスタンスを返す +
+         + EasingType.Noneに関しては例外を返します。                +/
         static EasingFunction create ( EasingType t, float s, float e, FrameLength d )
         {
             switch ( t ) {
                 case EasingType.Linear: return new LinearEasing( s, e, d );
-                default: assert( false );
+                default: throw new Exception( "No Easing Type" );
             }
         }
 }
@@ -67,22 +68,6 @@ private template EasingFunctionConstructor ()
         this ( float s, float e, FrameLength d )
         {
             super( s, e, d );
-        }
-}
-
-/+ イージングなし +/
-class NoneEasing : EasingFunction
-{
-    mixin EasingFunctionConstructor;
-    public:
-        override float at ( FrameAt )
-        {
-            return start;
-        }
-
-        unittest {
-            auto hoge = new NoneEasing( 0, 75, new FrameLength(20) );
-            assert( hoge.at( new FrameAt(10) ) == 0 );
         }
 }
 
