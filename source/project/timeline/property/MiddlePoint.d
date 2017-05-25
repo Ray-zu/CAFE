@@ -11,8 +11,15 @@ import std.traits;
 
 debug = 0;
 
-/+ 中間点データ +/
-class MiddlePoint (T)
+/+ 中間点データのインターフェース +/
+interface MiddlePoint
+{
+    public:
+        @property FramePeriod frame ();
+}
+
+/+ 中間点データのベースクラス +/
+class MiddlePointBase (T) : MiddlePoint
     if ( isScalarType!T )
 {
     private:
@@ -20,8 +27,8 @@ class MiddlePoint (T)
         FramePeriod frame_period;
 
     public:
-        @property value  () { return st_value;        }
-        @property frame  () { return frame_period;    }
+                 @property value  () { return st_value;     }
+        override @property frame  () { return frame_period; }
 
         @property value ( T i ) { st_value = i; }
 
