@@ -9,6 +9,8 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.property.Easing;
 import std.traits;
 
+debug = 0;
+
 /+ 中間点データ +/
 class MiddlePoint (T)
     if ( isScalarType!T )
@@ -43,7 +45,7 @@ class MiddlePoint (T)
                 easing_func = EasingType.None;
         }
 
-        unittest {
+        debug (1) unittest {
             auto frame = new FramePeriod( new FrameLength( 100 ), new FrameAt( 50 ), new FrameLength( 20 ) );
             auto hoge = new MiddlePoint!string( "5000chouen hoshii", frame );
             assert( hoge.easing == EasingType.None );

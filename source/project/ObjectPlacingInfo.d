@@ -7,6 +7,8 @@
 module cafe.project.ObjectPlacingInfo;
 import std.conv;
 
+debug = 0;
+
 /+ ひとつの変数を持つプロパティクラスの雛形 +/
 private class SingleValueProperty (T)
 {
@@ -61,7 +63,7 @@ private class SingleValueProperty (T)
             super( f );
         }
 
-        unittest {
+        debug (1) unittest {
             auto f = new FrameIn( new FrameLength(500), 100 );
             assert( f.value == 100 );
             assert( f.parentLength.value == 500 );
@@ -107,7 +109,7 @@ private class SingleValueProperty (T)
             frame_length = l;
         }
 
-        unittest {
+        debug (1) unittest {
             auto f = new FramePeriod( new FrameLength(100), new FrameAt(50), new FrameLength(30) );
             assert( f.parentLength.value == 100 );
             assert( f.start.value == 50 );
@@ -136,7 +138,7 @@ class ObjectPlacingData
             frame_period = f;
         }
 
-        unittest {
+        debug (1) unittest {
             auto p = new FramePeriod( new FrameLength( 100 ),
                     new FrameAt( 50 ), new FrameLength( 20 ) );
             auto i = new ObjectPlacingData( new LayerId( 5 ), p );

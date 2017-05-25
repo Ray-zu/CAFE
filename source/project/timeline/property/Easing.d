@@ -8,6 +8,8 @@ module cafe.project.timeline.property.Easing;
 import cafe.project.ObjectPlacingInfo;
 import std.conv;
 
+debug = 0;
+
 /+ イージング関数の一覧 +/
 enum EasingType
 {
@@ -82,7 +84,7 @@ class LinearEasing : EasingFunction
             return slope*c + start;
         }
 
-        unittest {
+        debug (1) unittest {
             auto hoge = new LinearEasing( 0, 75, new FrameLength(20) );
             assert( hoge.at( new FrameAt(10) ) == 37.5 );
         }
