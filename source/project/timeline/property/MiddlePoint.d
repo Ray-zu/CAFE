@@ -20,26 +20,38 @@ class MiddlePoint (T)
     public:
         @property value  () { return st_value;        }
         @property frame  () { return frame_period;    }
-        @property easing () { return EasingType.None; }
 
         @property value ( T i ) { st_value = i; }
-        @property easing ( EasingType )
-        {
-            throw new Exception( "You can't do easing to this property." );
+
+        /+ データ型が数値かどうかでイージング関連の処理を分岐させます +/
+        static if ( isNumericType!T ) {
+            private EasingType easing_func;
+            @property easing ()               { return easing_func; }
+            @property easing ( EasingType t ) { easing_func = t;    }
+        } else {
+            @property easing ()             { return EasingType.None; }
+            @property easing ( EasingType ) {
+                throw new Exception( "You can't do easing to this property." );
+            }
         }
 
         this ( T s, FramePeriod f )
         {
             value = s;
             frame_period = f;
+            static if ( isNumericType!T )
+                easing_func = EasingType.None;
         }
 
         unittest {
             auto frame = new FramePeriod( new FrameLength( 100 ), new FrameAt( 50 ), new FrameLength( 20 ) );
             auto hoge = new MiddlePoint!string( "5000chouen hoshii", frame );
+            assert( hoge.easing == EasingType.None );
             assert( hoge.value == "5000chouen hoshii" );
 
             hoge = new MiddlePoint!float( 114.514, frame );
+            hoge.easing = EasingType.Linear;
+            assert( hoge.easing == EasingType.Linear );
             assert( hoge.value == 114.514 );
         }
 }
