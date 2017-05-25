@@ -21,7 +21,7 @@ class MiddlePoint (T)
         @property value  () { return st_value;     }
         @property frame  () { return frame_period; }
 
-        @property value  ( T i )          { st_value = i;    }
+        @property value  ( T i ) { st_value = i; }
 
         this ( T s, FramePeriod f )
         {
