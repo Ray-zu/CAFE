@@ -27,13 +27,13 @@ class MiddlePointBase (T) : MiddlePoint
         FramePeriod frame_period;
 
     public:
-                 @property value  () { return st_value;     }
-        override @property frame  () { return frame_period; }
+                 @property             value () { return st_value;     }
+        override @property FramePeriod frame () { return frame_period; }
 
         @property value ( T i ) { st_value = i; }
 
         /+ データ型が数値かどうかでイージング関連の処理を分岐させます +/
-        static if ( isNumericType!T ) {
+        static if ( isNumeric!T ) {
             private EasingType easing_func;
             @property easing ()               { return easing_func; }
             @property easing ( EasingType t ) { easing_func = t;    }
