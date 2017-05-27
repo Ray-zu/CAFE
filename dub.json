@@ -12,12 +12,9 @@
     "stringImportPaths": [
         "./config"
     ],
+    "buildOptions": [ "unittests" ],
 
     "description": "Creator's Advanced Film Editor",
     "copyright": "Copyright © 2017, aoitofu",
-    "license": "GNU General Public License v3.0",
-
-    "dflags": [
-        "-unittest"
-    ]
+    "license": "GNU General Public License v3.0"
 }
