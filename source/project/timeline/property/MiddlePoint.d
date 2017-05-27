@@ -4,7 +4,7 @@
  + ------------------------------------------------------------ +
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
-module cafe.project.timeline.property.Property;
+module cafe.project.timeline.property.MiddlePoint;
 import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.property.Easing;
 import std.traits;
