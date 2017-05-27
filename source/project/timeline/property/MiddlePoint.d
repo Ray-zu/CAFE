@@ -48,7 +48,7 @@ class MiddlePointBase (T) : MiddlePoint
         {
             value = s;
             frame_period = f;
-            static if ( isNumericType!T )
+            static if ( isNumeric!T )
                 easing_func = EasingType.None;
         }
 
