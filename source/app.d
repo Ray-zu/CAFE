@@ -5,22 +5,39 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.app;
-//import dlangui;
-//
-//mixin APP_ENTRY_POINT;
-//
-//extern(C) int UIAppMain(string[] args)
-//{
-//    Platform.instance.uiLanguage="en";
-//    Platform.instance.uiTheme="theme_default";
-//
-//    auto window = Platform.instance.createWindow(AppConfig.LongName,null);
-//    window.mainWidget = new FrameLayout;
-//    window.show;
-//    return Platform.instance.enterMessageLoop();
-//}
+import cafe.project.Project;
+import dlangui;
 
-int main ( string[] args )
+mixin APP_ENTRY_POINT;
+
+class Cafe
 {
-    return 0;
+    private:
+        Project cur_project;
+
+        void setupGUI ()
+        {
+            Platform.instance.uiLanguage="en";
+            Platform.instance.uiTheme="theme_default";
+
+            // テストコード
+            auto window = Platform.instance.createWindow("Hello dlang!",null);
+            window.mainWidget = new FrameLayout;
+            window.show;
+        }
+
+    public:
+        @property curProject () { return cur_project; }
+
+        this ( string[] args )
+        {
+            cur_project = null;
+            setupGUI;
+        }
+}
+
+extern(C) int UIAppMain(string[] args)
+{
+    new Cafe( args );
+    return Platform.instance.enterMessageLoop();
 }
