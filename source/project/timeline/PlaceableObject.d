@@ -9,7 +9,7 @@ import std.conv;
 
 /+ タイムラインに配置できるオブジェクト                +
  + 主にオブジェクトの開始/終了フレームやレイヤ数を管理 +/
-abstract class PlaceableObject ()
+abstract class PlaceableObject
 {
     import cafe.project.ObjectPlacingInfo;
 
