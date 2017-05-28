@@ -5,12 +5,15 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.project.timeline.PlaceableObject;
-import cafe.project.ObjectPlacingInfo;
+import cafe.project.ObjectPlacingInfo,
+       cafe.project.timeline.property.Property;
 import std.conv;
 
 /+ プロパティを保持できるオブジェクトの共通部分 +/
 template PropertyKeepableObject ()
 {
+    private:
+        Property[string] properties;
 }
 
 /+ タイムラインに配置できるオブジェクト                +
