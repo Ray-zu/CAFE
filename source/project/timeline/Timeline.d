@@ -4,15 +4,11 @@
  + ------------------------------------------------------------ +
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
-module cafe.project.Component;
-import cafe.project.timeline.Timeline;
+module cafe.project.timeline.Timeline;
 
 debug = 0;
 
-/+ プロジェクト内のコンポーネントデータ +
- + AULでいうシーン                      +/
-class Component
+/+ タイムラインデータ +/
+class Timeline
 {
-    private:
-        Timeline timeline;
 }
