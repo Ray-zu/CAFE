@@ -4,14 +4,12 @@
  + ------------------------------------------------------------ +
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
-module cafe.project.Project;
-import cafe.project.Component;
+module cafe.project.Component;
 
 debug = 0;
 
-/+ プロジェクト全体のデータ +/
-class Project
+/+ プロジェクト内のコンポーネントデータ +
+ + AULでいうシーン                      +/
+class Component
 {
-    private:
-        Component[] components;
 }
