@@ -20,6 +20,9 @@ class Cafe
             Platform.instance.uiLanguage="en";
             Platform.instance.uiTheme="theme_default";
 
+            import dlangui.core.logger;
+            Log.setLogLevel( LogLevel.Fatal );
+
             // テストコード
             auto window = Platform.instance.createWindow("Hello dlang!",null);
             window.mainWidget = new FrameLayout;
