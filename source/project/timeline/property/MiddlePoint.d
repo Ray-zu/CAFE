@@ -20,7 +20,7 @@ interface MiddlePoint
 
 /+ 中間点データのベースクラス +/
 class MiddlePointBase (T) : MiddlePoint
-    if ( isScalarType!T )
+    if ( isScalarType!T || isSomeString!T )
 {
     private:
         T st_value;
@@ -54,13 +54,13 @@ class MiddlePointBase (T) : MiddlePoint
 
         debug (1) unittest {
             auto frame = new FramePeriod( new FrameLength( 100 ), new FrameAt( 50 ), new FrameLength( 20 ) );
-            auto hoge = new MiddlePoint!string( "5000chouen hoshii", frame );
+            auto hoge = new MiddlePointBase!string( "5000chouen hoshii", frame );
             assert( hoge.easing == EasingType.None );
             assert( hoge.value == "5000chouen hoshii" );
 
-            hoge = new MiddlePoint!float( 114.514, frame );
-            hoge.easing = EasingType.Linear;
-            assert( hoge.easing == EasingType.Linear );
-            assert( hoge.value == 114.514 );
+            auto huge = new MiddlePointBase!float( 114.514, frame );
+            huge.easing = EasingType.Linear;
+            assert( huge.easing == EasingType.Linear );
+            assert( huge.value == 114.514f );
         }
 }
