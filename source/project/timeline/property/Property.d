@@ -29,7 +29,7 @@ class PropertyBase (T) : Property
         alias MPoint = MiddlePointBase!T;
 
         FrameLength frame_len;
-        MPoint[]    middle_points;
+        MiddlePoint[]    middle_points;
         T           end_value;
 
     public:
@@ -59,4 +59,26 @@ class PropertyBase (T) : Property
             auto hoge = new PropertyBase!float( new FrameLength(50), 20 );
             assert( hoge.middlePoints.length == 1 );
         }
+}
+
+/+ プロパティのプリセット +/
+enum PropertyPreset
+{
+    Positioning2D
+}
+
+/+ プリセットに応じたプロパティ文字列連想配列を返す +/
+@property loadPropertyPreset ( PropertyPreset p, FrameLength f )
+{
+    Property[string] result;
+    switch ( p )
+    {
+        case PropertyPreset.Positioning2D:
+            result["X"] = new PropertyBase!float( f, 0 );
+            result["Y"] = new PropertyBase!float( f, 0 );
+            break;
+
+        default: throw new Exception( "It was unexpected.." );
+    }
+    return result;
 }
