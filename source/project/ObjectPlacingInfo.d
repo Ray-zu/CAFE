@@ -120,6 +120,8 @@ private class SingleValueProperty (T)
             assert( f.start.value == 50 );
             assert( f.end.value == 80 );
             assert( f.length.value == 30 );
+            assert( !f.isInRange( new FrameAt(20) ) );
+            assert(  f.isInRange( new FrameAt(60) ) );
         }
 }
 
