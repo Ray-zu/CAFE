@@ -109,6 +109,11 @@ private class SingleValueProperty (T)
             frame_length = l;
         }
 
+        bool isInRange ( FrameAt f )
+        {
+            return f.value >= start.value && f.value < end.value;
+        }
+
         debug (1) unittest {
             auto f = new FramePeriod( new FrameLength(100), new FrameAt(50), new FrameLength(30) );
             assert( f.parentLength.value == 100 );
