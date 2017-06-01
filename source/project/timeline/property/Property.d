@@ -7,6 +7,7 @@
 module cafe.project.timeline.property.Property;
 import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.property.MiddlePoint;
+import std.algorithm;
 
 debug = 1;
 
@@ -16,6 +17,9 @@ interface Property
     public:
         @property FrameLength   frame        ();
         @property MiddlePoint[] middlePoints ();
+
+        /+ フレーム数から中間点クラスを返す +/
+        MiddlePoint middlePointAtFrame ( FrameAt );
 
         /+ ユーザーの入力した文字列をプロパティに変換 +/
         void   set ( FrameAt, string );
@@ -45,6 +49,13 @@ class PropertyBase (T) : Property
             end_value = v;
         }
 
+        override MiddlePoint middlePointAtFrame ( FrameAt f )
+        {
+            foreach ( mp; middlePoints )
+                if ( mp.frame.isInRange(f) ) return mp;
+            throw new Exception( "We can't find middle point at that frame." );
+        }
+
         override void set ( FrameAt f, string v )
         {
             throw new Exception( "Not Implemented" );
@@ -58,6 +69,8 @@ class PropertyBase (T) : Property
         debug ( 1 ) unittest {
             auto hoge = new PropertyBase!float( new FrameLength(50), 20 );
             assert( hoge.middlePoints.length == 1 );
+            assert( hoge.middlePointAtFrame(new FrameAt(10)).frame.start.value == 0 );
+            import std.stdio; "hoge".writeln;
         }
 }
 
