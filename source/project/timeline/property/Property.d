@@ -6,8 +6,11 @@
  + ------------------------------------------------------------ +/
 module cafe.project.timeline.property.Property;
 import cafe.project.ObjectPlacingInfo,
+       cafe.project.timeline.property.Easing,
        cafe.project.timeline.property.MiddlePoint;
-import std.algorithm;
+import std.algorithm,
+       std.conv,
+       std.traits;
 
 debug = 1;
 
@@ -44,6 +47,7 @@ class PropertyBase (T) : Property
         @property nextValue ( MiddlePoint mp )
         {
             auto index = middlePoints.countUntil( mp );
+            index++;
             if ( index < middlePoints.length )
                 return castedMiddlePoint(index).value;
             else return end_value;
@@ -58,7 +62,7 @@ class PropertyBase (T) : Property
         {
             frame_len = f;
             middle_points = [new MPoint( v,
-                    new FramePeriod( f, new FrameAt(0), new FrameAt(f.value-1) ) )];
+                    new FramePeriod( f, new FrameAt(0), new FrameLength(f.value) ) )];
             end_value = v;
         }
 
@@ -76,7 +80,19 @@ class PropertyBase (T) : Property
 
         override string get ( FrameAt f )
         {
-            throw new Exception( "Not Implemented" );
+            auto mp = middlePointAtFrame(f);
+            auto st = (cast(MiddlePointBase!T)mp).value;
+
+            static if ( !isNumeric!T ) return st.to!string;
+            else {
+                auto easing_type = mp.easing;
+                if ( easing_type == EasingType.None ) return st.to!string;
+
+                auto ed = nextValue(mp);
+                auto easing = EasingFunction.create( easing_type, st.to!float, ed.to!float,
+                        mp.frame.length );
+                return easing.at( new FrameAt( f.value - mp.frame.start.value ) ).to!T.to!string;
+            }
         }
 
         debug ( 1 ) unittest {
@@ -85,6 +101,10 @@ class PropertyBase (T) : Property
             assert( hoge.middlePointAtFrame(new FrameAt(10)).frame.start.value == 0 );
             assert( hoge.castedMiddlePoint(0).value == 20 );
             assert( hoge.nextValue(hoge.middlePoints[0]) == 20 );
+
+            hoge.castedMiddlePoint(0).value = 40;
+            hoge.castedMiddlePoint(0).easing = EasingType.Linear;
+            assert( hoge.get( new FrameAt( 25 ) ) == "30" );
         }
 }
 
