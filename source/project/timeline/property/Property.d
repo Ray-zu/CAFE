@@ -9,7 +9,7 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.property.MiddlePoint;
 import std.algorithm;
 
-debug = 0;
+debug = 1;
 
 /+ プロパティデータのインターフェース +/
 interface Property
@@ -35,6 +35,19 @@ class PropertyBase (T) : Property
         FrameLength frame_len;
         MiddlePoint[]    middle_points;
         T           end_value;
+
+        @property castedMiddlePoint ( ulong index )
+        {
+            return cast(MiddlePointBase!T)middlePoints[index];
+        }
+
+        @property nextValue ( MiddlePoint mp )
+        {
+            auto index = middlePoints.countUntil( mp );
+            if ( index < middlePoints.length )
+                return castedMiddlePoint(index).value;
+            else return end_value;
+        }
 
     public:
         override @property FrameLength   frame        () { return frame_len;     }
@@ -70,6 +83,8 @@ class PropertyBase (T) : Property
             auto hoge = new PropertyBase!float( new FrameLength(50), 20 );
             assert( hoge.middlePoints.length == 1 );
             assert( hoge.middlePointAtFrame(new FrameAt(10)).frame.start.value == 0 );
+            assert( hoge.castedMiddlePoint(0).value == 20 );
+            assert( hoge.nextValue(hoge.middlePoints[0]) == 20 );
         }
 }
 
