@@ -98,7 +98,7 @@ private class SingleValueProperty (T)
         @property length ()
         {
             auto endframe = start.value + frame_length.value;
-            if ( endframe >= parentLength.value ) frame_length.value = 1;
+            if ( endframe > parentLength.value ) frame_length.value = 1;
             return frame_length;
         }
 
