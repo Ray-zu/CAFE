@@ -16,6 +16,9 @@ interface MiddlePoint
 {
     public:
         @property FramePeriod frame ();
+
+        @property EasingType easing ();
+        @property void easing ( EasingType );
 }
 
 /+ 中間点データのベースクラス +/
@@ -35,11 +38,11 @@ class MiddlePointBase (T) : MiddlePoint
         /+ データ型が数値かどうかでイージング関連の処理を分岐させます +/
         static if ( isNumeric!T ) {
             private EasingType easing_func;
-            @property easing ()               { return easing_func; }
-            @property easing ( EasingType t ) { easing_func = t;    }
+            override @property EasingType easing ()               { return easing_func; }
+            override @property void       easing ( EasingType t ) { easing_func = t;    }
         } else {
-            @property easing ()             { return EasingType.None; }
-            @property easing ( EasingType ) {
+            override @property EasingType easing ()             { return EasingType.None; }
+            override @property void       easing ( EasingType ) {
                 throw new Exception( "You can't do easing to this property." );
             }
         }
