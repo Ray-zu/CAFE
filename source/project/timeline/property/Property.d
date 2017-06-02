@@ -9,7 +9,7 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.property.MiddlePoint;
 import std.algorithm;
 
-debug = 1;
+debug = 0;
 
 /+ プロパティデータのインターフェース +/
 interface Property
@@ -70,7 +70,6 @@ class PropertyBase (T) : Property
             auto hoge = new PropertyBase!float( new FrameLength(50), 20 );
             assert( hoge.middlePoints.length == 1 );
             assert( hoge.middlePointAtFrame(new FrameAt(10)).frame.start.value == 0 );
-            import std.stdio; "hoge".writeln;
         }
 }
 
