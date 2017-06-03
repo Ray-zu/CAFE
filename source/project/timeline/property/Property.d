@@ -9,6 +9,7 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.property.Easing,
        cafe.project.timeline.property.MiddlePoint;
 import std.algorithm,
+       std.array,
        std.conv,
        std.traits;
 
@@ -25,8 +26,8 @@ interface Property
         MiddlePoint middlePointAtFrame ( FrameAt );
 
         /+ ユーザーの入力した文字列をプロパティに変換 +/
-        void   set ( FrameAt, string );
-        string get ( FrameAt );
+        void   setFromString ( FrameAt, string );
+        string getFromString ( FrameAt );
 }
 
 /+ プロパティデータ +/
@@ -39,18 +40,38 @@ class PropertyBase (T) : Property
         MiddlePoint[]    middle_points;
         T           end_value;
 
-        @property castedMiddlePoint ( ulong index )
-        {
-            return cast(MiddlePointBase!T)middlePoints[index];
-        }
-
-        @property nextValue ( MiddlePoint mp )
+        /+ 次の中間点を返す(最後の中間点だった場合はnullが返る) +/
+        @property nextMiddlePoint ( MiddlePoint mp )
         {
             auto index = middlePoints.countUntil( mp );
-            index++;
-            if ( index < middlePoints.length )
-                return castedMiddlePoint(index).value;
-            else return end_value;
+            if ( index < 0 )
+                throw new Exception( "The middle point isn't member of this property." );
+            if ( ++index < middlePoints.length )
+                return cast(MiddlePointBase!T)middlePoints[index];
+            else return null;
+        }
+
+        /+ 次の中間点の開始値又はオブジェクトの終了値を返す +/
+        @property nextValue ( MiddlePoint mp )
+        {
+            if ( auto m = nextMiddlePoint(mp) )
+                return m.value;
+            else return endValue;
+        }
+
+        /+ 次の中間点又は終端のフレーム数を返す +/
+        @property nextFrame ( MiddlePoint mp )
+        {
+            if ( auto m = nextMiddlePoint(mp) )
+                return m.frame.start;
+            else return cast(FrameAt)frame;
+        }
+
+        /+ 中間点を指定されたものの次に追加 +/
+        @property insertMiddlePoint ( MiddlePoint mp, MiddlePoint w )
+        {
+            w.frame.length.value = mp.frame.start.value - w.frame.start.value;
+            middle_points.insertInPlace( middlePoints.countUntil(w)+1, mp );
         }
 
     public:
@@ -73,38 +94,65 @@ class PropertyBase (T) : Property
             throw new Exception( "We can't find middle point at that frame." );
         }
 
-        override void set ( FrameAt f, string v )
+        /+ 元の型でプロパティを設定 +/
+        void set ( FrameAt f, T v )
         {
-            throw new Exception( "Not Implemented" );
+            if ( f.value == frame.value-1 ) { // オブジェクトの最終フレームが指定された場合
+                end_value = v;
+            } else {
+                auto mp = middlePointAtFrame(f);
+
+                if ( mp.frame.start.value == f.value ) { // 中間点の開始点を指定された場合
+                    (cast(MiddlePointBase!T)mp).value = v;
+                } else {                                 // 中間点の真ん中を指定された場合
+                    auto flength = new FrameLength( nextFrame(mp).value - f.value );
+                    auto fperiod = new FramePeriod( frame, f, flength );
+
+                    auto mp_new = new MiddlePointBase!T( v, fperiod );
+                    static if ( isNumeric!T ) mp_new.easing = mp.easing;
+                    insertMiddlePoint( mp_new, mp );
+                }
+            }
         }
 
-        override string get ( FrameAt f )
+        override void setFromString ( FrameAt f, string v )
+        {
+            set( f, v.to!T );
+        }
+
+        /+ 元の型でプロパティを取得 +/
+        T get ( FrameAt f )
         {
             auto mp = middlePointAtFrame(f);
             auto st = (cast(MiddlePointBase!T)mp).value;
 
-            static if ( !isNumeric!T ) return st.to!string;
+            static if ( !isNumeric!T ) return st;
             else {
                 auto easing_type = mp.easing;
-                if ( easing_type == EasingType.None ) return st.to!string;
+                if ( easing_type == EasingType.None ) return st;
 
                 auto ed = nextValue(mp);
                 auto easing = EasingFunction.create( easing_type, st.to!float, ed.to!float,
                         mp.frame.length );
-                return easing.at( new FrameAt( f.value - mp.frame.start.value ) ).to!T.to!string;
+                return easing.at( new FrameAt( f.value - mp.frame.start.value ) );
             }
+        }
+
+        override string getFromString ( FrameAt f )
+        {
+            return get( f ).to!string;
         }
 
         debug ( 1 ) unittest {
             auto hoge = new PropertyBase!float( new FrameLength(50), 20 );
             assert( hoge.middlePoints.length == 1 );
             assert( hoge.middlePointAtFrame(new FrameAt(10)).frame.start.value == 0 );
-            assert( hoge.castedMiddlePoint(0).value == 20 );
             assert( hoge.nextValue(hoge.middlePoints[0]) == 20 );
 
-            hoge.castedMiddlePoint(0).value = 40;
-            hoge.castedMiddlePoint(0).easing = EasingType.Linear;
-            assert( hoge.get( new FrameAt( 25 ) ) == "30" );
+            (cast(MiddlePointBase!T)hoge.middlePoints[0]).easing = EasingType.Linear;
+            hoge.set( new FrameAt(25), 0 );
+
+            assert( hoge.get( new FrameAt(5) ) == 16 ); // 20 to 0 with LinearEasing
         }
 }
 
