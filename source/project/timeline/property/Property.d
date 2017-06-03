@@ -13,7 +13,7 @@ import std.algorithm,
        std.conv,
        std.traits;
 
-debug = 1;
+debug = 0;
 
 /+ プロパティデータのインターフェース +/
 interface Property
