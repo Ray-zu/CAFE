@@ -150,9 +150,15 @@ class PropertyBase (T) : Property
             assert( hoge.nextValue(hoge.middlePoints[0]) == 20 );
 
             (cast(MiddlePointBase!T)hoge.middlePoints[0]).easing = EasingType.Linear;
-            hoge.set( new FrameAt(25), 0 );
 
-            assert( hoge.get( new FrameAt(5) ) == 16 ); // 20 to 0 with LinearEasing
+            hoge.set( new FrameAt(25), 0 );
+            assert( hoge.get( new FrameAt(5) ) == 16 ); // 20 to 0 with LinearEasing for 25 frames
+            hoge.set( new FrameAt(25), 40 );
+            assert( hoge.middlePoints.length == 2 );
+            assert( hoge.get( new FrameAt(5) ) == 24 ); // 20 to 40 with LinearEasing for 25 frames
+            hoge.set( new FrameAt(49), 60 );
+            assert( hoge.middlePoints.length == 2 );
+            assert( hoge.get( new FrameAt(30) ) == 44 ); // 40 to 60 with LinearEasing for 25 frames
         }
 }
 
