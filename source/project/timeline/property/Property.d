@@ -161,25 +161,3 @@ class PropertyBase (T) : Property
             assert( hoge.get( new FrameAt(30) ) == 44 ); // 40 to 60 with LinearEasing for 25 frames
         }
 }
-
-/+ プロパティのプリセット +/
-enum PropertyPreset
-{
-    Positioning2D
-}
-
-/+ プリセットに応じたプロパティ文字列連想配列を返す +/
-@property loadPropertyPreset ( PropertyPreset p, FrameLength f )
-{
-    Property[string] result;
-    switch ( p )
-    {
-        case PropertyPreset.Positioning2D:
-            result["X"] = new PropertyBase!float( f, 0 );
-            result["Y"] = new PropertyBase!float( f, 0 );
-            break;
-
-        default: throw new Exception( "It was unexpected.." );
-    }
-    return result;
-}
