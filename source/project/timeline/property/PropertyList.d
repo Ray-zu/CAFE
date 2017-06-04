@@ -29,6 +29,7 @@ class PropertyList
         {
         }
 
+        /+ key名のプロパティを追加 +/
         void add ( string key, Property val )
         {
             if ( !val ) throw new Exception( "You can't add a null variable." );
@@ -36,22 +37,26 @@ class PropertyList
             props[key] = val;
         }
 
+        /+ key名のプロパティを指定された型のプロパティクラスにキャストされた状態で返す +/
         auto casted ( T ) ( string key )
         {
-            return cast(PropertyBase!T)properties[key];
+            return cast(PropertyBase!T)this[key];
         }
 
+        /+ key名のプロパティを削除 +/
         void del ( string key )
         {
             if ( key !in props ) throw new Exception( "Property of the name is not exist." );
             props.remove( key );
         }
 
+        /+ this[key]でkey名のプロパティを返す +/
         Property opIndex ( string key )
         {
             return properties[key];
         }
 
+        /+ this[key]=xでkey名のプロパティxを追加 +/
         PropertyList opIndexAssign ( Property val, string key )
         {
             add( key, val );
