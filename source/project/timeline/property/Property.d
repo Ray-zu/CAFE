@@ -79,6 +79,13 @@ class PropertyBase (T) : Property
         override @property MiddlePoint[] middlePoints () { return middle_points; }
                  @property T             endValue     () { return end_value;     }
 
+        this ( PropertyBase!T src )
+        {
+            frame_len = new FrameLength( src.frame );
+            src.middlePoints.each!( x => middle_points ~= new MiddlePointBase!T(x) );
+            end_value = src.endValue;
+        }
+
         this ( FrameLength f, T v )
         {
             frame_len = f;
