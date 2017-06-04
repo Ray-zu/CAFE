@@ -38,17 +38,17 @@ private class SingleValueProperty (T)
 /+ フレーム数(長さ)                      +
  + 0から始まるフレーム総数を表現します。 +
  + 例:シーン全体の長さ                   +/
- alias FrameLength = SingleValueProperty!uint;
+alias FrameLength = SingleValueProperty!uint;
 
 /+ フレーム数(一点)             +
  + ある１フレームを表現します。 +
  + 例:再生中フレーム            +/
- alias FrameAt = SingleValueProperty!uint;
+alias FrameAt = SingleValueProperty!uint;
 
 /+ フレーム数(一点)              +
  + ある一フレームを表現します。  +
  + FrameLength情報も保存します。 +/
- class FrameIn : FrameAt
+class FrameIn : FrameAt
 {
     private:
         FrameLength parent_length;
@@ -84,7 +84,7 @@ private class SingleValueProperty (T)
 /+ フレーム数(期間)                                   +
  + 任意のフレームから始まるフレーム総数を表現します。 +
  + 例:オブジェクトのタイムライン上での位置と大きさ    +/
- class FramePeriod
+class FramePeriod
 {
     private:
         FrameLength parent_length;
