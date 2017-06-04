@@ -7,7 +7,7 @@
 module cafe.project.ObjectPlacingInfo;
 import std.conv;
 
-debug = 0;
+debug = 1;
 
 /+ ひとつの変数を持つプロパティクラスの雛形 +/
 private class SingleValueProperty (T)
@@ -18,6 +18,11 @@ private class SingleValueProperty (T)
     public:
         @property value ()      { return val; }
         @property value ( T f ) { val = f;    }
+
+        this ( SingleValueProperty!T src )
+        {
+            value = src.value;
+        }
 
         this ( T f )
         {
@@ -56,6 +61,12 @@ private class SingleValueProperty (T)
             return val;
         }
         @property parentLength () { return parent_length; }
+
+        this ( FrameIn src )
+        {
+            super( src );
+            parent_length = new FrameLength( src.parentLength );
+        }
 
         this ( FrameLength t, uint f )
         {
@@ -102,6 +113,13 @@ private class SingleValueProperty (T)
             return frame_length;
         }
 
+        this ( FramePeriod src )
+        {
+            parent_length = new FrameLength( src.parentLength );
+            start_frame = new FrameAt( src.start );
+            frame_length = new FrameLength( src.length );
+        }
+
         this ( FrameLength t, FrameAt s, FrameLength l )
         {
             parent_length = t;
@@ -138,6 +156,12 @@ class ObjectPlacingData
     public:
         @property layer () { return layer_id;     }
         @property frame () { return frame_period; }
+
+        this ( ObjectPlacingData src )
+        {
+            layer_id = new LayerId( src.layer );
+            frame_period = new FramePeriod( src.frame );
+        }
 
         this ( LayerId l, FramePeriod f )
         {
