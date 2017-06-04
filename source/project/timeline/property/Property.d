@@ -36,11 +36,9 @@ interface Property
 class PropertyBase (T) : Property
 {
     private:
-        alias MPoint = MiddlePointBase!T;
-
-        FrameLength frame_len;
-        MiddlePoint[]    middle_points;
-        T           end_value;
+        FrameLength         frame_len;
+        MiddlePointBase!T[] middle_points; // MiddlePointBase!T型で取得したい場合はプロパティではなく変数を参照する
+        T                   end_value;
 
         /+ 次の中間点を返す(最後の中間点だった場合はnullが返る) +/
         @property nextMiddlePoint ( MiddlePoint mp )
@@ -49,7 +47,7 @@ class PropertyBase (T) : Property
             if ( index < 0 )
                 throw new Exception( "The middle point isn't member of this property." );
             if ( ++index < middlePoints.length )
-                return cast(MiddlePointBase!T)middlePoints[index];
+                return middle_points[index];
             else return null;
         }
 
@@ -70,10 +68,10 @@ class PropertyBase (T) : Property
         }
 
         /+ 中間点を指定されたものの次に追加 +/
-        @property insertMiddlePoint ( MiddlePoint mp, MiddlePoint w )
+        @property insertMiddlePoint ( MiddlePointBase!T mp, MiddlePointBase!T w )
         {
             w.frame.length.value = mp.frame.start.value - w.frame.start.value;
-            middle_points.insertInPlace( middlePoints.countUntil(w)+1, mp );
+            middle_points.insertInPlace( middle_points.countUntil(w)+1, mp );
         }
 
     public:
@@ -83,21 +81,27 @@ class PropertyBase (T) : Property
         }
 
         override @property FrameLength   frame        () { return frame_len;     }
-        override @property MiddlePoint[] middlePoints () { return middle_points; }
                  @property T             endValue     () { return end_value;     }
+
+        override @property MiddlePoint[] middlePoints () {
+            MiddlePoint[] result;
+            foreach ( mp; middle_points ) result ~= mp;
+            return result;
+        }
 
         this ( PropertyBase!T src )
         {
             frame_len = new FrameLength( src.frame );
-            src.middlePoints.each!( x => middle_points ~= new MiddlePointBase!T(x) );
+            foreach ( mp; src.middle_points )
+                middle_points ~= new MiddlePointBase!T( mp );
             end_value = src.endValue;
         }
 
         this ( FrameLength f, T v )
         {
             frame_len = f;
-            middle_points = [new MPoint( v,
-                    new FramePeriod( f, new FrameAt(0), new FrameLength(f.value) ) )];
+            middle_points ~= new MiddlePointBase!T( v,
+                    new FramePeriod( f, new FrameAt(0), new FrameLength(f.value) ) );
             end_value = v;
         }
 
@@ -124,7 +128,7 @@ class PropertyBase (T) : Property
 
                     auto mp_new = new MiddlePointBase!T( v, fperiod );
                     static if ( isNumeric!T ) mp_new.easing = mp.easing;
-                    insertMiddlePoint( mp_new, mp );
+                    insertMiddlePoint( mp_new, cast(MiddlePointBase!T)mp );
                 }
             }
         }

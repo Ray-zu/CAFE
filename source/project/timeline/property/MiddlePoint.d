@@ -9,7 +9,7 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.property.Easing;
 import std.traits;
 
-debug = 1;
+debug = 0;
 
 /+ 中間点データのインターフェース +/
 interface MiddlePoint
