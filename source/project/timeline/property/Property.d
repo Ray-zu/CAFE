@@ -26,8 +26,8 @@ interface Property
         MiddlePoint middlePointAtFrame ( FrameAt );
 
         /+ ユーザーの入力した文字列をプロパティに変換 +/
-        void   setFromString ( FrameAt, string );
-        string getFromString ( FrameAt );
+        void   setString ( FrameAt, string );
+        string getString ( FrameAt );
 }
 
 /+ プロパティデータ +/
@@ -122,7 +122,7 @@ class PropertyBase (T) : Property
             }
         }
 
-        override void setFromString ( FrameAt f, string v )
+        override void setString ( FrameAt f, string v )
         {
             set( f, v.to!T );
         }
@@ -145,7 +145,7 @@ class PropertyBase (T) : Property
             }
         }
 
-        override string getFromString ( FrameAt f )
+        override string getString ( FrameAt f )
         {
             return get( f ).to!string;
         }
