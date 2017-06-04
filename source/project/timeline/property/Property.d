@@ -19,6 +19,8 @@ debug = 0;
 interface Property
 {
     public:
+        @property Property copy ();
+
         @property FrameLength   frame        ();
         @property MiddlePoint[] middlePoints ();
 
@@ -75,6 +77,11 @@ class PropertyBase (T) : Property
         }
 
     public:
+        override @property Property copy ()
+        {
+            return new PropertyBase!T( this );
+        }
+
         override @property FrameLength   frame        () { return frame_len;     }
         override @property MiddlePoint[] middlePoints () { return middle_points; }
                  @property T             endValue     () { return end_value;     }
