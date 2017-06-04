@@ -9,7 +9,7 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.property.Easing;
 import std.traits;
 
-debug = 0;
+debug = 1;
 
 /+ 中間点データのインターフェース +/
 interface MiddlePoint
@@ -45,6 +45,14 @@ class MiddlePointBase (T) : MiddlePoint
             override @property void       easing ( EasingType ) {
                 throw new Exception( "You can't do easing to this property." );
             }
+        }
+
+        this ( MiddlePointBase!T src )
+        {
+            st_value = src.value;
+            frame_period = new FramePeriod( src.frame );
+            static if ( isNumeric!T )
+                easing_func = src.easing;
         }
 
         this ( T s, FramePeriod f )
