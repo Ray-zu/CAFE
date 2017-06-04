@@ -7,7 +7,7 @@
 module cafe.project.ObjectPlacingInfo;
 import std.conv;
 
-debug = 1;
+debug = 0;
 
 /+ ひとつの変数を持つプロパティクラスの雛形 +/
 private class SingleValueProperty (T)
