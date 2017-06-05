@@ -19,7 +19,7 @@ class Cafe
         void setupGUI ()
         {
             Platform.instance.uiLanguage="en";
-            Platform.instance.uiTheme="theme_default";
+            Platform.instance.uiTheme="theme_dark";
 
             import dlangui.core.logger;
             Log.setLogLevel( LogLevel.Fatal );
