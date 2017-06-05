@@ -18,7 +18,7 @@ interface PlaceableObject
 
 
 /+ Placeableobjectの実体 +/
-template PlaceableObjectCommon
+template PlaceableObjectCommon ()
 {
     private:
         ObjectPlacingInfo placing_info;
