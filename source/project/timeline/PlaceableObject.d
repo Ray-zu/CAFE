@@ -5,29 +5,4 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.project.timeline.PlaceableObject;
-import cafe.project.ObjectPlacingInfo,
-       cafe.project.timeline.property.Property;
-import std.conv;
-
-/+ プロパティを保持できるオブジェクトの共通部分 +/
-template PropertyKeepableObject ()
-{
-    private:
-        Property[string] properties;
-}
-
-/+ タイムラインに配置できるオブジェクト                +
- + 主にオブジェクトの開始/終了フレームやレイヤ数を管理 +/
-abstract class PlaceableObject
-{
-    mixin PropertyKeepableObject;
-
-    private:
-        FramePeriod frame_period;
-        uint layer_id = 0;
-
-    public:
-        /+ プロパティ取得 +/
-        @property frame    () { return frame_period; }
-        @property layerId  () { return layer_id;     }
-}
+import cafe.project.ObjectPlacingInfo;
