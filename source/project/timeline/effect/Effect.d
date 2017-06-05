@@ -8,6 +8,8 @@ module cafe.project.timeline.effect.Effect;
 import cafe.project.timeline.property.PropertyList,
        cafe.project.timeline.PropertyKeepableObject;
 
+/+ エフェクトクラス                                +
+ + 多重継承の予定が無いので抽象クラスを使用します。+/
 abstract class Effect : PropertyKeepableObject
 {
     mixin PropertyKeepableObjectCommon;
