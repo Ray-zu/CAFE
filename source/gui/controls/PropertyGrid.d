@@ -74,7 +74,7 @@ class PropertyGrid : StringGridWidget
             if ( f ) current_frame = f;
 
             if ( propertyList ) {
-                resize( 1, propertyList.properties.length );
+                resize( 1, propertyList.properties.length.to!int );
                 auto index = 0;
                 foreach ( key,val; propertyList.properties )
                 {
