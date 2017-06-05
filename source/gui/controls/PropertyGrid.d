@@ -46,6 +46,11 @@ class PropertyGrid : StringGridWidget
             hscrollbarMode = ScrollBarMode.Invisible;
             vscrollbarMode = ScrollBarMode.Auto;
 
+            cellActivated = delegate( GridWidgetBase w, int c, int r )
+            {
+                (cast(PropertyGrid)w).edit( c, r );
+            };
+
             // テストコード
             import cafe.project.ObjectPlacingInfo,
                    cafe.project.timeline.property.Property;
@@ -82,5 +87,26 @@ class PropertyGrid : StringGridWidget
                 visibility = Visibility.Gone;
             }
             autoFit;
+        }
+
+        void edit ( int c, int r )
+        {
+            enum Title       = "ValueEdit";
+            enum Description = "Please enter new value.";
+            enum ValueError  = "Illegal Value";
+
+            auto handler = delegate ( dstring v )
+            {
+                try {
+                    propertyList.properties.values[r].setString( frame, v.to!string );
+                } catch ( Exception e ) {
+                    window.showMessageBox( ValueError.to!dstring, e.msg.to!dstring );
+                } finally {
+                    gridUpdate;
+                }
+            };
+
+            auto prop_index = r;
+            window.showInputBox( Title, Description, cellText(c,r), handler );
         }
 }
