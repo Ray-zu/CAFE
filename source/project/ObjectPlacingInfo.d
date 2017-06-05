@@ -147,7 +147,7 @@ class FramePeriod
 alias LayerId = SingleValueProperty!uint;
 
 /+ オブジェクトの配置情報(レイヤ数/開始・終了フレーム数) +/
-class ObjectPlacingData
+class ObjectPlacingInfo
 {
     private:
         LayerId layer_id;
@@ -157,7 +157,7 @@ class ObjectPlacingData
         @property layer () { return layer_id;     }
         @property frame () { return frame_period; }
 
-        this ( ObjectPlacingData src )
+        this ( ObjectPlacingInfo src )
         {
             layer_id = new LayerId( src.layer );
             frame_period = new FramePeriod( src.frame );
@@ -172,6 +172,6 @@ class ObjectPlacingData
         debug (1) unittest {
             auto p = new FramePeriod( new FrameLength( 100 ),
                     new FrameAt( 50 ), new FrameLength( 20 ) );
-            auto i = new ObjectPlacingData( new LayerId( 5 ), p );
+            auto i = new ObjectPlacingInfo( new LayerId( 5 ), p );
         }
 }
