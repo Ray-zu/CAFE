@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.app;
-import cafe.project.Project;
+import cafe.project.Project,
+       cafe.gui.controls.PropertyGrid;
 import dlangui;
 
 mixin APP_ENTRY_POINT;
@@ -25,7 +26,7 @@ class Cafe
 
             // テストコード
             auto window = Platform.instance.createWindow("Hello dlang!",null);
-            window.mainWidget = new FrameLayout;
+            window.mainWidget = new PropertyGrid;
             window.show;
         }
 
