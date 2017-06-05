@@ -12,6 +12,8 @@ import cafe.project.ObjectPlacingInfo;
 interface PlaceableObject
 {
     public:
+        static @property string name (); // 各オブジェクトでオーバーライド
+
         @property ObjectPlacingInfo place ();
 }
 
