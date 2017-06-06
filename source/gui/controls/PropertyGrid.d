@@ -6,7 +6,8 @@
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.PropertyGrid;
 import cafe.project.timeline.property.PropertyList,
-       cafe.project.ObjectPlacingInfo;
+       cafe.project.ObjectPlacingInfo,
+       cafe.gui.controls.PropertyEditBox;
 import std.conv;
 import dlangui;
 
@@ -91,22 +92,11 @@ class PropertyGrid : StringGridWidget
 
         void edit ( int c, int r )
         {
-            enum Title       = "ValueEdit";
-            enum Description = "Please enter new value.";
-            enum ValueError  = "Illegal Value";
-
-            auto handler = delegate ( dstring v )
+            auto handler = delegate ()
             {
-                try {
-                    propertyList.properties.values[r].setString( frame, v.to!string );
-                } catch ( Exception e ) {
-                    window.showMessageBox( ValueError.to!dstring, e.msg.to!dstring );
-                } finally {
-                    gridUpdate;
-                }
+                gridUpdate;
             };
 
-            auto prop_index = r;
-            window.showInputBox( Title, Description, cellText(c,r), handler );
+            (new PropertyEditBox( propertyList.properties.values[r], frame, window, handler )).show;
         }
 }
