@@ -60,6 +60,7 @@ class PropertyGrid : StringGridWidget
             plist["X"] = new PropertyBase!float( fl, 0.0 );
             plist["Y"] = new PropertyBase!float( fl, 0.0 );
             plist["Z"] = new PropertyBase!float( fl, 0.0 );
+            plist["Text"] = new PropertyBase!string( fl, "hoge" );
             propertyList = plist;
         }
 
