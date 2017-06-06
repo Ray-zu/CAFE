@@ -56,11 +56,15 @@ class PropertyEditBox : Dialog
 
             EditWidgetBase editor = property.allowMultiline ?
                 new EditBox( "input_value" ) : new EditLine( "input_value" );
-            editor.text = property.getString( frame ).to!dstring;
-            editor.keyEvent = delegate ( Widget w, KeyEvent e ) {
-                w.enabled = !(e.flags == KeyFlag.Control && e.keyCode == KeyCode.RETURN);
-                return false;
-            };
+            with ( editor ) {
+                text = property.getString( frame ).to!dstring;
+                hscrollbarMode = ScrollBarMode.Invisible;
+                keyEvent = delegate ( Widget w, KeyEvent e ) {
+                    w.enabled = !(e.flags == KeyFlag.Control &&
+                            e.keyCode == KeyCode.RETURN);
+                    return false;
+                };
+            }
 
             addChild( message );
             addChild( editor );
