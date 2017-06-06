@@ -7,7 +7,8 @@
 module cafe.gui.controls.PropertyEditBox;
 import cafe.project.timeline.property.Property,
        cafe.project.ObjectPlacingInfo;
-import std.conv;
+import std.conv,
+       std.format;
 import dlangui,
        dlangui.dialogs.dialog;
 
@@ -15,6 +16,8 @@ import dlangui,
 class PropertyEditBox : Dialog
 {
     enum Caption = UIString.fromRaw("PropertyEdit");
+    enum Message = "Please enter new value.";
+
     private:
         Property prop;
         FrameAt  frame_at;
@@ -44,27 +47,28 @@ class PropertyEditBox : Dialog
 
         override void initialize ()
         {
-            EditWidgetBase editor;
+            padding( Rect( 10, 10, 10, 10 ) );
 
-            if ( property.allowMultiline ) {    // 複数行プロパティ
-                editor = new EditBox( "input_value" );
-                auto e = cast(EditBox)editor;
-            } else {                            // 単数業プロパティ
-                editor = new EditLine( "input_value" );
-                keyEvent = delegate ( Widget w, KeyEvent e )
-                {
-                    if ( e.keyCode == KeyCode.RETURN )
-                        (cast(Dialog)w).close( ACTION_OK );
-                    return true;
-                };
-            }
+            auto message = new MultilineTextWidget(
+                    "message", UIString.fromRaw(Message) );
+            message.padding( Rect( 10, 10, 10, 10 ) );
 
+            EditWidgetBase editor = property.allowMultiline ?
+                new EditBox( "input_value" ) : new EditLine( "input_value" );
             editor.text = property.getString( frame ).to!dstring;
-            editor.contentChange = delegate( EditableContent w )
-            {
-                // TODO : Value Check
+            keyEvent = delegate ( Widget w, KeyEvent e ) {
+                if ( e.flags == KeyFlag.Control && e.keyCode == KeyCode.RETURN ) {
+                    try {
+                        property.setString( frame, childById("input_value").text.to!string );
+                        (cast(Dialog)w).close( ACTION_OK );
+                    } catch ( Exception e ) {
+                        childById("message").text =
+                            "%s\nError : %s".format( Message, e.msg ).to!dstring;
+                    }
+                } return true;
             };
 
+            addChild( message );
             addChild( editor );
         }
 
