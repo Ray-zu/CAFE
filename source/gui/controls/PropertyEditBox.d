@@ -8,7 +8,8 @@ module cafe.gui.controls.PropertyEditBox;
 import cafe.project.timeline.property.Property,
        cafe.project.ObjectPlacingInfo;
 import std.conv,
-       std.format;
+       std.format,
+       std.string;
 import dlangui,
        dlangui.dialogs.dialog;
 
@@ -56,20 +57,25 @@ class PropertyEditBox : Dialog
             EditWidgetBase editor = property.allowMultiline ?
                 new EditBox( "input_value" ) : new EditLine( "input_value" );
             editor.text = property.getString( frame ).to!dstring;
+            editor.keyEvent = delegate ( Widget w, KeyEvent e ) {
+                w.enabled = !(e.flags == KeyFlag.Control && e.keyCode == KeyCode.RETURN);
+                return false;
+            };
+
+            addChild( message );
+            addChild( editor );
+
             keyEvent = delegate ( Widget w, KeyEvent e ) {
-                if ( e.flags == KeyFlag.Control && e.keyCode == KeyCode.RETURN ) {
-                    try {
-                        property.setString( frame, childById("input_value").text.to!string );
+                auto i = childById("input_value");
+                if ( !i.enabled ) try {
+                        property.setString( frame, i.text.to!string );
                         (cast(Dialog)w).close( ACTION_OK );
                     } catch ( Exception e ) {
                         childById("message").text =
                             "%s\nError : %s".format( Message, e.msg ).to!dstring;
                     }
-                } return true;
+                return true;
             };
-
-            addChild( message );
-            addChild( editor );
         }
 
         override void show ()
