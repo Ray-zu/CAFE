@@ -30,6 +30,9 @@ interface Property
         /+ ユーザーの入力した文字列をプロパティに変換 +/
         void   setString ( FrameAt, string );
         string getString ( FrameAt );
+
+        /+ プロパティが数値かどうか +/
+        @property bool increasable ();
 }
 
 /+ プロパティデータ +/
@@ -161,6 +164,11 @@ class PropertyBase (T) : Property
             return get( f ).to!string;
         }
 
+        override @property bool increasable ()
+        {
+            return isNumeric!T;
+        }
+
         debug ( 1 ) unittest {
             auto hoge = new PropertyBase!float( new FrameLength(50), 20 );
             assert( hoge.middlePoints.length == 1 );
@@ -177,5 +185,7 @@ class PropertyBase (T) : Property
             hoge.set( new FrameAt(49), 60 );
             assert( hoge.middlePoints.length == 2 );
             assert( hoge.get( new FrameAt(30) ) == 44 ); // 40 to 60 with LinearEasing for 25 frames
+
+            assert( hoge.increasable );
         }
 }
