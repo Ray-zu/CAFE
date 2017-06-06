@@ -32,21 +32,45 @@ class PropertyEditBox : Dialog
 
             dialogResult = delegate ( Dialog d, const Action a )
             {
-                property.setString( frame, childById("input_value").text.to!string );
-                handler();
+                try {
+                    property.setString( frame, childById("input_value").text.to!string );
+                } catch ( Exception e ) {
+                    parent.showMessageBox( "Illegal Value"d, e.msg.to!dstring );
+                } finally {
+                    handler();
+                }
             };
         }
 
         override void initialize ()
         {
-            auto editor = new EditBox( "input_value" );
-            editor.text = property.getString( frame ).to!dstring;
+            EditWidgetBase editor;
 
+            if ( property.allowMultiline ) {    // 複数行プロパティ
+                editor = new EditBox( "input_value" );
+                auto e = cast(EditBox)editor;
+            } else {                            // 単数業プロパティ
+                editor = new EditLine( "input_value" );
+                keyEvent = delegate ( Widget w, KeyEvent e )
+                {
+                    if ( e.keyCode == KeyCode.RETURN )
+                        (cast(Dialog)w).close( ACTION_OK );
+                    return true;
+                };
+            }
+
+            editor.text = property.getString( frame ).to!dstring;
             editor.contentChange = delegate( EditableContent w )
             {
                 // TODO : Value Check
             };
 
             addChild( editor );
+        }
+
+        override void show ()
+        {
+            super.show;
+            childById( "input_value" ).setFocus;
         }
 }
