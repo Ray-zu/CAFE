@@ -18,8 +18,10 @@ class Cafe
 
         void setupGUI ()
         {
+            embeddedResourceList.addResources(embedResourcesFromList!("resources.list")());
+
             Platform.instance.uiLanguage="en";
-            Platform.instance.uiTheme="theme_dark";
+            Platform.instance.uiTheme="cafe";
 
             import dlangui.core.logger;
             Log.setLogLevel( LogLevel.Fatal );

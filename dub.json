@@ -10,7 +10,9 @@
         "dlangui": "~>0.9.56"
     },
     "stringImportPaths": [
-        "./config"
+        "./config",
+        "./views",
+        "./views/themes"
     ],
 
     "description": "Creator's Advanced Film Editor",
