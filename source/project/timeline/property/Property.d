@@ -33,6 +33,8 @@ interface Property
 
         /+ プロパティが数値かどうか +/
         @property bool increasable ();
+        /+ プロパティの文字列変換で、複数行文字列を許可するかどうか +/
+        @property bool allowMultiline ();
 }
 
 /+ プロパティデータ +/
@@ -169,6 +171,11 @@ class PropertyBase (T) : Property
             return isNumeric!T;
         }
 
+        override @property bool allowMultiline ()
+        {
+            return isSomeString!T;
+        }
+
         debug ( 1 ) unittest {
             auto hoge = new PropertyBase!float( new FrameLength(50), 20 );
             assert( hoge.middlePoints.length == 1 );
@@ -187,5 +194,6 @@ class PropertyBase (T) : Property
             assert( hoge.get( new FrameAt(30) ) == 44 ); // 40 to 60 with LinearEasing for 25 frames
 
             assert( hoge.increasable );
+            assert( !hoge.allowMultiline );
         }
 }
