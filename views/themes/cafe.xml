@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<theme id="theme_dark" parent="theme_default"
+<theme id="cafe" parent="theme_default"
 	textColor="#E0E0E0"
 	>
     <color id="window_background" value="#000000"/>
