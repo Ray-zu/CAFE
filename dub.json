@@ -10,7 +10,6 @@
         "dlangui": "~>0.9.56"
     },
     "stringImportPaths": [
-        "./config",
         "./views",
         "./views/themes"
     ],
