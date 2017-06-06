@@ -7,7 +7,9 @@
 module cafe.gui.controls.PropertyEditBox;
 import cafe.project.timeline.property.Property,
        cafe.project.ObjectPlacingInfo;
-import std.conv;
+import std.conv,
+       std.format,
+       std.string;
 import dlangui,
        dlangui.dialogs.dialog;
 
@@ -15,6 +17,8 @@ import dlangui,
 class PropertyEditBox : Dialog
 {
     enum Caption = UIString.fromRaw("PropertyEdit");
+    enum Message = "Please enter new value.";
+
     private:
         Property prop;
         FrameAt  frame_at;
@@ -32,21 +36,55 @@ class PropertyEditBox : Dialog
 
             dialogResult = delegate ( Dialog d, const Action a )
             {
-                property.setString( frame, childById("input_value").text.to!string );
-                handler();
+                try {
+                    property.setString( frame, childById("input_value").text.to!string );
+                } catch ( Exception e ) {
+                    parent.showMessageBox( "Illegal Value"d, e.msg.to!dstring );
+                } finally {
+                    handler();
+                }
             };
         }
 
         override void initialize ()
         {
-            auto editor = new EditBox( "input_value" );
-            editor.text = property.getString( frame ).to!dstring;
+            padding( Rect( 10, 10, 10, 10 ) );
 
-            editor.contentChange = delegate( EditableContent w )
-            {
-                // TODO : Value Check
-            };
+            auto message = new MultilineTextWidget(
+                    "message", UIString.fromRaw(Message) );
+            message.padding( Rect( 10, 10, 10, 10 ) );
 
+            EditWidgetBase editor = property.allowMultiline ?
+                new EditBox( "input_value" ) : new EditLine( "input_value" );
+            with ( editor ) {
+                text = property.getString( frame ).to!dstring;
+                hscrollbarMode = ScrollBarMode.Invisible;
+                keyEvent = delegate ( Widget w, KeyEvent e ) {
+                    w.enabled = !(e.flags == KeyFlag.Control &&
+                            e.keyCode == KeyCode.RETURN);
+                    return false;
+                };
+            }
+
+            addChild( message );
             addChild( editor );
+
+            keyEvent = delegate ( Widget w, KeyEvent e ) {
+                auto i = childById("input_value");
+                if ( !i.enabled ) try {
+                        property.setString( frame, i.text.to!string );
+                        (cast(Dialog)w).close( ACTION_OK );
+                    } catch ( Exception e ) {
+                        childById("message").text =
+                            "%s\nError : %s".format( Message, e.msg ).to!dstring;
+                    }
+                return true;
+            };
+        }
+
+        override void show ()
+        {
+            super.show;
+            childById( "input_value" ).setFocus;
         }
 }

@@ -8,7 +8,8 @@ module cafe.gui.controls.PropertyGrid;
 import cafe.project.timeline.property.PropertyList,
        cafe.project.ObjectPlacingInfo,
        cafe.gui.controls.PropertyEditBox;
-import std.conv;
+import std.conv,
+       std.string;
 import dlangui;
 
 /+ プロパティグリッド +/
@@ -60,6 +61,7 @@ class PropertyGrid : StringGridWidget
             plist["X"] = new PropertyBase!float( fl, 0.0 );
             plist["Y"] = new PropertyBase!float( fl, 0.0 );
             plist["Z"] = new PropertyBase!float( fl, 0.0 );
+            plist["Text"] = new PropertyBase!string( fl, "hoge" );
             propertyList = plist;
         }
 
@@ -80,7 +82,8 @@ class PropertyGrid : StringGridWidget
                 foreach ( key,val; propertyList.properties )
                 {
                     setRowTitle( index, key.to!dstring );
-                    setCellText( 0, index, val.getString(current_frame).to!dstring );
+                    setCellText( 0, index, val.getString(current_frame)
+                            .tr("\n","\\").to!dstring );
                     index++;
                 }
                 visibility = Visibility.Visible;
