@@ -182,7 +182,7 @@ class PropertyBase (T) : Property
             assert( hoge.middlePointAtFrame(new FrameAt(10)).frame.start.value == 0 );
             assert( hoge.nextValue(hoge.middlePoints[0]) == 20 );
 
-            (cast(MiddlePointBase!T)hoge.middlePoints[0]).easing = EasingType.Linear;
+            (cast(MiddlePointBase!float)hoge.middlePoints[0]).easing = EasingType.Linear;
 
             hoge.set( new FrameAt(25), 0 );
             assert( hoge.get( new FrameAt(5) ) == 16 ); // 20 to 0 with LinearEasing for 25 frames
