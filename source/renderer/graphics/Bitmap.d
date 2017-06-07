@@ -8,7 +8,7 @@ module cafe.renderer.graphics.Bitmap;
 import cafe.renderer.graphics.Color;
 import std.algorithm;
 
-debug = 1;
+debug = 0;
 
 /+ T型の構造体を各ピクセルに持ったBMPクラス   +
  + 使用する際はBMPエイリアスを使ってください。+/
