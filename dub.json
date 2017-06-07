@@ -7,7 +7,9 @@
     ],
 
     "dependencies": {
-        "dlangui": "~>0.9.56"
+        "dlangui": "~>0.9.56",
+        "derelict-gl3": "~>1.0.23",
+        "derelict-al": "~>1.0.3"
     },
     "stringImportPaths": [
         "./views",
