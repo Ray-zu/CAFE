@@ -5,11 +5,13 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.renderer.graphics.Bitmap;
+import cafe.renderer.graphics.Color;
 import std.algorithm;
 
 debug = 1;
 
-/+ T型の構造体を各ピクセルに持ったBMPクラス +/
+/+ T型の構造体を各ピクセルに持ったBMPクラス   +
+ + 使用する際はBMPエイリアスを使ってください。+/
 class Bitmap (T)
 {
     private:
@@ -28,8 +30,9 @@ class Bitmap (T)
         /+ Bitmapをリサイズ +/
         void resize ( uint w, uint h )
         {
+            w = max( w, 1 ); h = max( h, 1 );
             bmp.length = h;
-            bmp.each!( x => x.length = w );
+            bmp.each!( (ref x) => x.length = w );
         }
 
         /+ this[x,y]で指定座標のT構造体取得 +/
@@ -45,10 +48,17 @@ class Bitmap (T)
         }
 
         debug (1) unittest {
-            auto hoge = Bitmap!char( 100, 100 );
-            hoge[50, 50] = 'a';
+            auto hoge = new Bitmap!char( 100, 100 );
             assert( hoge.width == 100 );
             assert( hoge.height == 100 );
+            hoge[50, 50] = 'a';
             assert( hoge[50,50] == 'a' );
+
+            auto huge = new BMP( 100, 100 );
+            huge[50,50] = RGBA( 100, 100, 100, 150 );
+            assert( huge[50,50].r == 100 );
         }
 }
+
+alias BitmapRGBA = Bitmap!RGBA;     // RGBAをピクセルデータに持ったBMP
+alias BMP = BitmapRGBA;             // BMPを使用してください
