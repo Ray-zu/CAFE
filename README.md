@@ -14,9 +14,16 @@ CAFE(Creator's Advanced Film Editor)は、AviUtlの後継として考案され�
 * dmd
 * dub
 
+## Unit Test
+
+    dub test                        # 32bit unittest
+    dub test -a x86_64              # 64bit unittest
+
+64bitビルドでは一部の例外がcatchされず異常終了してしまうのでunittestは32bitで行うようにしてください。
+
 ## Install
 
-    dub -a x86_64                  # 64bit only
+    dub -a x86_64                   # 64bit only
 
 ## Licence
 
