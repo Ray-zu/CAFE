@@ -36,8 +36,6 @@ struct RGBA
             return RGBA( r, g, b, a );
         }
 
-        // TODO : blend関数など
-
         debug (1) unittest {
             auto hoge = RGBA( 300, 400, 500 );
             auto nhoge = hoge.normalizedColor;
