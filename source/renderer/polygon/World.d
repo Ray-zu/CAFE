@@ -9,7 +9,7 @@ import cafe.renderer.polygon.Polygon,
        cafe.renderer.polygon.Vector,
        cafe.renderer.graphics.Bitmap;
 
-debug = 1;
+debug = 0;
 
 /+ ポリゴンのリスト +/
 class World
