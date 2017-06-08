@@ -5,9 +5,10 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.renderer.polygon.Polygon;
-import cafe.renderer.graphics.Bitmap;
+import cafe.renderer.graphics.Bitmap,
+       cafe.renderer.polygon.Vector;
 
-debug = 1;
+debug = 0;
 
 /+ ポリゴンのデータ +/
 class Polygon
@@ -34,5 +35,10 @@ class Polygon
             bmp = b;
             top_l = tl; top_r = tr;
             bottom_r = br; bottom_l = bl;
+        }
+
+        debug (1) unittest {
+            auto v3d = Vector3D( 0, 0, 0 );
+            auto hoge = new Polygon( new BMP( 5, 5 ), v3d, v3d, v3d, v3d );
         }
 }
