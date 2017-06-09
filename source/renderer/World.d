@@ -4,14 +4,15 @@
  + ------------------------------------------------------------ +
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
-module cafe.renderer.polygon.World;
+module cafe.renderer.World;
 import cafe.renderer.polygon.Polygon,
        cafe.renderer.polygon.Vector,
        cafe.renderer.graphics.Bitmap;
 
 debug = 0;
 
-/+ ポリゴンのリスト +/
+/+ ポリゴンのリスト                +
+ + 1フレームの音声データも含みます +/
 class World
 {
     private:
