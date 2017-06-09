@@ -17,6 +17,7 @@ class World
 {
     private:
         Polygon[] polies;
+        //TODO : 音声データ
 
     public:
         @property polygons () { return polies; }
