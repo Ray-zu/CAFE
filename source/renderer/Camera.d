@@ -9,8 +9,7 @@ import cafe.renderer.polygon.Vector;
 
 debug = 0;
 
-/+ カメラクラス                  +
- + WorldクラスをBMPに変換します。+/
+/+ カメラクラス +/
 class Camera
 {
     private:
