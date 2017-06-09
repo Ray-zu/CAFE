@@ -15,6 +15,7 @@ class Camera
     private:
         Vector3D pos;
         Vector3D tarpos;
+        // TODO : カメラの付加情報(深度ボケ等)
 
     public:
         @property position () { return pos; }
