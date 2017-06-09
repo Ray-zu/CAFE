@@ -16,7 +16,6 @@ class Camera
     private:
         Vector3D pos;
         Vector3D tarpos;
-        // TODO : レンダラークラスのインスタンス
 
     public:
         @property position () { return pos; }
