@@ -54,8 +54,6 @@ class GraphBox (T, string XLabel="x", string YLabel="y") : Widget
 
         this ( string id, T[] g = [] )
         {
-            g = [0, 100, 50];   // テストコード
-
             super( id );
             backgroundColor = 0x222222;
             textColor = 0x999999;
@@ -79,6 +77,7 @@ class GraphBox (T, string XLabel="x", string YLabel="y") : Widget
         override void onDraw ( DrawBuf b )
         {
             super.onDraw(b);
+            if ( graph.length == 0 ) return;
 
             foreach ( i,v; graph[0 .. $-1] )
                 b.drawLine( posFromX(i), posFromX(i+1), textColor );
