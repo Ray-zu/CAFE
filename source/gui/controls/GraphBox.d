@@ -91,4 +91,16 @@ class GraphBox (T, string XLabel="x", string YLabel="y") : Widget
 
             if ( value_visible ) drawValue(b);
         }
+
+        /+ this[i] グラフデータの取得 +/
+        T opIndex ( size_t i )
+        {
+            return graph[i];
+        }
+
+        /+ this[i] = v グラフデータの設定 +/
+        T opAssignIndex ( T v, size_t i )
+        {
+            return graph_data[i] = v;
+        }
 }
