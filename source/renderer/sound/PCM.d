@@ -5,7 +5,9 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.renderer.sound.PCM;
-import std.exception;
+import std.algorithm,
+       std.conv,
+       std.exception;
 
 debug = 1;
 
@@ -36,19 +38,35 @@ class PCM
             sounds.length = channels * sampling_rate * l;
         }
 
+        /+ PCMデータの取得 +/
+        short opIndex ( size_t i )
+        {
+            return pcm[i];
+        }
+
+        /+ PCMデータの設定 +/
+        short opIndexAssign ( short v, size_t i )
+        {
+            return sounds[i] = v;
+        }
+
         /+ PCMファイルとしてfileに出力します。 +/
         debug (1) version ( Windows ) void testsave ( string file )
         {
             import std.stdio,
-                   std.algorithm;
+                   std.bitmanip;
             auto fp = File( file, "w" );
-            pcm.each!( x => fp.write(x) );
+            pcm.each!( x => fp.rawWrite( x.nativeToLittleEndian ) );
             fp.close;
         }
 
         debug (1) unittest {
-            // 48000Hzの1分間のステレオ音声データ
-            auto hoge = new PCM( 2, 48000, 60 );
+            // SampleRate10000/モノラルの1分間のPCMデータ
+            auto hoge = new PCM( 1, 10000, 60 );
+            foreach ( i,v; hoge.pcm )
+                hoge[i] = (i%2 == 0 ? 1 : -1) * short.max;
+            // ピーという音のPCMデータが生成されれば成功
+            // ffmpeg -f s16le -ar 10000 -ac 1 -i hoge.pcm hoge.wav
             version ( Windows ) hoge.testsave( "./hoge.pcm" );
         }
 }
