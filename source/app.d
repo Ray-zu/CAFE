@@ -28,7 +28,6 @@ class Cafe
 
             // テストコード
             auto window = Platform.instance.createWindow("Hello dlang!",null);
-            window.mainWidget = new PropertyGrid;
             window.show;
         }
 
