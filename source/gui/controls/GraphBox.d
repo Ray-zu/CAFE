@@ -7,15 +7,47 @@
 module cafe.gui.controls.GraphBox;
 import std.algorithm,
        std.conv,
+       std.format,
+       std.math,
        std.traits;
 import dlangui;
 
 /+ グラフ +/
-class GraphBox (T) : Widget
+class GraphBox (T, string XLabel="x", string YLabel="y") : Widget
     if ( isNumeric!T )
 {
     private:
-        T[] graph_data;     // グラフデータ
+        bool  value_visible = false;
+        Point value_point   = { x:0, y:0 };
+        T[]   graph_data    = [];
+
+        auto posFromX ( uint x )
+        {
+            x -= minX; auto y = graph[x]-minY;
+            auto px_x = width.to!float/(maxX-minX).to!float;
+            auto px_y = height.to!float/(maxY-minY).to!float;
+            return Point( (px_x*x).to!int, (px_y*y).to!int );
+        }
+
+        auto xFromPos ( Point p )
+        {
+            return round( p.x / (width.to!float/(maxX-minX).to!float) ).to!uint;
+        }
+
+        void drawValue ( DrawBuf b )
+        {
+            enum RectSize = 5;
+
+            auto p = value_point;
+            auto x = xFromPos(p), y = graph[x];
+            auto v = "%s=%s, %s=%s".format( XLabel,
+                    x.to!string, YLabel, y.to!string );
+            font.drawText( b, p.x, p.y, v.to!dstring, textColor );
+
+            p = posFromX( x );
+            b.fillRect( Rect( p.x-RectSize, p.y-RectSize, p.x+RectSize, p.y+RectSize ),
+                   textColor );
+        }
 
     public:
         @property graph () { return graph_data; }
@@ -25,8 +57,16 @@ class GraphBox (T) : Widget
             g = [0, 100, 50];   // テストコード
 
             super( id );
-            backgroundColor = 0x333333;
+            backgroundColor = 0x222222;
             textColor = 0x999999;
+            mouseEvent = delegate ( Widget w, MouseEvent e )
+            {
+                value_visible = e.action != MouseAction.Leave;
+                value_point   = e.pos;
+                w.invalidate;
+                return true;
+            };
+
             graph_data = g;
         }
 
@@ -40,18 +80,9 @@ class GraphBox (T) : Widget
         {
             super.onDraw(b);
 
-            auto maxY = this.maxY, minY = this.minY;
-            auto maxX = this.maxX, minX = this.minX;
-
-            auto posFromX ( uint x )
-            {
-                x -= minX; auto y = graph[x]-minY;
-                auto px_x = b.width.to!float/(maxX-minX).to!float;
-                auto px_y = b.height.to!float/(maxY-minY).to!float;
-                return Point( (px_x*x).to!int, (px_y*y).to!int );
-            }
-
             foreach ( i,v; graph[0 .. $-1] )
                 b.drawLine( posFromX(i), posFromX(i+1), textColor );
+
+            if ( value_visible ) drawValue(b);
         }
 }
