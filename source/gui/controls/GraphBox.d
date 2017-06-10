@@ -21,6 +21,7 @@ class GraphBox (T, string XLabel="x", string YLabel="y") : Widget
         Point value_point   = { x:0, y:0 };
         T[]   graph_data    = [];
 
+        /+ グラフのxから画面座標を返す +/
         auto posFromX ( uint x )
         {
             x -= minX; auto y = graph[x]-minY;
@@ -29,11 +30,13 @@ class GraphBox (T, string XLabel="x", string YLabel="y") : Widget
             return Point( (px_x*x).to!int, (px_y*y).to!int );
         }
 
+        /+ 画面座標からグラフのxを返す +/
         auto xFromPos ( Point p )
         {
             return round( p.x / (width.to!float/(maxX-minX).to!float) ).to!uint;
         }
 
+        /+ カーソルの位置にホバー中の値を描画 +/
         void drawValue ( DrawBuf b )
         {
             enum RectSize = 5;
