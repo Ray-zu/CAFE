@@ -52,17 +52,6 @@ class PropertyGrid : StringGridWidget
             {
                 (cast(PropertyGrid)w).edit( c, r );
             };
-
-            // テストコード
-            import cafe.project.ObjectPlacingInfo,
-                   cafe.project.timeline.property.Property;
-            auto plist = new PropertyList;
-            auto fl = new FrameLength(20);
-            plist["X"] = new PropertyBase!float( fl, 0.0 );
-            plist["Y"] = new PropertyBase!float( fl, 0.0 );
-            plist["Z"] = new PropertyBase!float( fl, 0.0 );
-            plist["Text"] = new PropertyBase!string( fl, "hoge" );
-            propertyList = plist;
         }
 
         override void autoFit ()
