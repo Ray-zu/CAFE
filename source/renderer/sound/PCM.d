@@ -51,6 +51,13 @@ class PCM
             return sounds[i] = v;
         }
 
+        /+ PCMデータの合成 +/
+        PCM opAdd ( PCM s )
+        {
+            // TODO
+            throw new Exception( "Not Implemented" );
+        }
+
         /+ PCMファイルとしてfileに出力 +
          + デバッグに使用します。      +/
         void save ( string file )
