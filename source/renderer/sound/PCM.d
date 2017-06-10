@@ -9,6 +9,7 @@ import std.algorithm,
        std.conv,
        std.exception;
 
+/+ 2以上を指定でカレントディレクトリにPCMデータのサンプルを出力 +/
 debug = 1;
 
 /+ 音声データ +/
@@ -67,6 +68,6 @@ class PCM
                 hoge[i] = (i%2 == 0 ? 1 : -1) * short.max;
             // ピーという音のPCMデータが生成されれば成功
             // ffmpeg -f s16le -ar 10000 -ac 1 -i hoge.pcm hoge.wav
-            version ( Windows ) hoge.testsave( "./hoge.pcm" );
+            debug (2) version ( Windows ) hoge.testsave( "./hoge.pcm" );
         }
 }
