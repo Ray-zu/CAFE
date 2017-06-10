@@ -7,7 +7,8 @@
 module cafe.renderer.World;
 import cafe.renderer.polygon.Polygon,
        cafe.renderer.polygon.Vector,
-       cafe.renderer.graphics.Bitmap;
+       cafe.renderer.graphics.Bitmap,
+       cafe.renderer.sound.PCM;
 
 debug = 0;
 
@@ -17,14 +18,16 @@ class World
 {
     private:
         Polygon[] polies;
-        //TODO : 音声データ
+        PCM pcm;
 
     public:
         @property polygons () { return polies; }
+        @property sound    () { return pcm; }
 
-        this ( Polygon[] p )
+        this ( Polygon[] polies, PCM pcm = new PCM( 1, 10000, 0 ) )
         {
-            polies = p;
+            this.polies = polies;
+            this.pcm    = pcm;
         }
 
         // TODO : ポリゴン配列の追加演算子オーバーロード
