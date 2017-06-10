@@ -51,8 +51,9 @@ class PCM
             return sounds[i] = v;
         }
 
-        /+ PCMファイルとしてfileに出力します。 +/
-        debug (1) version ( Windows ) void testsave ( string file )
+        /+ PCMファイルとしてfileに出力 +
+         + デバッグに使用します。      +/
+        void save ( string file )
         {
             import std.stdio,
                    std.bitmanip;
@@ -68,6 +69,6 @@ class PCM
                 hoge[i] = (i%2 == 0 ? 1 : -1) * short.max;
             // ピーという音のPCMデータが生成されれば成功
             // ffmpeg -f s16le -ar 10000 -ac 1 -i hoge.pcm hoge.wav
-            debug (2) version ( Windows ) hoge.testsave( "./hoge.pcm" );
+            debug (2) version ( Windows ) hoge.save( "./hoge.pcm" );
         }
 }
