@@ -9,51 +9,46 @@ import std.exception;
 
 debug = 1;
 
-/+ PCMデータ形式                                   +
- + PCMデータひとつの配列の長さを値として持ちます。 +/
-enum PCMFormat
-{
-    None     = 0,
-    Monaural = 1,
-    Stereo   = 2
-}
-
 /+ 音声データ +/
 class PCM
 {
     private:
         short[]   sounds;
-        PCMFormat pcm_format;
+        uint      pcm_channels;
         uint      sampling_rate;
 
     public:
         @property pcm          () { return sounds; }
-        @property format       () { return pcm_format; }
+        @property channels     () { return pcm_channels; }
         @property samplingRate () { return sampling_rate; }
 
         /+ lにはpcmデータの数を指定します。                        +
          + 1を指定した場合、モノラルならば配列の長さは1に、        +
          +                  ステレオならば配列の長さは2になります。+/
-        this ( PCMFormat f, uint r, uint l )
+        this ( uint c, uint r, uint l )
         {
-            enforce( f != PCMFormat.None, "Illegal PCMFormat" );
+            enforce( c > 0, "Channel must be one or more." );
             enforce( r > 0, "Sampling Rate must be one or more." );
 
-            pcm_format = f;
+            pcm_channels = c;
             sampling_rate = r;
 
-            sounds.length = format * sampling_rate * l;
+            sounds.length = channels * sampling_rate * l;
         }
 
-        /+ WindowsのWaveOutを使って出力します。(デバッグ用) +/
-        debug (1) version ( Windows ) void testplay ()
+        /+ PCMファイルとしてfileに出力します。 +/
+        debug (1) version ( Windows ) void testsave ( string file )
         {
-            // TODO : WaveOutの実行
+            import std.stdio,
+                   std.algorithm;
+            auto fp = File( file, "w" );
+            pcm.each!( x => fp.write(x) );
+            fp.close;
         }
 
         debug (1) unittest {
             // 48000Hzの1分間のステレオ音声データ
-            auto hoge = new PCM( PCMFormat.Stereo, 48000, 60 );
-            version ( Windows ) hoge.testplay;
+            auto hoge = new PCM( 2, 48000, 60 );
+            version ( Windows ) hoge.testsave( "./hoge.pcm" );
         }
 }
