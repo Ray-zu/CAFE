@@ -10,7 +10,7 @@ import std.algorithm,
        std.exception;
 
 /+ 2以上を指定でカレントディレクトリにPCMデータのサンプルを出力 +/
-debug = 1;
+debug = 0;
 
 /+ 音声データ +/
 class PCM
