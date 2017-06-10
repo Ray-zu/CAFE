@@ -48,8 +48,7 @@ class GraphBox (T, string XLabel="x", string YLabel="y") : Widget
             font.drawText( b, p.x, p.y, v.to!dstring, textColor );
 
             p = posFromX( x );
-            b.fillRect( Rect( p.x-RectSize, p.y-RectSize, p.x+RectSize, p.y+RectSize ),
-                   textColor );
+            b.drawLine( Point(p.x,0), Point(p.x,height), 0 );
         }
 
     public:
@@ -57,6 +56,10 @@ class GraphBox (T, string XLabel="x", string YLabel="y") : Widget
 
         this ( string id, T[] g = [] )
         {
+            g.length = 500;
+            foreach ( i; 0 .. 500 )  // テストコード
+                g[i] = i;
+
             super( id );
             backgroundColor = 0x222222;
             textColor = 0x999999;
@@ -65,6 +68,7 @@ class GraphBox (T, string XLabel="x", string YLabel="y") : Widget
                 value_visible = e.action != MouseAction.Leave;
                 value_point   = e.pos;
                 w.invalidate;
+                // TODO : グラフがクリックされた時に独自のハンドラを呼ぶ
                 return true;
             };
 
