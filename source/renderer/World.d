@@ -10,7 +10,7 @@ import cafe.renderer.polygon.Polygon,
        cafe.renderer.graphics.Bitmap,
        cafe.renderer.sound.PCM;
 
-debug = 0;
+debug = 1;
 
 /+ ポリゴンのリスト                +
  + 1フレームの音声データも含みます +/
@@ -45,5 +45,6 @@ class World
         debug (1) unittest {
             auto v3d = Vector3D( 0, 0, 0 );
             auto hoge = new World ( [new Polygon( new BMP(5,5), v3d,v3d,v3d,v3d )] );
+            assert( (hoge+hoge).polygons.length == 2 );
         }
 }
