@@ -6,7 +6,8 @@
  + ------------------------------------------------------------ +/
 module cafe.renderer.polygon.Polygon;
 import cafe.renderer.graphics.Bitmap,
-       cafe.renderer.polygon.Vector;
+       cafe.renderer.polygon.Vector,
+       cafe.renderer.polygon.PolygonEffect;
 
 debug = 0;
 
@@ -19,10 +20,12 @@ class Polygon
                  top_r,
                  bottom_r,
                  bottom_l;
-        // TODO : ポリゴンエフェクトリスト
+
+        PolygonEffect[] polygon_effects;
 
     public:
-        @property bitmap () { return bmp; }
+        @property bitmap  () { return bmp;             }
+        @property effects () { return polygon_effects; }
 
         @property topLeft     () { return top_l;    }
         @property topRight    () { return top_r;    }
@@ -35,6 +38,13 @@ class Polygon
             bmp = b;
             top_l = tl; top_r = tr;
             bottom_r = br; bottom_l = bl;
+            polygon_effects = [];
+        }
+
+        /+ エフェクトを追加 +/
+        void addEffect ( PolygonEffect e )
+        {
+            polygon_effects ~= e;
         }
 
         debug (1) unittest {
