@@ -38,6 +38,7 @@ class BMPViewer : Widget
         {
             if ( !bitmap ) return;
 
+            // ループが長いので先に回せる処理は先に回しておく
             int dx, dy;
             int bx, by;
             auto bitw_per_pixelw = (bitmap.width.to!float/width.to!float);
