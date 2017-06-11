@@ -7,7 +7,9 @@
 module cafe.renderer.sound.PCM;
 import std.algorithm,
        std.conv,
-       std.exception;
+       std.exception,
+       std.math,
+       std.traits;
 
 /+ 2以上を指定でカレントディレクトリにPCMデータのサンプルを出力 +/
 debug = 0;
@@ -16,7 +18,7 @@ debug = 0;
 class PCM
 {
     private:
-        short[]   sounds;
+        float[]   sounds;
         uint      pcm_channels;
         uint      sampling_rate;
 
@@ -39,14 +41,36 @@ class PCM
             sounds.length = channels * sampling_rate * l;
         }
 
+        /+ 指定した型の配列に変換 +/
+        T[] normalize (T)()
+            if ( isNumeric!T )
+        {
+            T[] r;
+            pcm.each!( x => (r ~=
+                        max( min( x.round, T.max ), T.min ).to!T) );
+            return r;
+        }
+
+        /+ 16bit PCMに変換 +/
+        short[] normalize16bit ()
+        {
+            return normalize!short;
+        }
+
+        /+ 32bit PCMに変換 +/
+        int[] normalize32bit ()
+        {
+            return normalize!int;
+        }
+
         /+ PCMデータの取得 +/
-        short opIndex ( size_t i )
+        float opIndex ( size_t i )
         {
             return pcm[i];
         }
 
         /+ PCMデータの設定 +/
-        short opIndexAssign ( short v, size_t i )
+        float opIndexAssign ( short v, size_t i )
         {
             return sounds[i] = v;
         }
@@ -65,7 +89,7 @@ class PCM
             import std.stdio,
                    std.bitmanip;
             auto fp = File( file, "w" );
-            pcm.each!( x => fp.rawWrite( x.nativeToLittleEndian ) );
+            normalize16bit.each!( x => fp.rawWrite( x.nativeToLittleEndian ) );
             fp.close;
         }
 
