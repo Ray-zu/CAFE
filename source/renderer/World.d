@@ -32,7 +32,14 @@ class World
 
         World opAdd ( World rhs )
         {
-            return new World( rhs.polygons~polygons ); // TODO : PCMデータの結合
+            return new World( rhs.polygons~polygons ); // TODO : PCMデータのミックス
+        }
+
+        World opAddAssign ( World rhs )
+        {
+            polies ~= rhs.polygons;
+            // TODO : PCMデータのミックス
+            return this;
         }
 
         debug (1) unittest {
