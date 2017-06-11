@@ -30,7 +30,10 @@ class World
             this.pcm    = pcm;
         }
 
-        // TODO : ポリゴン配列の追加演算子オーバーロード
+        World opAdd ( World rhs )
+        {
+            return new World( rhs.polygons~polygons ); // TODO : PCMデータの結合
+        }
 
         debug (1) unittest {
             auto v3d = Vector3D( 0, 0, 0 );
