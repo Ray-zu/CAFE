@@ -10,7 +10,7 @@ import cafe.renderer.polygon.Polygon,
        cafe.renderer.graphics.Bitmap,
        cafe.renderer.sound.PCM;
 
-debug = 1;
+debug = 0;
 
 /+ ポリゴンのリスト                +
  + 1フレームの音声データも含みます +/
