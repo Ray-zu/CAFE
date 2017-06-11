@@ -12,7 +12,7 @@ import std.algorithm,
        std.traits;
 
 /+ 2以上を指定でカレントディレクトリにPCMデータのサンプルを出力 +/
-debug = 2;
+debug = 0;
 
 /+ 音声データ +/
 class PCM
