@@ -19,6 +19,8 @@ interface EffectKeepableObject
 /+ EffectableObjectの実体 +/
 template EffectKeepableObjectCommon ()
 {
+    import cafe.project.timeline.effect.Effect;
+
     private:
         Effect[] obj_effects;
 

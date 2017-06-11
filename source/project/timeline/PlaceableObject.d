@@ -22,6 +22,8 @@ interface PlaceableObject
 /+ Placeableobjectの実体 +/
 template PlaceableObjectCommon ()
 {
+    import cafe.project.ObjectPlacingInfo;
+
     private:
         ObjectPlacingInfo placing_info;
 

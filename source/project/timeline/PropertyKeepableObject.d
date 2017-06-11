@@ -23,6 +23,8 @@ interface PropertyKeepableObject
 /+ Propertykeepableobjectの実体 +/
 template PropertyKeepableObjectCommon ()
 {
+    import cafe.project.timeline.property.PropertyList;
+
     private:
         PropertyList props;
 
