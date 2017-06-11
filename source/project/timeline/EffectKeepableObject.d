@@ -4,11 +4,11 @@
  + ------------------------------------------------------------ +
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
-module cafe.project.timeline.EffectableObject;
+module cafe.project.timeline.EffectKeepableObject;
 import cafe.project.timeline.effect.Effect;
 
 /+ エフェクトデータを持てるオブジェクトのインターフェース +/
-interface EffectableObject
+interface EffectKeepableObject
 {
     public:
         @property Effect[] effects ();
@@ -17,7 +17,7 @@ interface EffectableObject
 
 
 /+ EffectableObjectの実体 +/
-template EffectableObjectCommon ()
+template EffectKeepableObjectCommon ()
 {
     private:
         Effect[] obj_effects;
