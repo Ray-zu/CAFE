@@ -26,10 +26,6 @@ class BMPViewer : Widget
 
         this ( string id, BMP bmp = null )
         {
-            // テストコード
-            bmp = new BMP( 10, 10 );
-            bmp[5,5] = RGBA( 255, 255, 255 );
-
             super( id );
             bitmap = bmp;
         }
