@@ -6,7 +6,8 @@
  + ------------------------------------------------------------ +/
 module cafe.project.timeline.effect.Effect;
 import cafe.project.timeline.property.PropertyList,
-       cafe.project.timeline.PropertyKeepableObject;
+       cafe.project.timeline.PropertyKeepableObject,
+       cafe.renderer.World;
 
 /+ エフェクトクラス                                +
  + 多重継承の予定が無いので抽象クラスを使用します。+/
@@ -21,5 +22,9 @@ abstract class Effect : PropertyKeepableObject
             initProperties;
         }
 
-        //TODO : ポリゴンリストデータにエフェクトを適用するメソッドを追加
+        /+ Worldクラスにエフェクトをかける +/
+        World apply ( World w )
+        {
+            return w;
+        }
 }
