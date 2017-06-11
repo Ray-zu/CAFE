@@ -10,6 +10,8 @@ import cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.PropertyKeepableObject,
        cafe.project.timeline.property.Property;
 
+debug = 0;
+
 /+ タイムライン表示等のテストに使用する何もしないオブジェクト +/
 class NullObject : PlaceableObject, PropertyKeepableObject, EffectKeepableObject
 {
@@ -30,5 +32,9 @@ class NullObject : PlaceableObject, PropertyKeepableObject, EffectKeepableObject
             auto len = place.frame.length;
             properties["int"]   = new PropertyBase!int( len, 0 );
             properties["float"] = new PropertyBase!float( len, 0 );
+        }
+
+        debug (1) unittest {
+            auto hoge = new NullObject;
         }
 }
