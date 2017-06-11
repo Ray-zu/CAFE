@@ -6,7 +6,7 @@
  + ------------------------------------------------------------ +/
 module cafe.app;
 import cafe.project.Project,
-       cafe.gui.controls.GraphBox;
+       cafe.gui.controls.BMPViewer;
 import dlangui;
 
 mixin APP_ENTRY_POINT;
@@ -28,7 +28,7 @@ class Cafe
 
             // テストコード
             auto window = Platform.instance.createWindow("Hello dlang!",null);
-            window.mainWidget = new GraphBox!int( "gbox" );
+            window.mainWidget = new BMPViewer( "test" );
             window.show;
         }
 
