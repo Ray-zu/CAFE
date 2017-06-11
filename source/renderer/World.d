@@ -30,10 +30,21 @@ class World
             this.pcm    = pcm;
         }
 
-        // TODO : ポリゴン配列の追加演算子オーバーロード
+        World opAdd ( World rhs )
+        {
+            return new World( rhs.polygons~polygons ); // TODO : PCMデータのミックス
+        }
+
+        World opAddAssign ( World rhs )
+        {
+            polies ~= rhs.polygons;
+            // TODO : PCMデータのミックス
+            return this;
+        }
 
         debug (1) unittest {
             auto v3d = Vector3D( 0, 0, 0 );
             auto hoge = new World ( [new Polygon( new BMP(5,5), v3d,v3d,v3d,v3d )] );
+            assert( (hoge+hoge).polygons.length == 2 );
         }
 }
