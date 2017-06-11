@@ -157,7 +157,7 @@ class PropertyBase (T) : Property
                 auto ed = nextValue(mp);
                 auto easing = EasingFunction.create( easing_type, st.to!float, ed.to!float,
                         mp.frame.length );
-                return easing.at( new FrameAt( f.value - mp.frame.start.value ) );
+                return easing.at( new FrameAt( f.value - mp.frame.start.value ) ).to!T;
             }
         }
 
