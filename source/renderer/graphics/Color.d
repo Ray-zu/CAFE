@@ -36,6 +36,12 @@ struct RGBA
             return RGBA( r, g, b, a );
         }
 
+        /+ uint型に変換 +/
+        @property uint toHex ()
+        {
+            return (r << 16) | (g << 8) | b | (a << 24);
+        }
+
         debug (1) unittest {
             auto hoge = RGBA( 300, 400, 500 );
             auto nhoge = hoge.normalizedColor;
@@ -43,5 +49,6 @@ struct RGBA
             assert( nhoge.g == 255 );
             assert( nhoge.b == 255 );
             assert( nhoge.a == 0 );
+            assert( nhoge.toHex == 0xffffff );
         }
 }
