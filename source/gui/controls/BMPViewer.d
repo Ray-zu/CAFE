@@ -30,6 +30,11 @@ class BMPViewer : Widget
             bitmap = bmp;
         }
 
+        this ( string id, BMP bmp )
+        {
+            this( id, new BitmapLight( bmp ) );
+        }
+
         override void onDraw ( DrawBuf b )
         {
             if ( !bitmap ) return;
