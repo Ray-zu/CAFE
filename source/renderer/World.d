@@ -24,7 +24,7 @@ class World
         @property polygons () { return polies; }
         @property sound    () { return pcm; }
 
-        this ( Polygon[] polies, PCM pcm = new PCM( 1, 10000, 0 ) )
+        this ( Polygon[] polies = [], PCM pcm = new PCM( 1, 10000, 0 ) )
         {
             this.polies = polies;
             this.pcm    = pcm;
