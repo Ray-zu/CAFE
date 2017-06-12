@@ -8,7 +8,7 @@ module cafe.project.timeline.Timeline;
 import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.PlaceableObject;
 
-debug = 1;
+debug = 0;
 
 /+ タイムラインデータ +/
 class Timeline
