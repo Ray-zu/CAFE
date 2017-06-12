@@ -14,8 +14,8 @@ import cafe.project.ObjectPlacingInfo,
 abstract class PlaceableObject : PropertyKeepableObject
 {
     private:
-        ObjectPlacingInfo opi   = null;
-        PropertyList      props = new PropertyList;
+        ObjectPlacingInfo opi;
+        PropertyList props;
 
     public:
         @property place () { return opi; }
@@ -42,8 +42,31 @@ abstract class PlaceableObject : PropertyKeepableObject
             opi = p;
         }
 
+        this () {};
+
         override void initProperties ()
         {
             // 継承したインターフェースの実体は抽象クラスでも書かなきゃいけないっぽい？
+        }
+}
+
+/+ オブジェクト自体にエフェクトをかけられる場合の共通部分  +
+ + コピーコンストラクタでEffectListのコピーを忘れるの注意！+/
+template EffectKeepableObjectCommon ()
+{
+    import cafe.project.timeline.effect.EffectList;
+    private:
+        EffectList effs;
+
+        /+ コピーコンストラクタで使う +/
+        @property copyEffectFrom ( PlaceableObject src )
+        {
+            effs = new EffectList( src.effectList );
+        }
+
+    public:
+        override @property EffectList effectList ()
+        {
+            return effs;
         }
 }
