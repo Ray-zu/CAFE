@@ -5,33 +5,33 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.project.timeline.custom.NullObject;
-import cafe.project.timeline.PlaceableObject,
-       cafe.project.timeline.EffectKeepableObject,
-       cafe.project.timeline.PropertyKeepableObject,
-       cafe.project.timeline.property.Property;
+import cafe.project.timeline.PlaceableObject;
 
 debug = 0;
 
-/+ タイムライン表示等のテストに使用する何もしないオブジェクト +/
-class NullObject : PlaceableObject, PropertyKeepableObject, EffectKeepableObject
+/+ デバッグ用の何もしないオブジェクト +/
+class NullObject : PlaceableObject
 {
-    mixin PlaceableObjectCommon;
-    mixin PropertyKeepableObjectCommon;
     mixin EffectKeepableObjectCommon;
-
     public:
-        override @property string name ()
+        override @property PlaceableObject copy ()
         {
-            return "NullObject";
+            return new NullObject( this );
         }
 
-        this () {}
+        this ( NullObject src )
+        {
+            super( src );
+            copyEffectFrom( src );
+        }
+
+        this ()
+        {
+            super();
+        }
 
         override void initProperties ()
         {
-            auto len = place.frame.length;
-            properties["int"]   = new PropertyBase!int( len, 0 );
-            properties["float"] = new PropertyBase!float( len, 0 );
         }
 
         debug (1) unittest {

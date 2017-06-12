@@ -4,29 +4,28 @@
  + ------------------------------------------------------------ +
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
-module cafe.project.timeline.EffectKeepableObject;
+module cafe.project.timeline.effect.EffectList;
 import cafe.project.timeline.effect.Effect;
+import std.algorithm;
 
-/+ エフェクトデータを持てるオブジェクトのインターフェース +/
-interface EffectKeepableObject
+/+ 複数のエフェクトを管理するクラス +/
+class EffectList
 {
-    public:
-        @property Effect[] effects ();
-}
-
-
-
-/+ EffectableObjectの実体 +/
-template EffectKeepableObjectCommon ()
-{
-    import cafe.project.timeline.effect.Effect;
-
     private:
-        Effect[] obj_effects;
+        Effect[] effs;
 
     public:
-        override @property Effect[] effects ()
+        @property effects () { return effs; }
+
+        this ( EffectList src )
         {
-            return obj_effects;
+            src.effects.each!( x => effs ~= x.copy );
         }
+
+        this ()
+        {
+            effs = [];
+        }
+
+        // TODO エフェクトの処理
 }
