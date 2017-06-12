@@ -7,7 +7,7 @@
 module cafe.project.timeline.custom.NullObject;
 import cafe.project.timeline.PlaceableObject;
 
-debug = 1;
+debug = 0;
 
 /+ デバッグ用の何もしないオブジェクト +/
 class NullObject : PlaceableObject
