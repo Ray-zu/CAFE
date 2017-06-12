@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.project.ObjectPlacingInfo;
-import std.conv;
+import std.algorithm,
+       std.conv;
 
 debug = 0;
 
@@ -132,6 +133,41 @@ class FramePeriod
             return f.value >= start.value && f.value < end.value;
         }
 
+        /+ 長さを保ったまま開始地点を移動 +/
+        void move ( FrameAt f )
+        {
+            start.value = f.value;
+        }
+
+        /+ 終了地点を固定したまま開始地点を移動 +/
+        void resizeStart ( FrameAt f )
+        {
+            auto end = end.value;
+            auto fv = min( f.value, end-1 );
+            length.value = end-fv;
+            start.value = fv;
+        }
+
+        /+ 開始地点を固定したまま終了地点を移動 +/
+        void resizeEnd ( FrameAt f )
+        {
+            auto start = start.value;
+            auto fv = max( f.value, start+1 );
+            length.value = start-fv;
+        }
+
+        /+ FrameAtをこのクラスを元にしたFrameInに変換 +/
+        FrameIn relative ( FrameAt f )
+        {
+            return new FrameIn( length, f.value - start.value );
+        }
+
+        /+ FrameAtをparent_lengthを元にしたFrameInに変換 +/
+        FrameIn absolute ( FrameAt f )
+        {
+            return new FrameIn( parent_length, f.value + start.value );
+        }
+
         debug (1) unittest {
             auto f = new FramePeriod( new FrameLength(100), new FrameAt(50), new FrameLength(30) );
             assert( f.parentLength.value == 100 );
@@ -140,6 +176,16 @@ class FramePeriod
             assert( f.length.value == 30 );
             assert( !f.isInRange( new FrameAt(20) ) );
             assert(  f.isInRange( new FrameAt(60) ) );
+
+            f.move( new FrameAt(0) );
+            assert( f.start.value == 0 );
+            assert( f.end.value == 30 );
+            assert( f.length.value == 30 );
+
+            f.resizeStart( new FrameAt(40) );
+            assert( f.start.value == 29 );
+            assert( f.end.value == 30 );
+            assert( f.length.value == 1 );
         }
 }
 
