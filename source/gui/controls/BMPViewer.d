@@ -9,8 +9,7 @@ import cafe.gui.BitmapLight,
        cafe.renderer.graphics.Bitmap;
 import dlangui;
 
-/+ BMPを表示するウィジェット                                    +
- + ピクセル操作してるのでウィジェット大きくするとやばい(やばい) +/
+/+ BMPを表示するウィジェット +/
 class BMPViewer : Widget
 {
     private:
