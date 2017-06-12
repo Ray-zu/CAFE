@@ -6,6 +6,7 @@
  + ------------------------------------------------------------ +/
 module cafe.project.timeline.PlaceableObject;
 import cafe.project.ObjectPlacingInfo,
+       cafe.project.RenderingInfo,
        cafe.project.timeline.PropertyKeepableObject,
        cafe.project.timeline.effect.EffectList,
        cafe.project.timeline.property.PropertyList;
@@ -48,6 +49,9 @@ abstract class PlaceableObject : PropertyKeepableObject
         {
             // 継承したインターフェースの実体は抽象クラスでも書かなきゃいけないっぽい？
         }
+
+        /+ レンダリング情報にオブジェクトの内容を適用 +/
+        void generate ( RenderingInfo );
 }
 
 /+ オブジェクト自体にエフェクトをかけられる場合の共通部分  +

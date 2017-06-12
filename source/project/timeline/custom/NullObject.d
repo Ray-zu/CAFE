@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.project.timeline.custom.NullObject;
-import cafe.project.timeline.PlaceableObject;
+import cafe.project.RenderingInfo,
+       cafe.project.timeline.PlaceableObject;
 
 debug = 0;
 
@@ -31,6 +32,10 @@ class NullObject : PlaceableObject
         }
 
         override void initProperties ()
+        {
+        }
+
+        override void generate ( RenderingInfo rinfo )
         {
         }
 
