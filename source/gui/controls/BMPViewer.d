@@ -26,11 +26,6 @@ class BMPViewer : Widget
 
         this ( string id, DrawBuf bmp = null )
         {
-            import cafe.renderer.graphics.Color;
-            auto tempbmp = new BMP( 5, 5 );
-            tempbmp[0,0] = RGBA( 255, 255, 255 );
-            bmp = new BitmapLight( tempbmp );
-
             super( id );
             bitmap = bmp;
         }
