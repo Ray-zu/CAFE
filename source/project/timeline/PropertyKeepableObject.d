@@ -5,32 +5,15 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.project.timeline.PropertyKeepableObject;
-import cafe.project.timeline.property.PropertyList;
+import cafe.project.timeline.property.PropertyList,
+       cafe.project.timeline.effect.EffectList;
 
-/+ プロパティリストを保持できるオブジェクトのインターフェース      +
- + クラスの多重継承ができないのでテンプレートで実態が定義されます。+/
+/+ プロパティを持てるオブジェクトのインターフェース +/
 interface PropertyKeepableObject
 {
     public:
         @property PropertyList properties ();
+        @property EffectList   effectList ();
 
-        /+ プロパティを初期化 (各オブジェクトでオーバーライド) +/
         void initProperties ();
-}
-
-
-
-/+ Propertykeepableobjectの実体 +/
-template PropertyKeepableObjectCommon ()
-{
-    import cafe.project.timeline.property.PropertyList;
-
-    private:
-        PropertyList props;
-
-    public:
-        override @property PropertyList properties ()
-        {
-            return props;
-        }
 }

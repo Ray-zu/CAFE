@@ -13,9 +13,23 @@ import cafe.project.timeline.property.PropertyList,
  + 多重継承の予定が無いので抽象クラスを使用します。+/
 abstract class Effect : PropertyKeepableObject
 {
-    mixin PropertyKeepableObjectCommon;
+    private:
+        PropertyList props;
+
     public:
         static @property string name ();
+
+        override @property PropertyList properties ()
+        {
+            return props;
+        }
+
+        @property Effect copy ();
+
+        this ( Effect src )
+        {
+            props = new PropertyList( src.properties );
+        }
 
         this ()
         {
