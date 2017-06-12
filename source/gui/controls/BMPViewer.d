@@ -5,46 +5,40 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.BMPViewer;
-import cafe.renderer.graphics.Bitmap,
-       cafe.renderer.graphics.Color;
+import cafe.gui.BitmapLight,
+       cafe.renderer.graphics.Bitmap;
 import dlangui;
 
-/+ BMPを表示するウィジェット                                    +
- + ピクセル操作してるのでウィジェット大きくするとやばい(やばい) +/
+/+ BMPを表示するウィジェット +/
 class BMPViewer : Widget
 {
     private:
-        BMP bmp;
+        DrawBuf bmp;
 
     public:
         @property bitmap () { return bmp; }
-        @property bitmap ( BMP bmp )
+        @property bitmap ( DrawBuf bmp )
         {
             this.bmp = bmp;
             invalidate;
         }
 
-        this ( string id, BMP bmp = null )
+        this ( string id, DrawBuf bmp = null )
         {
             super( id );
             bitmap = bmp;
         }
 
+        this ( string id, BMP bmp )
+        {
+            this( id, new BitmapLight( bmp ) );
+        }
+
         override void onDraw ( DrawBuf b )
         {
             if ( !bitmap ) return;
-
-            // ループが長いので先に回せる処理は先に回しておく
-            int dx, dy;
-            int bx, by;
-            auto bitw_per_pixelw = (bitmap.width.to!float/width.to!float);
-            auto bith_per_pixelh = (bitmap.height.to!float/height.to!float);
-
-            for ( dy=0; dy < height; dy++ )
-                for ( dx=0; dx < width; dx++ ) {
-                    bx = (bitw_per_pixelw * dx).to!int;
-                    by = (bith_per_pixelh * dy).to!int;
-                    b.drawPixel( dx, dy, bitmap[bx,by].toHex );
-                }
+            auto dst_rect = Rect( 0, 0, width, height );
+            auto src_rect = Rect( 0, 0, bitmap.width, bitmap.height );
+            b.drawRescaled( dst_rect, bitmap, src_rect );
         }
 }
