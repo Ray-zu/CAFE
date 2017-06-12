@@ -8,7 +8,7 @@ module cafe.project.RenderingInfo;
 import cafe.renderer.World,
        cafe.renderer.Camera;
 
-debug = 1;
+debug = 0;
 
 /+ レンダリング時に必要な情報をまとめたクラス +/
 class RenderingInfo
@@ -28,11 +28,13 @@ class RenderingInfo
             rendering_stage = new World;
         }
 
+        /+ エフェクトステージの内容を破棄 +/
         void discardEffectStage ()
         {
             effect_stage = new World;
         }
 
+        /+ エフェクトステージの内容をレンダリングステージへ +/
         void pushEffectStage ()
         {
             rendering_stage += effect_stage;
