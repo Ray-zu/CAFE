@@ -11,7 +11,7 @@ import cafe.renderer.polygon.Polygon,
        cafe.renderer.sound.PCM;
 import std.algorithm;
 
-debug = 1;
+debug = 0;
 
 /+ ポリゴンのリスト                +
  + 1フレームの音声データも含みます +/
