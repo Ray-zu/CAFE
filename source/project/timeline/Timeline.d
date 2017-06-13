@@ -26,7 +26,7 @@ class Timeline
         this ()
         {
             objs = [];
-            frame_len = new FrameLength(0);
+            frame_len = new FrameLength(1);
         }
 
         /+ フレームfの処理対象のオブジェクトの配列を返す +/
