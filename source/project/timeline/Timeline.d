@@ -10,7 +10,7 @@ import cafe.project.ObjectPlacingInfo,
 import std.algorithm,
        std.array;
 
-debug = 1;
+debug = 0;
 
 /+ タイムラインデータ +/
 class Timeline
