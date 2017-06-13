@@ -43,8 +43,6 @@ abstract class PlaceableObject : PropertyKeepableObject
             opi = p;
         }
 
-        this () {};
-
         override void initProperties ()
         {
             // 継承したインターフェースの実体は抽象クラスでも書かなきゃいけないっぽい？
