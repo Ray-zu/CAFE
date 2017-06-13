@@ -7,8 +7,10 @@
 module cafe.project.timeline.Timeline;
 import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.PlaceableObject;
+import std.algorithm,
+       std.array;
 
-debug = 0;
+debug = 1;
 
 /+ タイムラインデータ +/
 class Timeline
@@ -27,7 +29,14 @@ class Timeline
             frame_len = new FrameLength(0);
         }
 
+        /+ フレームfの処理対象のオブジェクトの配列を返す +/
+        @property objectsAtFrame ( FrameAt f )
+        {
+            return objects.filter!( x => x.place.frame.isInRange(f) ).array;
+        }
+
         debug (1) unittest {
             auto hoge = new Timeline;
+            assert( hoge.objectsAtFrame( new FrameAt(0) ).length == 0 );
         }
 }
