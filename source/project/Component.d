@@ -12,7 +12,7 @@ import cafe.project.timeline.Timeline,
        cafe.renderer.World;
 import std.algorithm;
 
-debug = 1;
+debug = 0;
 
 /+ プロジェクト内のコンポーネントデータ +
  + AULでいうシーン                      +/
@@ -42,6 +42,7 @@ class Component
         /+ 画像を生成 +/
         BMP render ( FrameAt f )
         {
+            // TODO
             throw new Exception( "Not Implemented" );
         }
 
