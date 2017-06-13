@@ -6,6 +6,7 @@
  + ------------------------------------------------------------ +/
 module cafe.project.timeline.custom.NullObject;
 import cafe.project.RenderingInfo,
+       cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.PlaceableObject;
 
 debug = 0;
@@ -26,9 +27,9 @@ class NullObject : PlaceableObject
             copyEffectFrom( src );
         }
 
-        this ()
+        this ( ObjectPlacingInfo f )
         {
-            super();
+            super( f );
         }
 
         override void initProperties ()
@@ -40,6 +41,8 @@ class NullObject : PlaceableObject
         }
 
         debug (1) unittest {
-            auto hoge = new NullObject;
+            auto hoge = new NullObject(
+                    new ObjectPlacingInfo( new LayerId(0),
+                        new FramePeriod( new FrameLength(5), new FrameAt(0), new FrameLength(1) ) ) );
         }
 }
