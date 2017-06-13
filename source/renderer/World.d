@@ -9,6 +9,7 @@ import cafe.renderer.polygon.Polygon,
        cafe.renderer.polygon.Vector,
        cafe.renderer.graphics.Bitmap,
        cafe.renderer.sound.PCM;
+import std.algorithm;
 
 debug = 0;
 
@@ -30,6 +31,12 @@ class World
             this.pcm    = pcm;
         }
 
+        Polygon pop ( Polygon p )
+        {
+            polies = polies.remove!( x => x is p );
+            return p;
+        }
+
         World opAdd ( World rhs )
         {
             return new World( rhs.polygons~polygons ); // TODO : PCMデータのミックス
@@ -42,9 +49,23 @@ class World
             return this;
         }
 
+        World opAdd ( Polygon rhs )
+        {
+            return new World( polygons~rhs, sound );
+        }
+
+        World opAddAssign ( Polygon rhs )
+        {
+            polies ~= rhs;
+            return this;
+        }
+
         debug (1) unittest {
             auto v3d = Vector3D( 0, 0, 0 );
-            auto hoge = new World ( [new Polygon( new BMP(5,5), v3d,v3d,v3d,v3d )] );
+            auto poly = new Polygon( new BMP(5,5), v3d,v3d,v3d,v3d );
+            auto hoge = new World ( [poly] );
             assert( (hoge+hoge).polygons.length == 2 );
+            assert( hoge.pop( poly ) == poly );
+            assert( hoge.polygons.length == 0 );
         }
 }
