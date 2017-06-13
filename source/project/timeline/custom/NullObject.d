@@ -9,7 +9,7 @@ import cafe.project.RenderingInfo,
        cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.PlaceableObject;
 
-debug = 1;
+debug = 0;
 
 /+ デバッグ用の何もしないオブジェクト +/
 class NullObject : PlaceableObject
