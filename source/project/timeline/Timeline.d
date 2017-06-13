@@ -10,7 +10,7 @@ import cafe.project.ObjectPlacingInfo,
 import std.algorithm,
        std.array;
 
-debug = 0;
+debug = 1;
 
 /+ タイムラインデータ +/
 class Timeline
@@ -23,10 +23,16 @@ class Timeline
         @property objects () { return objs;      }
         @property length  () { return frame_len; }
 
-        this ()
+        this ( FrameLength f = new FrameLength(1) )
         {
             objs = [];
-            frame_len = new FrameLength(1);
+            frame_len = f;
+        }
+
+        /+ オブジェクトを追加 +/
+        void addObject ( PlaceableObject o )
+        {
+            objs ~= o;
         }
 
         /+ フレームfの処理対象のオブジェクトの配列を返す +/
@@ -36,7 +42,14 @@ class Timeline
         }
 
         debug (1) unittest {
-            auto hoge = new Timeline;
-            assert( hoge.objectsAtFrame( new FrameAt(0) ).length == 0 );
+            import cafe.project.timeline.custom.NullObject;
+            auto hoge = new Timeline( new FrameLength( 10 ) );
+
+            auto opi = new ObjectPlacingInfo( new LayerId(0),
+                   new FramePeriod( hoge.length, new FrameAt(0), new FrameLength(5) ) );
+            auto obj1 = new NullObject( opi );
+            hoge.addObject( obj1 );
+
+            assert( hoge.objectsAtFrame( new FrameAt(0) ).length == 1 );
         }
 }
