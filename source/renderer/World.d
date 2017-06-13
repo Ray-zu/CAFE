@@ -51,7 +51,7 @@ class World
 
         World opAdd ( Polygon rhs )
         {
-            return new World( polygons~rhs );
+            return new World( polygons~rhs, sound );
         }
 
         World opAddAssign ( Polygon rhs )
