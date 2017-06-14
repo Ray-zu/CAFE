@@ -7,7 +7,8 @@
 module cafe.project.timeline.custom.NullObject;
 import cafe.project.RenderingInfo,
        cafe.project.ObjectPlacingInfo,
-       cafe.project.timeline.PlaceableObject;
+       cafe.project.timeline.PlaceableObject,
+       cafe.renderer.World;
 
 debug = 0;
 
@@ -36,8 +37,13 @@ class NullObject : PlaceableObject
         {
         }
 
-        override void generate ( RenderingInfo rinfo )
+        override void apply ( RenderingInfo rinfo )
         {
+            /+ 実際のポリゴン生成プロセス
+            World w = new World;
+            /+ Create Polygons +/
+            rinfo.effectStage += effectList.apply( w );
+            +/
         }
 
         debug (1) unittest {

@@ -49,7 +49,7 @@ abstract class PlaceableObject : PropertyKeepableObject
         }
 
         /+ レンダリング情報にオブジェクトの内容を適用 +/
-        void generate ( RenderingInfo );
+        void apply ( RenderingInfo );
 }
 
 /+ オブジェクト自体にエフェクトをかけられる場合の共通部分  +
