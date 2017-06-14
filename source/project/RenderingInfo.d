@@ -13,31 +13,28 @@ debug = 0;
 /+ レンダリング時に必要な情報をまとめたクラス +/
 class RenderingInfo
 {
-    private:
-        World effect_stage;     // 通常のエフェクトの対象となるWorldクラス
-        World rendering_stage;  // レンダリングの対象となるWorldクラス
-        // TODO : 将来的に追加予定のスクリプトのグローバル変数など
-
     public:
-        @property effectStage    () { return effect_stage;    }
-        @property renderingStage () { return rendering_stage; }
+        /+ プロパティと同じように扱うので同じような命名規則にする +/
+        World effectStage;     // 通常のエフェクトの対象となるWorldクラス
+        World renderingStage;  // レンダリングの対象となるWorldクラス
+        // TODO : 将来的に追加予定のスクリプトのグローバル変数など
 
         this ()
         {
-            effect_stage = new World;
-            rendering_stage = new World;
+            effectStage = new World;
+            renderingStage = new World;
         }
 
         /+ エフェクトステージの内容を破棄 +/
         void discardEffectStage ()
         {
-            effect_stage = new World;
+            effectStage = new World;
         }
 
         /+ エフェクトステージの内容をレンダリングステージへ +/
         void pushEffectStage ()
         {
-            rendering_stage += effect_stage;
+            renderingStage += effectStage;
             discardEffectStage;
         }
 
