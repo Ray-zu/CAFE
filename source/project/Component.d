@@ -35,7 +35,7 @@ class Component
             auto rinfo   = new RenderingInfo;
             auto objects = timeline.objectsAtFrame(f).sort!
                 ( (a, b) => a.place.layer.value < b.place.layer.value );
-            objects.each!( x => x.generate( rinfo ) );
+            objects.each!( x => x.apply( rinfo ) );
             return rinfo.renderingStage;
         }
 

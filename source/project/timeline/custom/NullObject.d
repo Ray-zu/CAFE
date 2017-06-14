@@ -36,7 +36,7 @@ class NullObject : PlaceableObject
         {
         }
 
-        override void generate ( RenderingInfo rinfo )
+        override void apply ( RenderingInfo rinfo )
         {
         }
 
