@@ -9,7 +9,8 @@ import cafe.project.timeline.Timeline,
        cafe.project.ObjectPlacingInfo,
        cafe.project.RenderingInfo,
        cafe.renderer.graphics.Bitmap,
-       cafe.renderer.World;
+       cafe.renderer.World,
+       cafe.renderer.Renderer;
 import std.algorithm;
 
 debug = 0;
@@ -29,26 +30,26 @@ class Component
             tl = new Timeline;
         }
 
-        /+ Worldを生成 +/
-        World generate ( FrameAt f )
+        /+ RenderingInfoを生成 +/
+        auto generate ( FrameAt f )
         {
             auto rinfo   = new RenderingInfo( f );
             auto objects = timeline.objectsAtFrame(f).sort!
                 ( (a, b) => a.place.layer.value < b.place.layer.value );
             objects.each!( x => x.apply( rinfo ) );
-            return rinfo.renderingStage;
+            return rinfo;
         }
 
         /+ 画像を生成 +/
-        BMP render ( FrameAt f )
+        BMP render ( FrameAt f, Renderer r )
         {
-            // TODO
-            throw new Exception( "Not Implemented" );
+            auto rinfo = generate(f);
+            return r.render( rinfo.renderingStage, rinfo.camera );
         }
 
         debug (1) unittest {
             auto hoge = new Component;
-            assert( hoge.generate( new FrameAt(0) ).polygons.length == 0 );
+            assert( hoge.generate( new FrameAt(0) ).renderingStage.polygons.length == 0 );
             // hoge.render( new FrameAt(0) );
         }
 }
