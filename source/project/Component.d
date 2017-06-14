@@ -32,7 +32,7 @@ class Component
         /+ Worldを生成 +/
         World generate ( FrameAt f )
         {
-            auto rinfo   = new RenderingInfo;
+            auto rinfo   = new RenderingInfo( f );
             auto objects = timeline.objectsAtFrame(f).sort!
                 ( (a, b) => a.place.layer.value < b.place.layer.value );
             objects.each!( x => x.apply( rinfo ) );
