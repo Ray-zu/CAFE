@@ -21,12 +21,12 @@ class Camera
         @property position () { return pos; }
         @property targetPosition () { return tarpos; }
 
-        this ( Vector3D p, Vector3D t )
+        this ( Vector3D p = Vector3D(0,0,-1024), Vector3D t = Vector3D(0,0,0) )
         {
             pos = p; tarpos = t;
         }
 
         debug (1) unittest {
-            auto hoge = new Camera( Vector3D(0,0,-1024), Vector3D(0,0,0) );
+            auto hoge = new Camera;
         }
 }
