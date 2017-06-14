@@ -9,7 +9,7 @@ import cafe.project.timeline.effect.Effect,
        cafe.renderer.World;
 import std.algorithm;
 
-debug = 1;
+debug = 0;
 
 /+ 複数のエフェクトを管理するクラス +/
 class EffectList
