@@ -5,8 +5,11 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.project.timeline.effect.EffectList;
-import cafe.project.timeline.effect.Effect;
+import cafe.project.timeline.effect.Effect,
+       cafe.renderer.World;
 import std.algorithm;
+
+debug = 1;
 
 /+ 複数のエフェクトを管理するクラス +/
 class EffectList
@@ -27,5 +30,14 @@ class EffectList
             effs = [];
         }
 
-        // TODO エフェクトの処理
+        /+ WorldクラスにEffectをかける +/
+        World apply ( World w )
+        {
+            effects.each!( x => w = x.apply( w ) );
+            return w;
+        }
+
+        debug (1) unittest {
+            auto hoge = new EffectList;
+        }
 }
