@@ -44,6 +44,6 @@ class RenderingInfo
         }
 
         debug (1) unittest {
-            auto hoge = new RenderingInfo;
+            auto hoge = new RenderingInfo( new FrameAt(0) );
         }
 }
