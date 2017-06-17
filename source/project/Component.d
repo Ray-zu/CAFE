@@ -25,6 +25,11 @@ class Component
     public:
         @property timeline () { return tl; }
 
+        this ( Component src )
+        {
+            tl = new Timeline( src.timeline );
+        }
+
         this ()
         {
             tl = new Timeline;

@@ -5,7 +5,7 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.project.Project;
-import cafe.project.Component;
+import cafe.project.ComponentList;
 
 debug = 0;
 
@@ -13,5 +13,5 @@ debug = 0;
 class Project
 {
     private:
-        Component[] components;
+        ComponentList component_list;
 }
