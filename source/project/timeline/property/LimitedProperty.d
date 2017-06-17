@@ -7,7 +7,8 @@
 module cafe.project.timeline.property.LimitedProperty;
 import cafe.project.timeline.property.Property,
        cafe.project.ObjectPlacingInfo;
-import std.traits;
+import std.algorithm,
+       std.traits;
 
 debug = 0;
 
@@ -31,7 +32,7 @@ class LimitedProperty (T) : PropertyBase!T
             min = src.min;
         }
 
-        this ( FrameLength f, T v, T max = T.max, T min = T.min )
+        this ( FrameLength f, T v, T max, T min )
         {
             super( f, v );
             this.max = max;
@@ -40,14 +41,12 @@ class LimitedProperty (T) : PropertyBase!T
 
         override void set ( FrameAt f, T v )
         {
-            import std.algorithm;   // this.min/maxとのコンフリクトを防ぐ
-            super.set( f, max( this.min, min( v, this.max ) ) );
+            super.set( f, std.algorithm.max( this.min, std.algorithm.min( v, this.max ) ) );
         }
 
         override T get ( FrameAt f )
         {
-            import std.algorithm;   // this.min/maxとのコンフリクトを防ぐ
-            return max( this.min, min( super.get(f), this.max ) );
+            return std.algorithm.max( this.min, std.algorithm.min( super.get(f), this.max ) );
         }
 
         debug (1) unittest {
