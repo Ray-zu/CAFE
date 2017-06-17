@@ -16,6 +16,12 @@ class Cafe
     private:
         Project cur_project;
 
+        void loadLibraries ()
+        {
+            import derelict.opengl3.gl3;
+            DerelictGL3.load();
+        }
+
         void setupGUI ()
         {
             embeddedResourceList.addResources(embedResourcesFromList!("resources.list")());
@@ -38,6 +44,7 @@ class Cafe
         this ( string[] args )
         {
             cur_project = null;
+            loadLibraries;
             setupGUI;
         }
 }
