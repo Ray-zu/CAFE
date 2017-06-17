@@ -6,7 +6,8 @@
  + ------------------------------------------------------------ +/
 module cafe.app;
 import cafe.project.Project,
-       cafe.gui.controls.BMPViewer;
+       cafe.gui.controls.BMPViewer,
+       cafe.renderer.custom.OpenGLRenderer;
 import dlangui;
 
 class Cafe
