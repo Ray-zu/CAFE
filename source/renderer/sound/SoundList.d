@@ -16,9 +16,9 @@ class SoundList
     public:
         @property sounds () { return snds; }
 
-        this ()
+        this ( Sound[] s = [] )
         {
-            snds = [];
+            snds = s;
         }
 
         void add ( Sound s )
@@ -26,9 +26,20 @@ class SoundList
             snds ~= s;
         }
 
-        SoundList opAddAssign ( Sound s )
+        SoundList opAddAssign ( Sound rhs )
         {
-            add( s );
+            add( rhs );
+            return this;
+        }
+
+        SoundList opAdd ( SoundList rhs )
+        {
+            return new SoundList( sounds~rhs.sounds );
+        }
+
+        SoundList opAddAssign ( SoundList rhs )
+        {
+            snds ~= rhs.sounds;
             return this;
         }
 }

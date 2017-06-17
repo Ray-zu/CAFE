@@ -8,7 +8,7 @@ module cafe.renderer.World;
 import cafe.renderer.polygon.Polygon,
        cafe.renderer.polygon.Vector,
        cafe.renderer.graphics.Bitmap,
-       cafe.renderer.sound.PCM;
+       cafe.renderer.sound.SoundList;
 import std.algorithm;
 
 debug = 0;
@@ -19,16 +19,16 @@ class World
 {
     private:
         Polygon[] polies;
-        PCM pcm;
+        SoundList sound_list;
 
     public:
-        @property polygons () { return polies; }
-        @property sound    () { return pcm; }
+        @property polygons  () { return polies; }
+        @property soundList () { return sound_list; }
 
-        this ( Polygon[] polies = [], PCM pcm = new PCM( 1, 10000, 0 ) )
+        this ( Polygon[] p = [], SoundList snds = new SoundList )
         {
-            this.polies = polies;
-            this.pcm    = pcm;
+            polies = p;
+            sound_list = snds;
         }
 
         Polygon pop ( Polygon p )
@@ -39,19 +39,14 @@ class World
 
         World opAdd ( World rhs )
         {
-            return new World( rhs.polygons~polygons ); // TODO : PCMデータのミックス
+            return new World( rhs.polygons~polygons, rhs.soundList+soundList ); // TODO : PCMデータのミックス
         }
 
         World opAddAssign ( World rhs )
         {
             polies ~= rhs.polygons;
-            // TODO : PCMデータのミックス
+            soundList += rhs.soundList;
             return this;
-        }
-
-        World opAdd ( Polygon rhs )
-        {
-            return new World( polygons~rhs, sound );
         }
 
         World opAddAssign ( Polygon rhs )
