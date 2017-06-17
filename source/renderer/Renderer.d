@@ -7,12 +7,28 @@
 module cafe.renderer.Renderer;
 import cafe.renderer.Camera,
        cafe.renderer.World,
-       cafe.renderer.graphics.Bitmap;
+       cafe.renderer.graphics.Bitmap,
+       cafe.renderer.sound.PCM;
+
+/+ レンダリングの結果 +/
+class RenderingResult
+{
+    public:
+        BMP bitmap;
+        PCM pcm;
+
+        this ( BMP b, PCM p )
+        {
+            bitmap = b;
+            pcm = p;
+        }
+}
+
 
 /+ レンダラーインターフェース                      +
  + WorldクラスをCameraクラスを元にBMPに変換します。+/
 interface Renderer
 {
     public:
-        BMP render ( World, Camera );
+        RenderingResult render ( World, Camera );
 }

@@ -45,8 +45,8 @@ class Component
             return rinfo;
         }
 
-        /+ 画像を生成 +/
-        BMP render ( FrameAt f, Renderer r )
+        /+ レンダリング +/
+        RenderingResult render ( FrameAt f, Renderer r )
         {
             auto rinfo = generate(f);
             return r.render( rinfo.renderingStage, rinfo.camera );

@@ -13,7 +13,9 @@ import cafe.renderer.Renderer,
        cafe.renderer.graphics.Color,
        cafe.renderer.polygon.Polygon,
        cafe.renderer.polygon.PolygonEffect,
-       cafe.renderer.polygon.Vector;
+       cafe.renderer.polygon.Vector,
+       cafe.renderer.sound.PCM,
+       cafe.renderer.sound.Sound;
 import derelict.opengl3.gl3;
 
 debug = 1;
@@ -25,10 +27,10 @@ class OpenGLRenderer : Renderer
     public:
         this () {}
 
-        override BMP render ( World, Camera )
+        override RenderingResult render ( World, Camera )
         {
             // TODO : レンダリング処理
-            return new BMP( 1, 1 );
+            return new RenderingResult( new BMP( 1, 1 ), new PCM( 2, 100, 0 ) );
         }
 
         /+ レンダリングのテスト +/
@@ -38,6 +40,6 @@ class OpenGLRenderer : Renderer
             white_bmp[0,0] = RGBA( 255, 255, 255 );
             auto polygon = new Polygon( white_bmp, Vector3D(-100,-100,0),
                     Vector3D(100,-100,0), Vector3D(100,100,0), Vector3D(-100,100,0) );
-            return render( new World([polygon]), new Camera );
+            return render( new World([polygon]), new Camera ).bitmap;
         }
 }
