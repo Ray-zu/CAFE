@@ -9,7 +9,7 @@ import cafe.project.timeline.property.Property,
        cafe.project.ObjectPlacingInfo;
 import std.traits;
 
-debug = 1;
+debug = 0;
 
 /+ 値の範囲が制限されたプロパティ +/
 class LimitedProperty (T) : PropertyBase!T
@@ -54,6 +54,5 @@ class LimitedProperty (T) : PropertyBase!T
             auto hoge = new LimitedProperty!int( new FrameLength(50), 0, 0, 10 );
             hoge.set( new FrameAt(0), 20 );
             assert( hoge.get( new FrameAt(0) ) == 10 );
-            import std.stdio;"hoge".writeln;
         }
 }
