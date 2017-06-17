@@ -9,19 +9,35 @@ module cafe.renderer.custom.OpenGLRenderer;
 import cafe.renderer.Renderer,
        cafe.renderer.World,
        cafe.renderer.Camera,
-       cafe.renderer.graphics.Bitmap;
+       cafe.renderer.graphics.Bitmap,
+       cafe.renderer.graphics.Color,
+       cafe.renderer.polygon.Polygon,
+       cafe.renderer.polygon.PolygonEffect,
+       cafe.renderer.polygon.Vector;
 import derelict.opengl3.gl3;
 
+debug = 1;
+
 /+ OpenGLを利用したレンダラ +/
-class OpenGLRenderer
+class OpenGLRenderer : Renderer
 {
     private:
     public:
         this () {}
 
-        BMP render ( World, Camera )
+        override BMP render ( World, Camera )
         {
-            // TODO
+            // TODO : レンダリング処理
             return new BMP( 1, 1 );
+        }
+
+        /+ レンダリングのテスト +/
+        debug (1) auto renderTest ()
+        {
+            auto white_bmp = new BMP(1,1);
+            white_bmp[0,0] = RGBA( 255, 255, 255 );
+            auto polygon = new Polygon( white_bmp, Vector3D(-100,-100,0),
+                    Vector3D(100,-100,0), Vector3D(100,100,0), Vector3D(-100,100,0) );
+            return render( new World([polygon]), new Camera );
         }
 }

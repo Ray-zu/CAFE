@@ -9,8 +9,6 @@ import cafe.project.Project,
        cafe.gui.controls.BMPViewer;
 import dlangui;
 
-mixin APP_ENTRY_POINT;
-
 class Cafe
 {
     private:
@@ -28,7 +26,7 @@ class Cafe
 
             // テストコード
             auto window = Platform.instance.createWindow("Hello dlang!",null);
-            window.mainWidget = new BMPViewer( "test" );
+            window.mainWidget = new BMPViewer( "test", (new OpenGLRenderer).renderTest() );
             window.show;
         }
 
@@ -42,6 +40,7 @@ class Cafe
         }
 }
 
+mixin APP_ENTRY_POINT;
 extern(C) int UIAppMain(string[] args)
 {
     new Cafe( args );
