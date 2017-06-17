@@ -8,7 +8,7 @@ module cafe.project.ComponentList;
 import cafe.project.Component;
 import std.algorithm;
 
-debug = 1;
+debug = 0;
 
 /+ コンポーネントのID型 +/
 alias ComponentID = string;
