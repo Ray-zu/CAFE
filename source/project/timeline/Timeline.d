@@ -23,6 +23,12 @@ class Timeline
         @property objects () { return objs;      }
         @property length  () { return frame_len; }
 
+        this ( Timeline src )
+        {
+            src.objects.each!( x => objs ~= x.copy );
+            frame_len = new FrameLength( src.length );
+        }
+
         this ( FrameLength f = new FrameLength(1) )
         {
             objs = [];
