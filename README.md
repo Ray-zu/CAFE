@@ -13,6 +13,7 @@ CAFE(Creator's Advanced Film Editor)は、AviUtlの後継として考案され�
 
 * dmd
 * dub
+* OpenAL Library (not SDK) ([here](https://openal.org/downloads/))
 
 ## Unit Test
 
