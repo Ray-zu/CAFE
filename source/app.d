@@ -19,7 +19,9 @@ class Cafe
         void loadLibraries ()
         {
             import derelict.opengl3.gl3;
+            import derelict.openal.al;
             DerelictGL3.load();
+            DerelictAL.load();
         }
 
         void setupGUI ()
