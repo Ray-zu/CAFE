@@ -7,9 +7,23 @@
 module cafe.project.timeline.property.MiddlePoint;
 import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.property.Easing;
-import std.traits;
+import std.conv,
+       std.traits,
+       std.json;
 
-debug = 0;
+debug = 1;
+
+/+ プロパティに使用できる変数の型を文字列に変換 +/
+private @property string toTypeString (T) ()
+{
+    static if ( is(T == int) )
+        return "int";
+    static if ( is(T == float) )
+        return "float";
+    static if ( is(T == string) )
+        return "string";
+    assert( false );
+}
 
 /+ 中間点データのインターフェース +/
 interface MiddlePoint
@@ -19,6 +33,28 @@ interface MiddlePoint
 
         @property EasingType easing ();
         @property void easing ( EasingType );
+
+        @property JSONValue json ();
+
+        /+ JSONからMiddlePointを生成 +/
+        static final MiddlePoint create ( JSONValue j, FrameLength f )
+        {
+            auto value = j["value"];
+            auto frame = new FramePeriod( j["frame"], f );
+            auto easing = j["easing"].str.to!EasingType;
+            switch ( j["type"].str )
+            {
+                case "int":
+                    return new MiddlePointBase!int(
+                            value.integer.to!int, frame, easing );
+                case "float":
+                    return new MiddlePointBase!float( value.floating, frame, easing );
+                case "string":
+                    return new MiddlePointBase!string( value.str, frame );
+                default: 
+                    throw new Exception( "Not Implemented" );
+            }
+        }
 }
 
 /+ 中間点データのベースクラス +/
@@ -49,18 +85,31 @@ class MiddlePointBase (T) : MiddlePoint
 
         this ( MiddlePointBase!T src )
         {
-            st_value = src.value;
+            value = src.value;
             frame_period = new FramePeriod( src.frame );
             static if ( isNumeric!T )
                 easing_func = src.easing;
         }
 
-        this ( T s, FramePeriod f )
+        this ( T s, FramePeriod f, EasingType e = EasingType.None )
         {
             value = s;
             frame_period = f;
             static if ( isNumeric!T )
-                easing_func = EasingType.None;
+                easing_func = e;
+        }
+
+        override @property JSONValue json ()
+        {
+            JSONValue j;
+            static if ( isNumeric!T )
+                j["value"] = JSONValue(value);
+            else
+                j["value"] = JSONValue(value.to!string);
+            j["frame"]  = JSONValue(frame.json);
+            j["easing"] = JSONValue(easing.to!string);
+            j["type"]   = JSONValue(toTypeString!T);
+            return j;
         }
 
         debug (1) unittest {
@@ -69,9 +118,13 @@ class MiddlePointBase (T) : MiddlePoint
             assert( hoge.easing == EasingType.None );
             assert( hoge.value == "5000chouen hoshii" );
 
+            auto hoge2 = cast(MiddlePointBase!string)MiddlePoint.create( hoge.json, frame.parentLength );
+            assert( hoge2.value == hoge.value );
+
             auto huge = new MiddlePointBase!float( 114.514, frame );
             huge.easing = EasingType.Linear;
             assert( huge.easing == EasingType.Linear );
             assert( huge.value == 114.514f );
+            huge.json;
         }
 }
