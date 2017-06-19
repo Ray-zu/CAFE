@@ -6,9 +6,10 @@
  + ------------------------------------------------------------ +/
 module cafe.project.ObjectPlacingInfo;
 import std.algorithm,
-       std.conv;
+       std.conv,
+       std.json;
 
-debug = 0;
+debug = 1;
 
 /+ ひとつの変数を持つプロパティクラスの雛形 +/
 private class SingleValueProperty (T)
@@ -128,6 +129,13 @@ class FramePeriod
             frame_length = l;
         }
 
+        this ( JSONValue j, FrameLength p )
+        {
+            start_frame  = new FrameAt    ( j["start"] .uinteger.to!uint );
+            frame_length = new FrameLength( j["length"].uinteger.to!uint );
+            parent_length = p;
+        }
+
         bool isInRange ( FrameAt f )
         {
             return f.value >= start.value && f.value < end.value;
@@ -168,6 +176,15 @@ class FramePeriod
             return new FrameIn( parent_length, f.value + start.value );
         }
 
+        /+ JSONで保存 +/
+        @property json ()
+        {
+            auto j = `{}`.parseJSON;
+            j["start"]  = JSONValue(start.value);
+            j["length"] = JSONValue(length.value);
+            return j;
+        }
+
         debug (1) unittest {
             auto f = new FramePeriod( new FrameLength(100), new FrameAt(50), new FrameLength(30) );
             assert( f.parentLength.value == 100 );
@@ -176,6 +193,9 @@ class FramePeriod
             assert( f.length.value == 30 );
             assert( !f.isInRange( new FrameAt(20) ) );
             assert(  f.isInRange( new FrameAt(60) ) );
+
+            auto f2 = new FramePeriod( f.json, f.parentLength );
+            assert( f2.length.value == 30 );
 
             f.move( new FrameAt(0) );
             assert( f.start.value == 0 );
@@ -215,9 +235,24 @@ class ObjectPlacingInfo
             frame_period = f;
         }
 
+        this ( JSONValue j, FrameLength f )
+        {
+            layer_id     = new LayerId( j["layer"].uinteger.to!uint );
+            frame_period = new FramePeriod( j["frame"], f );
+        }
+
+        @property json ()
+        {
+            JSONValue j;
+            j["layer"] = JSONValue(layer.value);
+            j["frame"] = JSONValue(frame.json);
+            return j;
+        }
+
         debug (1) unittest {
             auto p = new FramePeriod( new FrameLength( 100 ),
                     new FrameAt( 50 ), new FrameLength( 20 ) );
             auto i = new ObjectPlacingInfo( new LayerId( 5 ), p );
+            auto i2 = new ObjectPlacingInfo( i.json, p.parentLength );
         }
 }
