@@ -201,6 +201,10 @@ class PropertyBase (T) : Property
             else
                 j["end_value"] = JSONValue( endValue.to!string );
             j["type"] = JSONValue( typeToString );
+
+            JSONValue[] middle_points = [];
+            middlePoints.each!( x => middle_points ~= x.json );
+            j["middle_points"] = JSONValue( middle_points );
             return j;
         }
 
