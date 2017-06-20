@@ -13,18 +13,6 @@ import std.conv,
 
 debug = 1;
 
-/+ プロパティに使用できる変数の型を文字列に変換 +/
-private @property string toTypeString (T) ()
-{
-    static if ( is(T == int) )
-        return "int";
-    static if ( is(T == float) )
-        return "float";
-    static if ( is(T == string) )
-        return "string";
-    assert( false );
-}
-
 /+ 中間点データのインターフェース +/
 interface MiddlePoint
 {
@@ -64,6 +52,18 @@ class MiddlePointBase (T) : MiddlePoint
     private:
         T st_value;
         FramePeriod frame_period;
+
+        /+ 型名を文字列へ +/
+        @property string typeToString ()
+        {
+            static if ( is(T == int) )
+                return "int";
+            else static if ( is(T == float) )
+                return "float";
+            else static if ( is(T == string) )
+                return "string";
+            else throw new Exception( "The type is not supported." );
+        }
 
     public:
                  @property             value () { return st_value;     }
@@ -108,7 +108,7 @@ class MiddlePointBase (T) : MiddlePoint
                 j["value"] = JSONValue(value.to!string);
             j["frame"]  = JSONValue(frame.json);
             j["easing"] = JSONValue(easing.to!string);
-            j["type"]   = JSONValue(toTypeString!T);
+            j["type"]   = JSONValue(typeToString);
             return j;
         }
 
