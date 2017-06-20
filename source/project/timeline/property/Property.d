@@ -11,6 +11,7 @@ import cafe.project.ObjectPlacingInfo,
 import std.algorithm,
        std.array,
        std.conv,
+       std.json,
        std.traits;
 
 debug = 0;
@@ -35,6 +36,9 @@ interface Property
         @property bool increasable ();
         /+ プロパティの文字列変換で、複数行文字列を許可するかどうか +/
         @property bool allowMultiline ();
+
+        /+ JSON形式のデータを返す +/
+        @property JSONValue json ();
 }
 
 /+ プロパティデータ +/
@@ -77,6 +81,18 @@ class PropertyBase (T) : Property
         {
             w.frame.length.value = mp.frame.start.value - w.frame.start.value;
             middle_points.insertInPlace( middle_points.countUntil(w)+1, mp );
+        }
+
+        /+ 型名を文字列へ +/
+        @property string typeToString ()
+        {
+            static if ( is(T == int) )
+                return "int";
+            else static if ( is(T == float) )
+                return "float";
+            else static if ( is(T == string) )
+                return "string";
+            else throw new Exception( "The type is not supported." );
         }
 
     public:
@@ -174,6 +190,18 @@ class PropertyBase (T) : Property
         override @property bool allowMultiline ()
         {
             return isSomeString!T;
+        }
+
+        override @property JSONValue json ()
+        {
+            JSONValue j;
+            j["frame"] = JSONValue( frame.value );
+            static if ( isNumeric!T )
+                j["end_value"] = JSONValue( endValue );
+            else
+                j["end_value"] = JSONValue( endValue.to!string );
+            j["type"] = JSONValue( typeToString );
+            return j;
         }
 
         debug ( 1 ) unittest {
