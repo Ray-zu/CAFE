@@ -8,7 +8,8 @@ module cafe.project.timeline.property.Property;
 import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.property.Easing,
        cafe.project.timeline.property.MiddlePoint,
-       cafe.project.timeline.property.LimitedProperty;
+       cafe.project.timeline.property.LimitedProperty,
+       cafe.project.timeline.property.RendererProperty;
 import std.algorithm,
        std.array,
        std.conv,
@@ -62,6 +63,10 @@ interface Property
                 case "float/LimitedProperty":
                     return new LimitedProperty!float( mps, f, value.floating,
                             j["max"].floating, j["min"].floating );
+
+                case "Renderer":
+                    return new RendererProperty( mps, f, value.str.to!RendererType );
+
                 default: throw new Exception( "The type is not supported." );
             }
         }
