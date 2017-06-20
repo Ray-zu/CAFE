@@ -39,6 +39,24 @@ interface Property
 
         /+ JSON形式のデータを返す +/
         @property JSONValue json ();
+
+        /+ JSONから生成 +/
+        static final Property create ( JSONValue j, FrameLength f )
+        {
+            Property result;
+            auto value = j["value"];
+            auto mps   = j["middle_points"].array;
+            switch ( j["type"].str )
+            {
+                case "int":
+                    return new PropertyBase!int( mps, f, value.integer.to!int );
+                case "float":
+                    return new PropertyBase!float( mps, f, value.floating );
+                case "string":
+                    return new PropertyBase!string( mps, f, value.str );
+                default: throw new Exception( "The type is not supported." );
+            }
+        }
 }
 
 /+ プロパティデータ +/
@@ -126,6 +144,16 @@ class PropertyBase (T) : Property
             end_value = v;
         }
 
+        /+ 中間点JSON配列から作成 +/
+        this ( JSONValue[] mps, FrameLength f, T v )
+        {
+            this( f, v );
+            mps.each!( x =>
+                        middle_points ~= cast(MiddlePointBase!T)
+                            MiddlePoint.create( typeToString, x, f )
+                     );
+        }
+
         override MiddlePoint middlePointAtFrame ( FrameAt f )
         {
             foreach ( mp; middlePoints )
@@ -197,9 +225,9 @@ class PropertyBase (T) : Property
             JSONValue j;
             j["frame"] = JSONValue( frame.value );
             static if ( isNumeric!T )
-                j["end_value"] = JSONValue( endValue );
+                j["value"] = JSONValue( endValue );
             else
-                j["end_value"] = JSONValue( endValue.to!string );
+                j["value"] = JSONValue( endValue.to!string );
             j["type"] = JSONValue( typeToString );
 
             JSONValue[] middle_points = [];
@@ -213,7 +241,9 @@ class PropertyBase (T) : Property
             assert( hoge.middlePoints.length == 1 );
             assert( hoge.middlePointAtFrame(new FrameAt(10)).frame.start.value == 0 );
             assert( hoge.nextValue(hoge.middlePoints[0]) == 20 );
-            hoge.json;
+
+            auto hoge2 = cast(PropertyBase!float)Property.create( hoge.json, hoge.frame );
+            assert( hoge.middlePoints.length == hoge.middlePoints.length );
 
             (cast(MiddlePointBase!float)hoge.middlePoints[0]).easing = EasingType.Linear;
 
