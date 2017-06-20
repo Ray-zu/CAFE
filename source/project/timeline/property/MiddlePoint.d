@@ -25,12 +25,12 @@ interface MiddlePoint
         @property JSONValue json ();
 
         /+ JSONからMiddlePointを生成 +/
-        static final MiddlePoint create ( JSONValue j, FrameLength f )
+        static final MiddlePoint create ( string type, JSONValue j, FrameLength f )
         {
             auto value = j["value"];
             auto frame = new FramePeriod( j["frame"], f );
             auto easing = j["easing"].str.to!EasingType;
-            switch ( j["type"].str )
+            switch ( type )
             {
                 case "int":
                     return new MiddlePointBase!int(
@@ -52,18 +52,6 @@ class MiddlePointBase (T) : MiddlePoint
     private:
         T st_value;
         FramePeriod frame_period;
-
-        /+ 型名を文字列へ +/
-        @property string typeToString ()
-        {
-            static if ( is(T == int) )
-                return "int";
-            else static if ( is(T == float) )
-                return "float";
-            else static if ( is(T == string) )
-                return "string";
-            else throw new Exception( "The type is not supported." );
-        }
 
     public:
                  @property             value () { return st_value;     }
@@ -108,7 +96,6 @@ class MiddlePointBase (T) : MiddlePoint
                 j["value"] = JSONValue(value.to!string);
             j["frame"]  = JSONValue(frame.json);
             j["easing"] = JSONValue(easing.to!string);
-            j["type"]   = JSONValue(typeToString);
             return j;
         }
 
@@ -118,7 +105,8 @@ class MiddlePointBase (T) : MiddlePoint
             assert( hoge.easing == EasingType.None );
             assert( hoge.value == "5000chouen hoshii" );
 
-            auto hoge2 = cast(MiddlePointBase!string)MiddlePoint.create( hoge.json, frame.parentLength );
+            auto hoge2 = cast(MiddlePointBase!string)MiddlePoint.create( "string",
+                    hoge.json, frame.parentLength );
             assert( hoge2.value == hoge.value );
 
             auto huge = new MiddlePointBase!float( 114.514, frame );
