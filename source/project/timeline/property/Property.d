@@ -14,7 +14,7 @@ import std.algorithm,
        std.json,
        std.traits;
 
-debug = 0;
+debug = 1;
 
 /+ プロパティデータのインターフェース +/
 interface Property
@@ -213,6 +213,7 @@ class PropertyBase (T) : Property
             assert( hoge.middlePoints.length == 1 );
             assert( hoge.middlePointAtFrame(new FrameAt(10)).frame.start.value == 0 );
             assert( hoge.nextValue(hoge.middlePoints[0]) == 20 );
+            hoge.json;
 
             (cast(MiddlePointBase!float)hoge.middlePoints[0]).easing = EasingType.Linear;
 
