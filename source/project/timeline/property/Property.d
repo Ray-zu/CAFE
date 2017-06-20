@@ -7,7 +7,8 @@
 module cafe.project.timeline.property.Property;
 import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.property.Easing,
-       cafe.project.timeline.property.MiddlePoint;
+       cafe.project.timeline.property.MiddlePoint,
+       cafe.project.timeline.property.LimitedProperty;
 import std.algorithm,
        std.array,
        std.conv,
@@ -54,6 +55,13 @@ interface Property
                     return new PropertyBase!float( mps, f, value.floating );
                 case "string":
                     return new PropertyBase!string( mps, f, value.str );
+
+                case "int/LimitedProperty":
+                    return new LimitedProperty!int( mps, f, value.integer.to!int,
+                            j["max"].integer.to!int, j["min"].integer.to!int );
+                case "float/LimitedProperty":
+                    return new LimitedProperty!float( mps, f, value.floating,
+                            j["max"].floating, j["min"].floating );
                 default: throw new Exception( "The type is not supported." );
             }
         }
@@ -101,6 +109,7 @@ class PropertyBase (T) : Property
             middle_points.insertInPlace( middle_points.countUntil(w)+1, mp );
         }
 
+    protected:
         /+ 型名を文字列へ +/
         @property string typeToString ()
         {
@@ -244,6 +253,7 @@ class PropertyBase (T) : Property
 
             auto hoge2 = cast(PropertyBase!float)Property.create( hoge.json, hoge.frame );
             assert( hoge.middlePoints.length == hoge.middlePoints.length );
+            assert( hoge.get(new FrameAt(5)) == hoge.get(new FrameAt(5)) );
 
             (cast(MiddlePointBase!float)hoge.middlePoints[0]).easing = EasingType.Linear;
 
