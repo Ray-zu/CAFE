@@ -10,14 +10,20 @@ import cafe.project.RenderingInfo,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.effect.EffectList,
        cafe.renderer.World;
+import std.json;
 
-debug = 0;
+debug = 1;
 
 /+ デバッグ用の何もしないオブジェクト +/
 class NullObject : PlaceableObject
 {
     mixin EffectKeepableObjectCommon;
     public:
+        override @property string type ()
+        {
+            return "NullObject";
+        }
+
         override @property PlaceableObject copy ()
         {
             return new NullObject( this );
@@ -33,6 +39,12 @@ class NullObject : PlaceableObject
         {
             super( f );
             effs = new EffectList;
+        }
+
+        this ( JSONValue j, FrameLength f )
+        {
+            super( j, f );
+            createEffectJSON( j["effects"].array, f );
         }
 
         override void initProperties ( FrameLength f )
@@ -52,6 +64,6 @@ class NullObject : PlaceableObject
             auto hoge = new NullObject(
                     new ObjectPlacingInfo( new LayerId(0),
                         new FramePeriod( new FrameLength(5), new FrameAt(0), new FrameLength(1) ) ) );
-            import std.stdio; hoge.json.writeln;
+            hoge.json;
         }
 }

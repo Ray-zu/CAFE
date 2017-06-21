@@ -20,6 +20,9 @@ abstract class PlaceableObject : PropertyKeepableObject
         PropertyList props;
 
     public:
+        /+ オブジェクトの種類名 +/
+        @property string type ();
+
         @property place () { return opi; }
 
         override @property PropertyList propertyList ()
@@ -46,6 +49,12 @@ abstract class PlaceableObject : PropertyKeepableObject
             initProperties( p.frame.length );
         }
 
+        this ( JSONValue j, FrameLength f )
+        {
+            opi   = new ObjectPlacingInfo( j["place"], f );
+            props = new PropertyList( j["properties"], f );
+        }
+
         override void initProperties ( FrameLength f )
         {
             // 継承したインターフェースの実体は抽象クラスでも書かなきゃいけないっぽい？
@@ -57,6 +66,7 @@ abstract class PlaceableObject : PropertyKeepableObject
             j["properties"] = JSONValue(propertyList.json);
             j["place"]      = JSONValue(place.json);
             j["effects"]    = JSONValue(effectList.json);
+            j["type"]       = JSONValue(type);
             return j;
         }
 
@@ -69,6 +79,7 @@ abstract class PlaceableObject : PropertyKeepableObject
 template EffectKeepableObjectCommon ()
 {
     import cafe.project.timeline.effect.EffectList;
+    import std.json;
     private:
         EffectList effs;
 
@@ -76,6 +87,12 @@ template EffectKeepableObjectCommon ()
         @property copyEffectFrom ( PlaceableObject src )
         {
             effs = new EffectList( src.effectList );
+        }
+
+        /+ JSONからEffectListを作成 +/
+        @property createEffectJSON ( JSONValue[] j, FrameLength f )
+        {
+            throw new Exception( "Not Implemented" );
         }
 
     public:
