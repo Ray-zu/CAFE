@@ -6,10 +6,12 @@
  + ------------------------------------------------------------ +/
 module cafe.project.timeline.effect.EffectList;
 import cafe.project.timeline.effect.Effect,
+       cafe.project.ObjectPlacingInfo,
        cafe.renderer.World;
-import std.algorithm;
+import std.algorithm,
+       std.json;
 
-debug = 0;
+debug = 1;
 
 /+ 複数のエフェクトを管理するクラス +/
 class EffectList
@@ -30,6 +32,19 @@ class EffectList
             effs = [];
         }
 
+        this ( JSONValue j, FrameLength f )
+        {
+            this();
+            j.array.each!( x => effs ~= Effect.create( x, f ) );
+        }
+
+        @property json ()
+        {
+            JSONValue[] j;
+            effs.each!( x => j ~= JSONValue(x.json) );
+            return JSONValue(j);
+        }
+
         /+ WorldクラスにEffectをかける +/
         World apply ( World w )
         {
@@ -39,5 +54,7 @@ class EffectList
 
         debug (1) unittest {
             auto hoge = new EffectList;
+            auto hoge2 = new EffectList( hoge.json, new FrameLength(50) );
+            assert( hoge.effects.length == hoge2.effects.length );
         }
 }

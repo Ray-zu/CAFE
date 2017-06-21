@@ -10,6 +10,7 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.PropertyKeepableObject,
        cafe.project.timeline.effect.EffectList,
        cafe.project.timeline.property.PropertyList;
+import std.json;
 
 /+ タイムラインに配置可能なオブジェクトの共通部分 +/
 abstract class PlaceableObject : PropertyKeepableObject
@@ -21,7 +22,7 @@ abstract class PlaceableObject : PropertyKeepableObject
     public:
         @property place () { return opi; }
 
-        override @property PropertyList properties ()
+        override @property PropertyList propertyList ()
         {
             return props;
         }
@@ -35,17 +36,27 @@ abstract class PlaceableObject : PropertyKeepableObject
         this ( PlaceableObject src )
         {
             opi = new ObjectPlacingInfo( src.place );
-            props = new PropertyList( src.properties );
+            props = new PropertyList( src.propertyList );
         }
 
         this ( ObjectPlacingInfo p )
         {
             opi = p;
+            props = new PropertyList;
         }
 
         override void initProperties ()
         {
             // 継承したインターフェースの実体は抽象クラスでも書かなきゃいけないっぽい？
+        }
+
+        override @property JSONValue json ()
+        {
+            auto j = JSONValue( null );
+            j["properties"] = JSONValue(propertyList.json);
+            j["place"]      = JSONValue(place.json);
+            j["effects"]    = JSONValue(effectList.json);
+            return j;
         }
 
         /+ レンダリング情報にオブジェクトの内容を適用 +/
