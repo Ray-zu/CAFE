@@ -43,6 +43,7 @@ abstract class PlaceableObject : PropertyKeepableObject
         {
             opi = p;
             props = new PropertyList;
+            initProperties( p.frame.length );
         }
 
         override void initProperties ( FrameLength f )
