@@ -33,9 +33,9 @@ abstract class Effect : PropertyKeepableObject
             props = new PropertyList( src.propertyList );
         }
 
-        this ()
+        this ( FrameLength f )
         {
-            initProperties;
+            initProperties(f);
         }
 
         this ( JSONValue j, FrameLength f )

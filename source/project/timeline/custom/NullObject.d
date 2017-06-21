@@ -35,7 +35,7 @@ class NullObject : PlaceableObject
             effs = new EffectList;
         }
 
-        override void initProperties ()
+        override void initProperties ( FrameLength f )
         {
         }
 

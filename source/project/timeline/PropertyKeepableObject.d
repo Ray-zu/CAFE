@@ -6,7 +6,8 @@
  + ------------------------------------------------------------ +/
 module cafe.project.timeline.PropertyKeepableObject;
 import cafe.project.timeline.property.PropertyList,
-       cafe.project.timeline.effect.EffectList;
+       cafe.project.timeline.effect.EffectList,
+       cafe.project.ObjectPlacingInfo;
 import std.json;
 
 /+ プロパティを持てるオブジェクトのインターフェース +/
@@ -16,7 +17,7 @@ interface PropertyKeepableObject
         @property PropertyList propertyList ();
         @property EffectList   effectList ();
 
-        void initProperties ();
+        void initProperties ( FrameLength );
 
         @property JSONValue json ();
 }

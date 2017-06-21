@@ -45,7 +45,7 @@ abstract class PlaceableObject : PropertyKeepableObject
             props = new PropertyList;
         }
 
-        override void initProperties ()
+        override void initProperties ( FrameLength f )
         {
             // 継承したインターフェースの実体は抽象クラスでも書かなきゃいけないっぽい？
         }
