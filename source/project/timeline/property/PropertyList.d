@@ -30,6 +30,12 @@ class PropertyList
         {
         }
 
+        this ( JSONValue j, FrameLength f )
+        {
+            foreach ( string key,val; j )
+                props[key] = Property.create( val, f );
+        }
+
         /+ key名のプロパティを追加 +/
         void add ( string key, Property val )
         {
@@ -77,6 +83,8 @@ class PropertyList
             auto hoge = new PropertyList;
             hoge["X"] = new PropertyBase!float( new FrameLength(50), 20 );
             assert( hoge.casted!float("X").get( new FrameAt(0) ) == 20 );
-            import std.stdio; hoge.json.writeln;
+
+            auto hoge2 = new PropertyList( hoge.json, hoge["X"].frame );
+            assert( hoge.properties.length == hoge2.properties.length );
         }
 }
