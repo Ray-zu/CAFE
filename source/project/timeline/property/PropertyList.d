@@ -32,8 +32,11 @@ class PropertyList
 
         this ( JSONValue j, FrameLength f )
         {
-            foreach ( string key,val; j )
-                props[key] = Property.create( val, f );
+            // 空リストの時はnullになるので確認
+            if ( j.type == JSON_TYPE.OBJECT ) {
+                foreach ( string key,val; j )
+                    props[key] = Property.create( val, f );
+            }
         }
 
         /+ key名のプロパティを追加 +/

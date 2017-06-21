@@ -9,7 +9,8 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.RenderingInfo,
        cafe.project.timeline.PropertyKeepableObject,
        cafe.project.timeline.effect.EffectList,
-       cafe.project.timeline.property.PropertyList;
+       cafe.project.timeline.property.PropertyList,
+       cafe.project.timeline.custom.NullObject;
 import std.json;
 
 /+ タイムラインに配置可能なオブジェクトの共通部分 +/
@@ -72,6 +73,18 @@ abstract class PlaceableObject : PropertyKeepableObject
 
         /+ レンダリング情報にオブジェクトの内容を適用 +/
         void apply ( RenderingInfo );
+
+        /+ type文字列からオブジェクト作成 +/
+        static final PlaceableObject create ( JSONValue j, FrameLength f )
+        {
+            switch ( j["type"].str )
+            {
+                case "NullObject":
+                    return new NullObject( j, f );
+
+                default: throw new Exception( "Undefined Object" );
+            }
+        }
 }
 
 /+ オブジェクト自体にエフェクトをかけられる場合の共通部分  +
