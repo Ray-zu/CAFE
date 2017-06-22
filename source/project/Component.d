@@ -52,7 +52,7 @@ class Component
         /+ RenderingInfoを生成 +/
         auto generate ( FrameAt f )
         {
-            auto rinfo   = new RenderingInfo( f );
+            auto rinfo   = new RenderingInfo( f, width, height );
             auto objects = timeline.objectsAtFrame(f).sort!
                 ( (a, b) => a.place.layer.value < b.place.layer.value );
             objects.each!( x => x.apply( rinfo ) );
