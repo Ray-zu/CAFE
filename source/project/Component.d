@@ -43,6 +43,8 @@ class Component
         /+ コンポーネントのリサイズ +/
         void resize ( uint w, uint h )
         {
+            if ( w == 0 || h == 0 )
+                throw new Exception( "Image size must be 1px or more." );
             size_width = w;
             size_height = h;
         }
