@@ -7,9 +7,10 @@
 module cafe.project.timeline.effect.EffectList;
 import cafe.project.timeline.effect.Effect,
        cafe.renderer.World;
-import std.algorithm;
+import std.algorithm,
+       std.exception;
 
-debug = 0;
+debug = 1;
 
 /+ 複数のエフェクトを管理するクラス +/
 class EffectList
@@ -37,7 +38,24 @@ class EffectList
             return w;
         }
 
+        /+ this += v : エフェクト追加演算子 +/
+        auto opAddAssign ( Effect v )
+        {
+            enforce( v, "Effect must be not null." );
+            effs ~= v;
+            return this;
+        }
+
+        /+ this += v : エフェクトリスト結合演算子 +/
+        auto opAddAssign ( EffectList v )
+        {
+            enforce( v, "EffectList must be not null." );
+            effs = v.effects;
+            return this;
+        }
+
         debug (1) unittest {
             auto hoge = new EffectList;
+            hoge += new EffectList;
         }
 }
