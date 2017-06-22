@@ -45,8 +45,7 @@ class NullObject : PlaceableObject
         this ( JSONValue j, FrameLength f )
         {
             super( j, f );
-            // TODO createEffectJSON( j["effects"].array, f );
-            effs = new EffectList;
+            createEffectJSON( j["effects"], f );
         }
 
         override void initProperties ( FrameLength f )
