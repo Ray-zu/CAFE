@@ -27,10 +27,10 @@ class OpenGLRenderer : Renderer
     public:
         this () {}
 
-        override RenderingResult render ( World, Camera )
+        override RenderingResult render ( World, Camera, uint w, uint h )
         {
             // TODO : レンダリング処理
-            return new RenderingResult( new BMP( 1, 1 ), new PCM( 2, 100, 0 ) );
+            return new RenderingResult( new BMP( w, h ), new PCM( 2, 100, 0 ) );
         }
 
         /+ レンダリングのテスト +/
@@ -40,6 +40,6 @@ class OpenGLRenderer : Renderer
             white_bmp[0,0] = RGBA( 255, 255, 255 );
             auto polygon = new Polygon( white_bmp, Vector3D(-100,-100,0),
                     Vector3D(100,-100,0), Vector3D(100,100,0), Vector3D(-100,100,0) );
-            return render( new World([polygon]), new Camera ).bitmap;
+            return render( new World([polygon]), new Camera, 0, 0 ).bitmap;
         }
 }

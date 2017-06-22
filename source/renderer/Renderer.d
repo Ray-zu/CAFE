@@ -30,5 +30,5 @@ class RenderingResult
 interface Renderer
 {
     public:
-        RenderingResult render ( World, Camera );
+        RenderingResult render ( World, Camera, uint, uint );
 }
