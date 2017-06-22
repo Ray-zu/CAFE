@@ -31,13 +31,6 @@ class EffectList
             effs = [];
         }
 
-        /+ エフェクト追加 +/
-        void add ( Effect e )
-        {
-            enforce( e, "Effect must be not null." );
-            effs ~= e;
-        }
-
         /+ WorldクラスにEffectをかける +/
         World apply ( World w )
         {
@@ -48,7 +41,16 @@ class EffectList
         /+ this += v : エフェクト追加演算子 +/
         auto opAddAssign ( Effect v )
         {
-            add( v );
+            enforce( v, "Effect must be not null." );
+            effs ~= v;
+            return this;
+        }
+
+        /+ this += v : エフェクトリスト結合演算子 +/
+        auto opAddAssign ( EffectList v )
+        {
+            enforce( v, "EffectList must be not null." );
+            effs = v.effects;
             return this;
         }
 
