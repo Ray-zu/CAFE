@@ -31,8 +31,7 @@ class Component
         this ( Component src )
         {
             tl = new Timeline( src.timeline );
-            size_width = src.width;
-            size_height = src.height;
+            resize( src.width, src.height );
         }
 
         this ( uint w = 1920, uint h = 1080 )
