@@ -9,6 +9,7 @@ import cafe.project.timeline.effect.Effect,
        cafe.project.ObjectPlacingInfo,
        cafe.renderer.World;
 import std.algorithm,
+       std.exception,
        std.json;
 
 debug = 1;
@@ -52,9 +53,26 @@ class EffectList
             return w;
         }
 
+        /+ this += v : エフェクト追加演算子 +/
+        auto opAddAssign ( Effect v )
+        {
+            enforce( v, "Effect must be not null." );
+            effs ~= v;
+            return this;
+        }
+
+        /+ this += v : エフェクトリスト結合演算子 +/
+        auto opAddAssign ( EffectList v )
+        {
+            enforce( v, "EffectList must be not null." );
+            effs = v.effects;
+            return this;
+        }
+
         debug (1) unittest {
             auto hoge = new EffectList;
             auto hoge2 = new EffectList( hoge.json, new FrameLength(50) );
             assert( hoge.effects.length == hoge2.effects.length );
+            hoge += new EffectList;
         }
 }

@@ -35,14 +35,15 @@ class Timeline
             frame_len = f;
         }
 
-        /+ オブジェクトを追加 +/
-        void addObject ( PlaceableObject o )
+        /+ this += obj : オブジェクトを追加 +/
+        auto opAddAssign ( PlaceableObject obj )
         {
-            objs ~= o;
+            objs ~= obj;
+            return this;
         }
 
-        /+ フレームfの処理対象のオブジェクトの配列を返す +/
-        @property objectsAtFrame ( FrameAt f )
+        /+ this[f] : フレームfの処理対象のオブジェクト配列を返す +/
+        auto opIndex ( FrameAt f )
         {
             return objects.filter!( x => x.place.frame.isInRange(f) ).array;
         }
@@ -54,8 +55,8 @@ class Timeline
             auto opi = new ObjectPlacingInfo( new LayerId(0),
                    new FramePeriod( hoge.length, new FrameAt(0), new FrameLength(5) ) );
             auto obj1 = new NullObject( opi );
-            hoge.addObject( obj1 );
+            hoge += obj1;
 
-            assert( hoge.objectsAtFrame( new FrameAt(0) ).length == 1 );
+            assert( hoge[new FrameAt(0)].length == 1 );
         }
 }
