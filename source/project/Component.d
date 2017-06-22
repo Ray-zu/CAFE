@@ -21,18 +21,31 @@ class Component
 {
     private:
         Timeline tl;
+        uint size_width, size_height;
 
     public:
         @property timeline () { return tl; }
+        @property width    () { return size_width; }
+        @property height   () { return size_height; }
 
         this ( Component src )
         {
             tl = new Timeline( src.timeline );
+            size_width = src.width;
+            size_height = src.height;
         }
 
-        this ()
+        this ( uint w = 1920, uint h = 1080 )
         {
             tl = new Timeline;
+            resize( w, h );
+        }
+
+        /+ コンポーネントのリサイズ +/
+        void resize ( uint w, uint h )
+        {
+            size_width = w;
+            size_height = h;
         }
 
         /+ RenderingInfoを生成 +/
