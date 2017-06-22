@@ -63,7 +63,8 @@ class Component
         BMP render ( FrameAt f, Renderer r )
         {
             auto rinfo = generate(f);
-            return r.render( rinfo.renderingStage, rinfo.camera );
+            return r.render( rinfo.renderingStage, rinfo.camera,
+                   rinfo.width, rinfo.height );
         }
 
         debug (1) unittest {
