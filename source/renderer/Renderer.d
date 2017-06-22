@@ -14,5 +14,5 @@ import cafe.renderer.Camera,
 interface Renderer
 {
     public:
-        BMP render ( World, Camera );
+        BMP render ( World, Camera, uint, uint );
 }
