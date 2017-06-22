@@ -7,6 +7,7 @@
 module cafe.project.timeline.property.PropertyList;
 import cafe.project.timeline.property.Property,
        cafe.project.ObjectPlacingInfo;
+import std.exception;
 
 debug = 0;
 
@@ -29,14 +30,6 @@ class PropertyList
         {
         }
 
-        /+ key名のプロパティを追加 +/
-        void add ( string key, Property val )
-        {
-            if ( !val ) throw new Exception( "You can't add a null variable." );
-            if ( key in props ) throw new Exception( "Property of the name is already exist." );
-            props[key] = val;
-        }
-
         /+ key名のプロパティを指定された型のプロパティクラスにキャストされた状態で返す +/
         auto casted ( T ) ( string key )
         {
@@ -50,16 +43,18 @@ class PropertyList
             props.remove( key );
         }
 
-        /+ this[key]でkey名のプロパティを返す +/
+        /+ this[key] : key名のプロパティを返す +/
         Property opIndex ( string key )
         {
             return properties[key];
         }
 
-        /+ this[key]=xでkey名のプロパティxを追加 +/
+        /+ this[key]=val : key名のプロパティxを追加 +/
         PropertyList opIndexAssign ( Property val, string key )
         {
-            add( key, val );
+            enforce( val, "Property must be not null." );
+            enforce( key !in props, "Property name conflict." );
+            props[key] = val;
             return this;
         }
 
