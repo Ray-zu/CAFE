@@ -28,6 +28,12 @@ class ComponentList
             comps["ROOT"] = new Component;
         }
 
+        /+ ルートコンポーネントを返す +/
+        @property root ()
+        {
+            return this["ROOT"];
+        }
+
         /+ コンポーネントの削除(参照から) +/
         void del ( Component c )
         {
