@@ -21,24 +21,38 @@ class Component
 {
     private:
         Timeline tl;
+        uint size_width, size_height;
 
     public:
         @property timeline () { return tl; }
+        @property width    () { return size_width; }
+        @property height   () { return size_height; }
 
         this ( Component src )
         {
             tl = new Timeline( src.timeline );
+            resize( src.width, src.height );
         }
 
-        this ()
+        this ( uint w = 1920, uint h = 1080 )
         {
             tl = new Timeline;
+            resize( w, h );
+        }
+
+        /+ コンポーネントのリサイズ +/
+        void resize ( uint w, uint h )
+        {
+            if ( w == 0 || h == 0 )
+                throw new Exception( "Image size must be 1px or more." );
+            size_width = w;
+            size_height = h;
         }
 
         /+ RenderingInfoを生成 +/
         auto generate ( FrameAt f )
         {
-            auto rinfo   = new RenderingInfo( f );
+            auto rinfo   = new RenderingInfo( f, width, height );
             auto objects = timeline.objectsAtFrame(f).sort!
                 ( (a, b) => a.place.layer.value < b.place.layer.value );
             objects.each!( x => x.apply( rinfo ) );
@@ -49,7 +63,8 @@ class Component
         BMP render ( FrameAt f, Renderer r )
         {
             auto rinfo = generate(f);
-            return r.render( rinfo.renderingStage, rinfo.camera );
+            return r.render( rinfo.renderingStage, rinfo.camera,
+                   rinfo.width, rinfo.height );
         }
 
         debug (1) unittest {
