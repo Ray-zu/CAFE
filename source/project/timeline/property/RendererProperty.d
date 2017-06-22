@@ -8,6 +8,9 @@ module cafe.project.timeline.property.RendererProperty;
 import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.property.Property,
        cafe.renderer.Renderer;
+import std.json;
+
+debug = 1;
 
 /+ レンダラの種類 +/
 enum RendererType
@@ -19,6 +22,12 @@ enum RendererType
 class RendererProperty : PropertyBase!RendererType
 {
     public:
+        override @property string typeToString ()
+        {
+            return "string";
+        }
+
+    public:
         override @property Property copy ()
         {
             return new RendererProperty( this );
@@ -29,9 +38,14 @@ class RendererProperty : PropertyBase!RendererType
             super( src );
         }
 
-        this ( FrameLength f )
+        this ( FrameLength f, RendererType r = RendererType.NoRendering )
         {
-            super( f, RendererType.NoRendering );
+            super( f, r );
+        }
+
+        this ( JSONValue[] j, FrameLength f, RendererType r = RendererType.NoRendering )
+        {
+            super( j, f, r );
         }
 
         /+ レンダラのインスタンスを作成 +/
@@ -45,5 +59,20 @@ class RendererProperty : PropertyBase!RendererType
 
                 default: throw new Exception( "Unknown Renderer" );
             }
+        }
+
+        override @property JSONValue json ()
+        {
+            auto j = super.json;
+            j["type"] = "Renderer";
+            return j;
+        }
+
+        debug (1) unittest {
+            auto hoge = new RendererProperty( new FrameLength(50) );
+            assert( hoge.get(new FrameAt(0)) == RendererType.NoRendering );
+
+            auto hoge2 = cast(RendererProperty)Property.create( hoge.json, hoge.frame );
+            assert( hoge2.get(new FrameAt(0)) == hoge.get(new FrameAt(0)) );
         }
 }

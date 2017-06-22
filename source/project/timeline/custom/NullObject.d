@@ -8,15 +8,23 @@ module cafe.project.timeline.custom.NullObject;
 import cafe.project.RenderingInfo,
        cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.PlaceableObject,
+       cafe.project.timeline.effect.EffectList,
        cafe.renderer.World;
+import std.conv,
+       std.json;
 
-debug = 0;
+debug = 1;
 
 /+ デバッグ用の何もしないオブジェクト +/
 class NullObject : PlaceableObject
 {
     mixin EffectKeepableObjectCommon;
     public:
+        override @property string type ()
+        {
+            return "NullObject";
+        }
+
         override @property PlaceableObject copy ()
         {
             return new NullObject( this );
@@ -31,9 +39,17 @@ class NullObject : PlaceableObject
         this ( ObjectPlacingInfo f )
         {
             super( f );
+            effs = new EffectList;
         }
 
-        override void initProperties ()
+        this ( JSONValue j, FrameLength f )
+        {
+            super( j, f );
+            // TODO createEffectJSON( j["effects"].array, f );
+            effs = new EffectList;
+        }
+
+        override void initProperties ( FrameLength f )
         {
         }
 
@@ -50,5 +66,8 @@ class NullObject : PlaceableObject
             auto hoge = new NullObject(
                     new ObjectPlacingInfo( new LayerId(0),
                         new FramePeriod( new FrameLength(5), new FrameAt(0), new FrameLength(1) ) ) );
+
+            auto hoge2 = PlaceableObject.create( hoge.json, hoge.place.frame.length );
+            assert( hoge.json.to!string == hoge2.json.to!string );
         }
 }

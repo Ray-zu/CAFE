@@ -53,7 +53,7 @@ class Component
         auto generate ( FrameAt f )
         {
             auto rinfo   = new RenderingInfo( f, width, height );
-            auto objects = timeline.objectsAtFrame(f).sort!
+            auto objects = timeline[f].sort!
                 ( (a, b) => a.place.layer.value < b.place.layer.value );
             objects.each!( x => x.apply( rinfo ) );
             return rinfo;

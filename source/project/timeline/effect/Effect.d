@@ -7,7 +7,9 @@
 module cafe.project.timeline.effect.Effect;
 import cafe.project.timeline.property.PropertyList,
        cafe.project.timeline.PropertyKeepableObject,
+       cafe.project.ObjectPlacingInfo,
        cafe.renderer.World;
+import std.json;
 
 /+ エフェクトクラス                                +
  + 多重継承の予定が無いので抽象クラスを使用します。+/
@@ -17,9 +19,9 @@ abstract class Effect : PropertyKeepableObject
         PropertyList props;
 
     public:
-        static @property string name ();
+        @property string name ();
 
-        override @property PropertyList properties ()
+        override @property PropertyList propertyList ()
         {
             return props;
         }
@@ -28,17 +30,36 @@ abstract class Effect : PropertyKeepableObject
 
         this ( Effect src )
         {
-            props = new PropertyList( src.properties );
+            props = new PropertyList( src.propertyList );
         }
 
-        this ()
+        this ( FrameLength f )
         {
-            initProperties;
+            initProperties(f);
+        }
+
+        this ( JSONValue j, FrameLength f )
+        {
+            props = new PropertyList( j["properties"], f );
+        }
+
+        override @property JSONValue json ()
+        {
+            auto j = JSONValue( null );
+            j["name"]       = JSONValue(name);
+            j["properties"] = JSONValue(propertyList.json);
+            return j;
         }
 
         /+ Worldクラスにエフェクトをかける +/
         World apply ( World w )
         {
             return w;
+        }
+
+        /+ JSONからEffectを作成 +/
+        static final Effect create ( JSONValue j, FrameLength f )
+        {
+            throw new Exception( "Not Implemented" );
         }
 }
