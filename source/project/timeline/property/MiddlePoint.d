@@ -40,7 +40,7 @@ interface MiddlePoint
                 case "string":
                     return new MiddlePointBase!string( value.str, frame );
                 default: 
-                    throw new Exception( "Not Implemented" );
+                    throw new Exception( "Undefined Type." );
             }
         }
 }
