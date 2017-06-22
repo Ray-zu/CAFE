@@ -10,7 +10,7 @@ import cafe.project.timeline.effect.Effect,
 import std.algorithm,
        std.exception;
 
-debug = 1;
+debug = 0;
 
 /+ 複数のエフェクトを管理するクラス +/
 class EffectList
