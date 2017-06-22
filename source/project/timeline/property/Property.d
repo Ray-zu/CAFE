@@ -7,13 +7,16 @@
 module cafe.project.timeline.property.Property;
 import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.property.Easing,
-       cafe.project.timeline.property.MiddlePoint;
+       cafe.project.timeline.property.MiddlePoint,
+       cafe.project.timeline.property.LimitedProperty,
+       cafe.project.timeline.property.RendererProperty;
 import std.algorithm,
        std.array,
        std.conv,
+       std.json,
        std.traits;
 
-debug = 0;
+debug = 1;
 
 /+ プロパティデータのインターフェース +/
 interface Property
@@ -35,6 +38,38 @@ interface Property
         @property bool increasable ();
         /+ プロパティの文字列変換で、複数行文字列を許可するかどうか +/
         @property bool allowMultiline ();
+
+        /+ JSON形式のデータを返す +/
+        @property JSONValue json ();
+
+        /+ JSONから生成 +/
+        static final Property create ( JSONValue j, FrameLength f )
+        {
+            Property result;
+            auto value = j["value"];
+            auto mps   = j["middle_points"].array;
+            switch ( j["type"].str )
+            {
+                case "int":
+                    return new PropertyBase!int( mps, f, value.integer.to!int );
+                case "float":
+                    return new PropertyBase!float( mps, f, value.floating );
+                case "string":
+                    return new PropertyBase!string( mps, f, value.str );
+
+                case "int/LimitedProperty":
+                    return new LimitedProperty!int( mps, f, value.integer.to!int,
+                            j["max"].integer.to!int, j["min"].integer.to!int );
+                case "float/LimitedProperty":
+                    return new LimitedProperty!float( mps, f, value.floating,
+                            j["max"].floating, j["min"].floating );
+
+                case "Renderer":
+                    return new RendererProperty( mps, f, value.str.to!RendererType );
+
+                default: throw new Exception( "The type is not supported." );
+            }
+        }
 }
 
 /+ プロパティデータ +/
@@ -79,6 +114,19 @@ class PropertyBase (T) : Property
             middle_points.insertInPlace( middle_points.countUntil(w)+1, mp );
         }
 
+    protected:
+        /+ 型名を文字列へ +/
+        @property string typeToString ()
+        {
+            static if ( is(T == int) )
+                return "int";
+            else static if ( is(T == float) )
+                return "float";
+            else static if ( is(T == string) )
+                return "string";
+            else throw new Exception( "The type is not supported." );
+        }
+
     public:
         override @property Property copy ()
         {
@@ -108,6 +156,16 @@ class PropertyBase (T) : Property
             middle_points ~= new MiddlePointBase!T( v,
                     new FramePeriod( f, new FrameAt(0), new FrameLength(f.value) ) );
             end_value = v;
+        }
+
+        /+ 中間点JSON配列から作成 +/
+        this ( JSONValue[] mps, FrameLength f, T v )
+        {
+            this( f, v );
+            mps.each!( x =>
+                        middle_points ~= cast(MiddlePointBase!T)
+                            MiddlePoint.create( typeToString, x, f )
+                     );
         }
 
         override MiddlePoint middlePointAtFrame ( FrameAt f )
@@ -176,11 +234,31 @@ class PropertyBase (T) : Property
             return isSomeString!T;
         }
 
+        override @property JSONValue json ()
+        {
+            JSONValue j;
+            j["frame"] = JSONValue( frame.value );
+            static if ( isNumeric!T )
+                j["value"] = JSONValue( endValue );
+            else
+                j["value"] = JSONValue( endValue.to!string );
+            j["type"] = JSONValue( typeToString );
+
+            JSONValue[] middle_points = [];
+            middlePoints.each!( x => middle_points ~= x.json );
+            j["middle_points"] = JSONValue( middle_points );
+            return j;
+        }
+
         debug ( 1 ) unittest {
             auto hoge = new PropertyBase!float( new FrameLength(50), 20 );
             assert( hoge.middlePoints.length == 1 );
             assert( hoge.middlePointAtFrame(new FrameAt(10)).frame.start.value == 0 );
             assert( hoge.nextValue(hoge.middlePoints[0]) == 20 );
+
+            auto hoge2 = cast(PropertyBase!float)Property.create( hoge.json, hoge.frame );
+            assert( hoge.middlePoints.length == hoge.middlePoints.length );
+            assert( hoge.get(new FrameAt(5)) == hoge.get(new FrameAt(5)) );
 
             (cast(MiddlePointBase!float)hoge.middlePoints[0]).easing = EasingType.Linear;
 

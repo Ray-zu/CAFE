@@ -7,9 +7,10 @@
 module cafe.project.timeline.property.PropertyList;
 import cafe.project.timeline.property.Property,
        cafe.project.ObjectPlacingInfo;
-import std.exception;
+import std.json,
+       std.exception;
 
-debug = 0;
+debug = 1;
 
 /+ プロパティの配列を管理するクラス +/
 class PropertyList
@@ -28,6 +29,15 @@ class PropertyList
 
         this ()
         {
+        }
+
+        this ( JSONValue j, FrameLength f )
+        {
+            // 空リストの時はnullになるので確認
+            if ( j.type == JSON_TYPE.OBJECT ) {
+                foreach ( string key,val; j )
+                    props[key] = Property.create( val, f );
+            }
         }
 
         /+ key名のプロパティを指定された型のプロパティクラスにキャストされた状態で返す +/
@@ -58,9 +68,21 @@ class PropertyList
             return this;
         }
 
+        /+ JSONで出力 +/
+        @property json ()
+        {
+             JSONValue j = JSONValue( null );
+             foreach( key,val; properties )
+                 j[key] = JSONValue( val.json );
+             return j;
+        }
+
         debug ( 1 ) unittest {
             auto hoge = new PropertyList;
             hoge["X"] = new PropertyBase!float( new FrameLength(50), 20 );
             assert( hoge.casted!float("X").get( new FrameAt(0) ) == 20 );
+
+            auto hoge2 = new PropertyList( hoge.json, hoge["X"].frame );
+            assert( hoge.properties.length == hoge2.properties.length );
         }
 }
