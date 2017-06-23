@@ -40,7 +40,7 @@ class Component
             resize( w, h );
         }
 
-        /+ コンポーネントのリサイズ +/
+        /+ コンポーネントの画像リサイズ +/
         void resize ( uint w, uint h )
         {
             if ( w == 0 || h == 0 )
