@@ -136,9 +136,19 @@ class FramePeriod
             parent_length = p;
         }
 
+        /+ フレームfが期間内かどうか返す +/
         bool isInRange ( FrameAt f )
         {
             return f.value >= start.value && f.value < end.value;
+        }
+
+        /+ フレーム期間fが期間内かどうか返す +/
+        bool isWhileRange ( FramePeriod f )
+        {
+            auto f_st = f.start.value;
+            auto f_ed = f.end.value;
+            return ( f_st >= start.value && f_st < end.value ) ||
+                   ( f_ed < end.value && f_ed > start.value );
         }
 
         /+ 長さを保ったまま開始地点を移動 +/
