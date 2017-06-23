@@ -8,7 +8,9 @@ module cafe.project.timeline.Timeline;
 import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.PlaceableObject;
 import std.algorithm,
-       std.array;
+       std.array,
+       std.conv,
+       std.json;
 
 debug = 1;
 
@@ -33,6 +35,13 @@ class Timeline
         {
             objs = [];
             frame_len = f;
+        }
+
+        this ( JSONValue j )
+        {
+            frame_len = new FrameLength( j["length"].uinteger.to!uint );
+            j["objects"].array.each!
+                ( x => objs ~= PlaceableObject.create( x, frame_len ) );
         }
 
         /+ this += obj : オブジェクトを追加 +/
@@ -67,6 +76,19 @@ class Timeline
             return this[f1,f2].filter!( x => x.place.layer.value == l.value ).array;
         }
 
+        /+ JSONで出力 +/
+        @property json ()
+        {
+            JSONValue j;
+            j["length"] = JSONValue( length.value );
+
+            JSONValue[] objs;
+            objects.each!( x => objs ~= x.json );
+            j["objects"] = JSONValue( objs );
+
+            return j;
+        }
+
         debug (1) unittest {
             import cafe.project.timeline.custom.NullObject;
             auto hoge = new Timeline( new FrameLength( 10 ) );
@@ -79,5 +101,8 @@ class Timeline
             assert( hoge[new FrameAt(0)].length == 1 );
             assert( hoge[new FrameAt(0),new FrameAt(1),new LayerId(0)].length == 1 );
             assert( hoge[new FrameAt(0),new FrameAt(1),new LayerId(1)].length == 0 );
+
+            auto hoge2 = new Timeline( hoge.json );
+            assert( hoge.objects.length == hoge2.objects.length );
         }
 }

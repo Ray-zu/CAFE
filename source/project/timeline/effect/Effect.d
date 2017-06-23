@@ -60,6 +60,9 @@ abstract class Effect : PropertyKeepableObject
         /+ JSONからEffectを作成 +/
         static final Effect create ( JSONValue j, FrameLength f )
         {
-            throw new Exception( "Not Implemented" );
+            switch ( j["name"].str )
+            {
+                default: throw new Exception( "Undefined Effect." );
+            }
         }
 }
