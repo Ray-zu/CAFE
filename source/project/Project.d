@@ -18,6 +18,9 @@ class Project
         ComponentList component_list;
 
     public:
+        string author;
+        string copyright;
+
         @property componentList () { return component_list; }
 
         this ( Project src )
@@ -40,6 +43,8 @@ class Project
         {
             JSONValue j;
             j["components"] = JSONValue(componentList.json);
+            j["author"]     = JSONValue(author);
+            j["copyright"]  = JSONValue(copyright);
             return j;
         }
 
