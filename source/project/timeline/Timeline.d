@@ -72,6 +72,20 @@ class Timeline
             else obj.place.frame.resizeStart( f );
         }
 
+        /+ objの終了フレームをfにリサイズ +/
+        void resizeEnd ( PlaceableObject obj, FrameAt f )
+        {
+            auto layer = obj.place.layer;
+            auto now_end = obj.place.frame.end;
+            auto expand_frames = f.value - now_end.value;
+            auto expand_length = new FrameLength( expand_frames );
+            auto col = this[now_end,expand_length,layer].remove!(x => x is obj);
+
+            if ( expand_frames > 0 && col.length )
+                resizeEnd( obj, col[0].place.frame.start );
+            else obj.place.frame.resizeEnd( f );
+        }
+
         /+ this += obj : オブジェクトを追加 +/
         auto opAddAssign ( PlaceableObject obj )
         {
