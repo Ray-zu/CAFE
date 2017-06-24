@@ -24,11 +24,18 @@ class Component
     private:
         Timeline tl;
         uint size_width, size_height;
+        uint video_fps;
 
     public:
         @property timeline () { return tl; }
         @property width    () { return size_width; }
         @property height   () { return size_height; }
+        @property fps      () { return video_fps; }
+
+        @property fps ( uint f )
+        {
+            video_fps = max( 1, f );
+        }
 
         this ( Component src )
         {
@@ -36,10 +43,11 @@ class Component
             resize( src.width, src.height );
         }
 
-        this ( uint w = 1920, uint h = 1080 )
+        this ( uint w = 1920, uint h = 1080, uint f = 30 )
         {
             tl = new Timeline;
             resize( w, h );
+            fps = f;
         }
 
         this ( JSONValue j )
@@ -47,6 +55,7 @@ class Component
             tl = new Timeline( j["timeline"] );
             size_width  = j["width"] .uinteger.to!uint;
             size_height = j["height"].uinteger.to!uint;
+            video_fps   = j["fps"]   .uinteger.to!uint;
         }
 
         /+ コンポーネントの画像リサイズ +/
@@ -61,7 +70,7 @@ class Component
         /+ RenderingInfoを生成 +/
         auto generate ( FrameAt f )
         {
-            auto rinfo   = new RenderingInfo( f, width, height );
+            auto rinfo   = new RenderingInfo( f, width, height, fps );
             auto objects = timeline[f].sort!
                 ( (a, b) => a.place.layer.value < b.place.layer.value );
 
@@ -90,6 +99,7 @@ class Component
             j["timeline"] = JSONValue(timeline.json);
             j["width"]    = JSONValue(width);
             j["height"]   = JSONValue(height);
+            j["fps"]      = JSONValue(fps);
             return j;
         }
 
