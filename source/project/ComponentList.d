@@ -25,6 +25,12 @@ class ComponentList
     public:
         @property components () { return comps; }
 
+        this ( ComponentList src )
+        {
+            foreach ( key,val; src.components )
+                comps[key] = new Component(val);
+        }
+
         this ()
         {
             comps["ROOT"] = new Component;
