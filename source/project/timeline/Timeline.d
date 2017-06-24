@@ -44,6 +44,34 @@ class Timeline
                 ( x => objs ~= PlaceableObject.create( x, frame_len ) );
         }
 
+        /+ objの位置をフレームf,レイヤlに変更 +/
+        void move ( PlaceableObject obj, FrameAt f, LayerId l )
+        {
+            auto length = obj.place.frame.length;
+            auto col = this[f,length,l];
+
+            if ( col.length ) {
+                // TODO : オブジェクトが邪魔で移動できないときの処理
+            } else {
+                obj.place.frame.move( f );
+                obj.place.layer.value = l.value;
+            }
+        }
+
+        /+ objの開始フレームをfにリサイズ +/
+        void resizeStart ( PlaceableObject obj, FrameAt f )
+        {
+            auto layer         = obj.place.layer;
+            auto now_start     = obj.place.frame.start;
+            auto expand_frames = now_start.value - f.value;
+            auto expand_length = new FrameLength( expand_frames );
+            auto col = this[f,expand_length,layer];
+
+            if ( expand_frames > 0 || col.length )
+                resizeStart( obj, col[$-1].place.frame.end );
+            else obj.place.frame.resizeStart( f );
+        }
+
         /+ this += obj : オブジェクトを追加 +/
         auto opAddAssign ( PlaceableObject obj )
         {
@@ -63,17 +91,28 @@ class Timeline
             return objects.filter!( x => x.place.frame.isWhileRange(f) ).array;
         }
 
-        /+ this[f1,f2] : f1~f2期間のオブジェクト配列を返す +/
-        auto opIndex ( FrameAt f1, FrameAt f2 )
+        /+ this[f1,len] : f1からlen期間のオブジェクト配列を返す +/
+        auto opIndex ( FrameAt f1, FrameLength len )
         {
-            return this[ new FramePeriod( length, f1, f2 ) ];
+            return this[ new FramePeriod( length, f1, len ) ];
         }
 
-        /+ this[f1,f2,l] : f1~f2期間中からレイヤlに配置されている +
-           オブジェクトの配列を返す                               +/
-        auto opIndex ( FrameAt f1, FrameAt f2, LayerId l )
+        /+ this[f,l] : フレームf,レイヤlにあるオブジェクトを返す +
+         + 無い場合はNULL                                        +/
+        auto opIndex ( FrameAt f, LayerId l )
         {
-            return this[f1,f2].filter!( x => x.place.layer.value == l.value ).array;
+            auto i = this[f].find!( x => x.place.layer.value == l.value ).array;
+            if ( i.length != 1 ) return null;
+            return i[0];
+        }
+
+        /+ this[f1,len,l] : f1からlen期間中からレイヤlに配置されている +
+           オブジェクトの配列を返す                                    +
+         + 結果は開始フレーム数が早い順に並べられます。                +/
+        auto opIndex ( FrameAt f1, FrameLength len, LayerId l )
+        {
+            return this[f1,len].filter!( x => x.place.layer.value == l.value ).array
+                .sort!( (a,b) => a.place.frame.start.value < b.place.frame.start.value ).array;
         }
 
         /+ JSONで出力 +/
@@ -99,8 +138,8 @@ class Timeline
             hoge += obj1;
 
             assert( hoge[new FrameAt(0)].length == 1 );
-            assert( hoge[new FrameAt(0),new FrameAt(1),new LayerId(0)].length == 1 );
-            assert( hoge[new FrameAt(0),new FrameAt(1),new LayerId(1)].length == 0 );
+            assert( hoge[new FrameAt(0),new FrameLength(1),new LayerId(0)].length == 1 );
+            assert( hoge[new FrameAt(0),new FrameLength(1),new LayerId(1)].length == 0 );
 
             auto hoge2 = new Timeline( hoge.json );
             assert( hoge.objects.length == hoge2.objects.length );
