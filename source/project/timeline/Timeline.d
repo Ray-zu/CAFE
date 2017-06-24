@@ -44,15 +44,6 @@ class Timeline
                 ( x => objs ~= PlaceableObject.create( x, frame_len ) );
         }
 
-        /+ 指定したフレーム、指定したレイヤーにあるオブジェクトを返す +
-         + 無い場合はNULL                                             +/
-        PlaceableObject find ( FrameAt f, LayerId l )
-        {
-            auto i = this[f].find!( x => x.place.layer.value == l.value ).array;
-            if ( i.length != 1 ) return null;
-            return i[0];
-        }
-
         /+ this += obj : オブジェクトを追加 +/
         auto opAddAssign ( PlaceableObject obj )
         {
@@ -72,13 +63,22 @@ class Timeline
             return objects.filter!( x => x.place.frame.isWhileRange(f) ).array;
         }
 
-        /+ this[f1,f2] : f1からlen期間のオブジェクト配列を返す +/
+        /+ this[f1,len] : f1からlen期間のオブジェクト配列を返す +/
         auto opIndex ( FrameAt f1, FrameLength len )
         {
             return this[ new FramePeriod( length, f1, len ) ];
         }
 
-        /+ this[f1,f2,l] : f1からlen期間中からレイヤlに配置されている +
+        /+ this[f,l] : フレームf,レイヤlにあるオブジェクトを返す +
+         + 無い場合はNULL                                        +/
+        auto opIndex ( FrameAt f, LayerId l )
+        {
+            auto i = this[f].find!( x => x.place.layer.value == l.value ).array;
+            if ( i.length != 1 ) return null;
+            return i[0];
+        }
+
+        /+ this[f1,len,l] : f1からlen期間中からレイヤlに配置されている +
            オブジェクトの配列を返す                               +/
         auto opIndex ( FrameAt f1, FrameLength len, LayerId l )
         {
