@@ -7,12 +7,13 @@
 module cafe.project.ObjectPlacingInfo;
 import std.algorithm,
        std.conv,
+       std.exception,
        std.json;
 
-debug = 1;
+debug = 0;
 
 /+ ひとつの変数を持つプロパティクラスの雛形 +/
-private class SingleValueProperty (T)
+private template SingleValueProperty (N, T)
 {
     private:
         T val;
@@ -21,7 +22,7 @@ private class SingleValueProperty (T)
         @property value ()      { return val; }
         @property value ( T f ) { val = f;    }
 
-        this ( SingleValueProperty!T src )
+        this ( N src )
         {
             value = src.value;
         }
@@ -40,47 +41,15 @@ private class SingleValueProperty (T)
 /+ フレーム数(長さ)                      +
  + 0から始まるフレーム総数を表現します。 +
  + 例:シーン全体の長さ                   +/
-alias FrameLength = SingleValueProperty!uint;
+class FrameLength {
+    mixin SingleValueProperty!(FrameLength,uint);
+}
 
 /+ フレーム数(一点)             +
  + ある１フレームを表現します。 +
  + 例:再生中フレーム            +/
-alias FrameAt = SingleValueProperty!uint;
-
-/+ フレーム数(一点)              +
- + ある一フレームを表現します。  +
- + FrameLength情報も保存します。 +/
-class FrameIn : FrameAt
-{
-    private:
-        FrameLength parent_length;
-
-    public:
-        override @property uint value ()
-        {
-            if ( val >= parentLength.value )
-                val = parentLength.value - 1;
-            return val;
-        }
-        @property parentLength () { return parent_length; }
-
-        this ( FrameIn src )
-        {
-            super( src );
-            parent_length = new FrameLength( src.parentLength );
-        }
-
-        this ( FrameLength t, uint f )
-        {
-            parent_length = t;
-            super( f );
-        }
-
-        debug (1) unittest {
-            auto f = new FrameIn( new FrameLength(500), 100 );
-            assert( f.value == 100 );
-            assert( f.parentLength.value == 500 );
-        }
+class FrameAt {
+    mixin SingleValueProperty!(FrameAt,uint);
 }
 
 /+ フレーム数(期間)                                   +
@@ -136,9 +105,19 @@ class FramePeriod
             parent_length = p;
         }
 
+        /+ フレームfが期間内かどうか返す +/
         bool isInRange ( FrameAt f )
         {
             return f.value >= start.value && f.value < end.value;
+        }
+
+        /+ フレーム期間fが期間内かどうか返す +/
+        bool isWhileRange ( FramePeriod f )
+        {
+            auto f_st = f.start.value;
+            auto f_ed = f.end.value;
+            return ( f_st >= start.value && f_st < end.value ) ||
+                   ( f_ed < end.value && f_ed > start.value );
         }
 
         /+ 長さを保ったまま開始地点を移動 +/
@@ -164,16 +143,23 @@ class FramePeriod
             length.value = start-fv;
         }
 
-        /+ FrameAtをこのクラスを元にしたFrameInに変換 +/
-        FrameIn relative ( FrameAt f )
+        /+ FrameAtをこのクラスを元にしたFrameAtに変換 +/
+        auto relative ( FrameAt f )
         {
-            return new FrameIn( length, f.value - start.value );
+            return new FrameAt( f.value - start.value );
         }
 
-        /+ FrameAtをparent_lengthを元にしたFrameInに変換 +/
-        FrameIn absolute ( FrameAt f )
+        /+ FrameAtをparent_lengthを元にしたFrameAtに変換 +/
+        auto absolute ( FrameAt f )
         {
-            return new FrameIn( parent_length, f.value + start.value );
+            return new FrameAt( f.value + start.value );
+        }
+
+        /+ 期間内のFrameAtの割合を返す +/
+        auto ratio ( FrameAt f, bool over = false )
+        {
+            enforce( isInRange(f) || over, "The frame is over period." );
+            return (f.value-start.value).to!float / length.value;
         }
 
         /+ JSONで保存 +/
@@ -193,6 +179,7 @@ class FramePeriod
             assert( f.length.value == 30 );
             assert( !f.isInRange( new FrameAt(20) ) );
             assert(  f.isInRange( new FrameAt(60) ) );
+            assert(  f.ratio( new FrameAt(65) ) == 0.5 );
 
             auto f2 = new FramePeriod( f.json, f.parentLength );
             assert( f2.length.value == 30 );
@@ -210,7 +197,9 @@ class FramePeriod
 }
 
 /+ レイヤID +/
-alias LayerId = SingleValueProperty!uint;
+class LayerId {
+    mixin SingleValueProperty!(LayerId, uint);
+}
 
 /+ オブジェクトの配置情報(レイヤ数/開始・終了フレーム数) +/
 class ObjectPlacingInfo

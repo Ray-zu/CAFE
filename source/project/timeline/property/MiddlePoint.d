@@ -11,7 +11,7 @@ import std.conv,
        std.traits,
        std.json;
 
-debug = 1;
+debug = 0;
 
 /+ 中間点データのインターフェース +/
 interface MiddlePoint
@@ -40,7 +40,7 @@ interface MiddlePoint
                 case "string":
                     return new MiddlePointBase!string( value.str, frame );
                 default: 
-                    throw new Exception( "Not Implemented" );
+                    throw new Exception( "Undefined Type." );
             }
         }
 }

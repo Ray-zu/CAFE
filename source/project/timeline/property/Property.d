@@ -16,7 +16,7 @@ import std.algorithm,
        std.json,
        std.traits;
 
-debug = 1;
+debug = 0;
 
 /+ プロパティデータのインターフェース +/
 interface Property
@@ -104,7 +104,7 @@ class PropertyBase (T) : Property
         {
             if ( auto m = nextMiddlePoint(mp) )
                 return m.frame.start;
-            else return cast(FrameAt)frame;
+            else return new FrameAt(frame.value);
         }
 
         /+ 中間点を指定されたものの次に追加 +/

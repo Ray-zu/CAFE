@@ -12,7 +12,7 @@ import std.algorithm,
        std.exception,
        std.json;
 
-debug = 1;
+debug = 0;
 
 /+ 複数のエフェクトを管理するクラス +/
 class EffectList

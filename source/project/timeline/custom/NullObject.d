@@ -13,7 +13,7 @@ import cafe.project.RenderingInfo,
 import std.conv,
        std.json;
 
-debug = 1;
+debug = 0;
 
 /+ デバッグ用の何もしないオブジェクト +/
 class NullObject : PlaceableObject
@@ -45,8 +45,7 @@ class NullObject : PlaceableObject
         this ( JSONValue j, FrameLength f )
         {
             super( j, f );
-            // TODO createEffectJSON( j["effects"].array, f );
-            effs = new EffectList;
+            createEffectJSON( j["effects"], f );
         }
 
         override void initProperties ( FrameLength f )

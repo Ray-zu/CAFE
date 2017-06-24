@@ -59,6 +59,7 @@ abstract class PlaceableObject : PropertyKeepableObject
         override void initProperties ( FrameLength f )
         {
             // 継承したインターフェースの実体は抽象クラスでも書かなきゃいけないっぽい？
+            throw new Exception( "Not Implemented" );
         }
 
         override @property JSONValue json ()
@@ -103,9 +104,9 @@ template EffectKeepableObjectCommon ()
         }
 
         /+ JSONからEffectListを作成 +/
-        @property createEffectJSON ( JSONValue[] j, FrameLength f )
+        @property createEffectJSON ( JSONValue j, FrameLength f )
         {
-            throw new Exception( "Not Implemented" );
+            effs = new EffectList( j, f );
         }
 
     public:

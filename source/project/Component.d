@@ -11,7 +11,9 @@ import cafe.project.timeline.Timeline,
        cafe.renderer.graphics.Bitmap,
        cafe.renderer.World,
        cafe.renderer.Renderer;
-import std.algorithm;
+import std.algorithm,
+       std.conv,
+       std.json;
 
 debug = 0;
 
@@ -40,7 +42,14 @@ class Component
             resize( w, h );
         }
 
-        /+ コンポーネントのリサイズ +/
+        this ( JSONValue j )
+        {
+            tl = new Timeline( j["timeline"] );
+            size_width  = j["width"] .uinteger.to!uint;
+            size_height = j["height"].uinteger.to!uint;
+        }
+
+        /+ コンポーネントの画像リサイズ +/
         void resize ( uint w, uint h )
         {
             if ( w == 0 || h == 0 )
@@ -55,7 +64,14 @@ class Component
             auto rinfo   = new RenderingInfo( f, width, height );
             auto objects = timeline[f].sort!
                 ( (a, b) => a.place.layer.value < b.place.layer.value );
-            objects.each!( x => x.apply( rinfo ) );
+
+            LayerId last_layer = new LayerId(0);
+            foreach ( obj; objects )
+            {
+                if ( last_layer.value+1 < obj.place.layer.value )
+                    rinfo.pushEffectStage; // 空白レイヤでレンダリングステージへプッシュ
+                obj.apply( rinfo );
+            }
             return rinfo;
         }
 
@@ -67,9 +83,22 @@ class Component
                    rinfo.width, rinfo.height );
         }
 
+        /+ JSON出力 +/
+        @property json ()
+        {
+            JSONValue j;
+            j["timeline"] = JSONValue(timeline.json);
+            j["width"]    = JSONValue(width);
+            j["height"]   = JSONValue(height);
+            return j;
+        }
+
         debug (1) unittest {
             auto hoge = new Component;
             assert( hoge.generate( new FrameAt(0) ).renderingStage.polygons.length == 0 );
             // hoge.render( new FrameAt(0) );
+
+            auto hoge2 = new Component( hoge.json );
+            assert( hoge.json.to!string == hoge2.json.to!string );
         }
 }
