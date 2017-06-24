@@ -67,7 +67,7 @@ class Timeline
             auto expand_length = new FrameLength( expand_frames );
             auto col = this[f,expand_length,layer].remove!(x => x is obj);
 
-            if ( expand_frames > 0 || col.length )
+            if ( expand_frames > 0 && col.length )
                 resizeStart( obj, col[$-1].place.frame.end );
             else obj.place.frame.resizeStart( f );
         }
