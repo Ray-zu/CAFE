@@ -9,7 +9,7 @@ import cafe.project.ComponentList;
 import std.conv,
        std.json;
 
-debug = 0;
+debug = 1;
 
 /+ プロジェクト全体のデータ +/
 class Project
@@ -20,6 +20,7 @@ class Project
     public:
         string author;
         string copyright;
+        uint   samplingRate;
 
         @property componentList () { return component_list; }
 
@@ -36,15 +37,19 @@ class Project
         this ( JSONValue j )
         {
             component_list = new ComponentList( j["components"] );
+            author = j["author"].str;
+            copyright = j["copyright"].str;
+            samplingRate = j["samplingRate"].uinteger.to!uint;
         }
 
         /+ JSON出力 +/
         @property json ()
         {
             JSONValue j;
-            j["components"] = JSONValue(componentList.json);
-            j["author"]     = JSONValue(author);
-            j["copyright"]  = JSONValue(copyright);
+            j["components"]   = JSONValue(componentList.json);
+            j["author"]       = JSONValue(author);
+            j["copyright"]    = JSONValue(copyright);
+            j["samplingRate"] = JSONValue(samplingRate);
             return j;
         }
 
