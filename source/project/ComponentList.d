@@ -7,9 +7,11 @@
 module cafe.project.ComponentList;
 import cafe.project.Component;
 import std.algorithm,
-       std.exception;
+       std.conv,
+       std.exception,
+       std.json;
 
-debug = 0;
+debug = 1;
 
 /+ コンポーネントのID型 +/
 alias ComponentID = string;
@@ -26,6 +28,12 @@ class ComponentList
         this ()
         {
             comps["ROOT"] = new Component;
+        }
+
+        this ( JSONValue j )
+        {
+            foreach ( string key,val; j )
+                comps[key] = new Component( val );
         }
 
         /+ ルートコンポーネントを返す +/
@@ -62,7 +70,18 @@ class ComponentList
             return this;
         }
 
+        /+ JSON出力 +/
+        @property json ()
+        {
+            JSONValue j;
+            foreach ( key,val; components )
+                j[key] = JSONValue(val.json);
+            return j;
+        }
+
         debug (1) unittest {
             auto hoge = new ComponentList;
+            auto hoge2 = new ComponentList( hoge.json );
+            assert( hoge.json.to!string == hoge2.json.to!string );
         }
 }
