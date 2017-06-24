@@ -18,6 +18,10 @@ class Project
         ComponentList component_list;
 
     public:
+        string author;
+        string copyright;
+        uint   samplingRate;
+
         @property componentList () { return component_list; }
 
         this ( Project src )
@@ -33,13 +37,19 @@ class Project
         this ( JSONValue j )
         {
             component_list = new ComponentList( j["components"] );
+            author = j["author"].str;
+            copyright = j["copyright"].str;
+            samplingRate = j["samplingRate"].uinteger.to!uint;
         }
 
         /+ JSON出力 +/
         @property json ()
         {
             JSONValue j;
-            j["components"] = JSONValue(componentList.json);
+            j["components"]   = JSONValue(componentList.json);
+            j["author"]       = JSONValue(author);
+            j["copyright"]    = JSONValue(copyright);
+            j["samplingRate"] = JSONValue(samplingRate);
             return j;
         }
 
