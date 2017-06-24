@@ -44,6 +44,15 @@ class Timeline
                 ( x => objs ~= PlaceableObject.create( x, frame_len ) );
         }
 
+        /+ 指定したフレーム、指定したレイヤーにあるオブジェクトを返す +
+         + 無い場合はNULL                                             +/
+        PlaceableObject find ( FrameAt f, LayerId l )
+        {
+            auto i = this[f].find!( x => x.place.layer.value == l.value ).array;
+            if ( i.length != 1 ) return null;
+            return i[0];
+        }
+
         /+ this += obj : オブジェクトを追加 +/
         auto opAddAssign ( PlaceableObject obj )
         {
