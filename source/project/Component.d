@@ -12,6 +12,7 @@ import cafe.project.timeline.Timeline,
        cafe.renderer.World,
        cafe.renderer.Renderer;
 import std.algorithm,
+       std.conv,
        std.json;
 
 debug = 1;
@@ -39,6 +40,13 @@ class Component
         {
             tl = new Timeline;
             resize( w, h );
+        }
+
+        this ( JSONValue j )
+        {
+            tl = new Timeline( j["timeline"] );
+            size_width  = j["width"] .uinteger.to!uint;
+            size_height = j["height"].uinteger.to!uint;
         }
 
         /+ コンポーネントの画像リサイズ +/
@@ -83,6 +91,7 @@ class Component
             assert( hoge.generate( new FrameAt(0) ).renderingStage.polygons.length == 0 );
             // hoge.render( new FrameAt(0) );
 
-            hoge.json;
+            auto hoge2 = new Component( hoge.json );
+            assert( hoge.json.to!string == hoge2.json.to!string );
         }
 }
