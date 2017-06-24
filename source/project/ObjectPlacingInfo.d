@@ -7,6 +7,7 @@
 module cafe.project.ObjectPlacingInfo;
 import std.algorithm,
        std.conv,
+       std.exception,
        std.json;
 
 debug = 1;
@@ -154,6 +155,13 @@ class FramePeriod
             return new FrameAt( f.value + start.value );
         }
 
+        /+ 期間内のFrameAtの割合を返す +/
+        auto ratio ( FrameAt f, bool over = false )
+        {
+            enforce( isInRange(f) || over, "The frame is over period." );
+            return (f.value-start.value).to!float / length.value;
+        }
+
         /+ JSONで保存 +/
         @property json ()
         {
@@ -171,6 +179,7 @@ class FramePeriod
             assert( f.length.value == 30 );
             assert( !f.isInRange( new FrameAt(20) ) );
             assert(  f.isInRange( new FrameAt(60) ) );
+            assert(  f.ratio( new FrameAt(65) ) == 0.5 );
 
             auto f2 = new FramePeriod( f.json, f.parentLength );
             assert( f2.length.value == 30 );
