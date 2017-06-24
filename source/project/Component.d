@@ -64,7 +64,14 @@ class Component
             auto rinfo   = new RenderingInfo( f, width, height );
             auto objects = timeline[f].sort!
                 ( (a, b) => a.place.layer.value < b.place.layer.value );
-            objects.each!( x => x.apply( rinfo ) );
+
+            LayerId last_layer = new LayerId(0);
+            foreach ( obj; objects )
+            {
+                if ( last_layer.value+1 < obj.place.layer.value )
+                    rinfo.pushEffectStage; // 空白レイヤでレンダリングステージへプッシュ
+                obj.apply( rinfo );
+            }
             return rinfo;
         }
 
