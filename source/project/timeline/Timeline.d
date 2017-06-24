@@ -12,7 +12,7 @@ import std.algorithm,
        std.conv,
        std.json;
 
-debug = 1;
+debug = 0;
 
 /+ タイムラインデータ +/
 class Timeline

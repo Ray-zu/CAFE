@@ -10,7 +10,7 @@ import cafe.project.timeline.property.Property,
 import std.json,
        std.exception;
 
-debug = 1;
+debug = 0;
 
 /+ プロパティの配列を管理するクラス +/
 class PropertyList

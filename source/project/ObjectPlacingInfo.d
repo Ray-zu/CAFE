@@ -10,7 +10,7 @@ import std.algorithm,
        std.exception,
        std.json;
 
-debug = 1;
+debug = 0;
 
 /+ ひとつの変数を持つプロパティクラスの雛形 +/
 private template SingleValueProperty (N, T)

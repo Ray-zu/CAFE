@@ -11,7 +11,7 @@ import std.conv,
        std.traits,
        std.json;
 
-debug = 1;
+debug = 0;
 
 /+ 中間点データのインターフェース +/
 interface MiddlePoint

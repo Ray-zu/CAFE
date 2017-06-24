@@ -13,7 +13,7 @@ import cafe.project.RenderingInfo,
 import std.conv,
        std.json;
 
-debug = 1;
+debug = 0;
 
 /+ デバッグ用の何もしないオブジェクト +/
 class NullObject : PlaceableObject

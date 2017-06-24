@@ -9,7 +9,7 @@ import cafe.project.ComponentList;
 import std.conv,
        std.json;
 
-debug = 1;
+debug = 0;
 
 /+ プロジェクト全体のデータ +/
 class Project
