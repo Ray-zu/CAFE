@@ -72,17 +72,17 @@ class Timeline
             return objects.filter!( x => x.place.frame.isWhileRange(f) ).array;
         }
 
-        /+ this[f1,f2] : f1~f2期間のオブジェクト配列を返す +/
-        auto opIndex ( FrameAt f1, FrameAt f2 )
+        /+ this[f1,f2] : f1からlen期間のオブジェクト配列を返す +/
+        auto opIndex ( FrameAt f1, FrameLength len )
         {
-            return this[ new FramePeriod( length, f1, f2 ) ];
+            return this[ new FramePeriod( length, f1, len ) ];
         }
 
-        /+ this[f1,f2,l] : f1~f2期間中からレイヤlに配置されている +
+        /+ this[f1,f2,l] : f1からlen期間中からレイヤlに配置されている +
            オブジェクトの配列を返す                               +/
-        auto opIndex ( FrameAt f1, FrameAt f2, LayerId l )
+        auto opIndex ( FrameAt f1, FrameLength len, LayerId l )
         {
-            return this[f1,f2].filter!( x => x.place.layer.value == l.value ).array;
+            return this[f1,len].filter!( x => x.place.layer.value == l.value ).array;
         }
 
         /+ JSONで出力 +/
@@ -108,8 +108,8 @@ class Timeline
             hoge += obj1;
 
             assert( hoge[new FrameAt(0)].length == 1 );
-            assert( hoge[new FrameAt(0),new FrameAt(1),new LayerId(0)].length == 1 );
-            assert( hoge[new FrameAt(0),new FrameAt(1),new LayerId(1)].length == 0 );
+            assert( hoge[new FrameAt(0),new FrameLength(1),new LayerId(0)].length == 1 );
+            assert( hoge[new FrameAt(0),new FrameLength(1),new LayerId(1)].length == 0 );
 
             auto hoge2 = new Timeline( hoge.json );
             assert( hoge.objects.length == hoge2.objects.length );
