@@ -48,7 +48,7 @@ class Timeline
         void move ( PlaceableObject obj, FrameAt f, LayerId l )
         {
             auto length = obj.place.frame.length;
-            auto col = this[f,length,l];
+            auto col = this[f,length,l].remove!(x => x is obj);
 
             if ( col.length ) {
                 // TODO : オブジェクトが邪魔で移動できないときの処理
@@ -65,7 +65,7 @@ class Timeline
             auto now_start     = obj.place.frame.start;
             auto expand_frames = now_start.value - f.value;
             auto expand_length = new FrameLength( expand_frames );
-            auto col = this[f,expand_length,layer];
+            auto col = this[f,expand_length,layer].remove!(x => x is obj);
 
             if ( expand_frames > 0 || col.length )
                 resizeStart( obj, col[$-1].place.frame.end );
