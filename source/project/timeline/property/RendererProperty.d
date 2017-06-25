@@ -10,7 +10,7 @@ import cafe.project.ObjectPlacingInfo,
        cafe.renderer.Renderer;
 import std.json;
 
-debug = 1;
+debug = 0;
 
 /+ レンダラの種類 +/
 enum RendererType

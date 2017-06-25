@@ -13,7 +13,7 @@ import std.algorithm,
        std.json,
        std.string;
 
-debug = 1;
+debug = 0;
 
 /+ Bool型のプロパティ +/
 class BoolProperty : PropertyBase!bool
