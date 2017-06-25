@@ -9,7 +9,8 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.property.Easing,
        cafe.project.timeline.property.MiddlePoint,
        cafe.project.timeline.property.LimitedProperty,
-       cafe.project.timeline.property.RendererProperty;
+       cafe.project.timeline.property.RendererProperty,
+       cafe.project.timeline.property.BoolProperty;
 import std.algorithm,
        std.array,
        std.conv,
@@ -56,6 +57,8 @@ interface Property
                     return new PropertyBase!float( mps, f, value.floating );
                 case "string":
                     return new PropertyBase!string( mps, f, value.str );
+                case "bool":
+                    return new BoolProperty( mps, f, value.type==JSON_TYPE.TRUE );
 
                 case "int/LimitedProperty":
                     return new LimitedProperty!int( mps, f, value.integer.to!int,
@@ -161,11 +164,12 @@ class PropertyBase (T) : Property
         /+ 中間点JSON配列から作成 +/
         this ( JSONValue[] mps, FrameLength f, T v )
         {
-            this( f, v );
+            frame_len = f;
             mps.each!( x =>
                         middle_points ~= cast(MiddlePointBase!T)
                             MiddlePoint.create( typeToString, x, f )
                      );
+            end_value = v;
         }
 
         override MiddlePoint middlePointAtFrame ( FrameAt f )

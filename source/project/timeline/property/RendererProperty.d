@@ -10,7 +10,7 @@ import cafe.project.ObjectPlacingInfo,
        cafe.renderer.Renderer;
 import std.json;
 
-debug = 0;
+debug = 1;
 
 /+ レンダラの種類 +/
 enum RendererType
@@ -24,7 +24,7 @@ class RendererProperty : PropertyBase!RendererType
     public:
         override @property string typeToString ()
         {
-            return "string";
+            return "RendererType";
         }
 
     public:
