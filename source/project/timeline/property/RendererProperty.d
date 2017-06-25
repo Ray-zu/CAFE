@@ -24,7 +24,7 @@ class RendererProperty : PropertyBase!RendererType
     public:
         override @property string typeToString ()
         {
-            return "string";
+            return "RendererType";
         }
 
     public:
