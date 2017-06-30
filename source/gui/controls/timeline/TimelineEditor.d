@@ -25,6 +25,7 @@ class TimelineEditor
         }
 
         Timeline tl;
+        uint     cur_frame;
 
         Operation op_type;
         int       op_offset_frame;
@@ -32,6 +33,15 @@ class TimelineEditor
 
         PlaceableObject selecting;
         PlaceableObject operating;
+
+        /+ オペレーション関連の変数を初期化 +/
+        void clearOperationState ()
+        {
+            op_type = Operation.None;
+            op_offset_frame = 0;
+            op_offset_layer = 0;
+            operating = null;
+        }
 
     public:
         @property timeline () { return tl; }
@@ -44,6 +54,7 @@ class TimelineEditor
             }
             this.tl = tl;
         }
+        @property currentFrame () { return cur_frame; }
 
         @property selectedObject () { return selecting; }
         @property operatedObject () { return operating; }
@@ -103,9 +114,9 @@ class TimelineEditor
         /+ タイムラインのオブジェクトがクリックされた時に呼ばれる +/
         auto onObjectLeftDown ( PlaceableObject obj, uint f, uint l )
         {
-            op_type = Operation.Clicking;
             op_offset_frame = f - obj.place.frame.start.value;
             op_offset_layer = l - obj.place.layer.value;
+            return true;
         }
 
         /+ タイムラインのオブジェクトレイヤがクリックされた時に呼ばれる +/
@@ -121,14 +132,31 @@ class TimelineEditor
         /+ タイムラインのプロパティレイヤがクリックされた時に呼ばれる +/
         auto onPropertyLayerLeftDown ( uint f, uint l )
         {
-            throw new Exception( "Not Implemented" );
+            // TODO
+            return true;
         }
 
         /+ タイムラインがクリックされたときに呼ばれる +/
         auto onLeftDown ( uint f, uint l )
         {
-            return isPropertyLayer(l) ?
+            clearOperationState;
+            op_type = Operation.Clicking;
+
+            auto result = isPropertyLayer(l) ?
                 onPropertyLayerLeftDown( f, layerId(l) ):
                 onObjectLayerLeftDown  ( f, layerId(l) );
+            if ( !result ) cur_frame = f;
+
+            return true;
+        }
+
+
+        /+ タイムラインがクリックされ終わった時に呼ばれる +/
+        auto onLeftUp ( uint f, uint l )
+        {
+            if ( op_type == Operation.Clicking && operating )
+                selecting = operating;
+            clearOperationState;
+            return true;
         }
 }
