@@ -44,46 +44,10 @@ class Timeline
                 ( x => objs ~= PlaceableObject.create( x, frame_len ) );
         }
 
-        /+ objの位置をフレームf,レイヤlに変更 +/
-        void move ( PlaceableObject obj, FrameAt f, LayerId l )
+        /+ objを削除 +/
+        void remove ( PlaceableObject obj )
         {
-            auto length = obj.place.frame.length;
-            auto col = this[f,length,l].remove!(x => x is obj);
-
-            if ( col.length ) {
-                // TODO : オブジェクトが邪魔で移動できないときの処理
-            } else {
-                obj.place.frame.move( f );
-                obj.place.layer.value = l.value;
-            }
-        }
-
-        /+ objの開始フレームをfにリサイズ +/
-        void resizeStart ( PlaceableObject obj, FrameAt f )
-        {
-            auto layer         = obj.place.layer;
-            auto now_start     = obj.place.frame.start;
-            auto expand_frames = now_start.value - f.value;
-            auto expand_length = new FrameLength( expand_frames );
-            auto col = this[f,expand_length,layer].remove!(x => x is obj);
-
-            if ( expand_frames > 0 && col.length )
-                resizeStart( obj, col[$-1].place.frame.end );
-            else obj.place.frame.resizeStart( f );
-        }
-
-        /+ objの終了フレームをfにリサイズ +/
-        void resizeEnd ( PlaceableObject obj, FrameAt f )
-        {
-            auto layer = obj.place.layer;
-            auto now_end = obj.place.frame.end;
-            auto expand_frames = f.value - now_end.value;
-            auto expand_length = new FrameLength( expand_frames );
-            auto col = this[now_end,expand_length,layer].remove!(x => x is obj);
-
-            if ( expand_frames > 0 && col.length )
-                resizeEnd( obj, col[0].place.frame.start );
-            else obj.place.frame.resizeEnd( f );
+            objects.remove!( x => x is obj );
         }
 
         /+ this += obj : オブジェクトを追加 +/
