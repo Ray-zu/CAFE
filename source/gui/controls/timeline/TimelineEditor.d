@@ -56,7 +56,7 @@ class TimelineEditor
                 selecting.propertyList.properties.length : 0;
         }
 
-        /+ レイヤインデックスlがプロパティレイヤかオブジェクトレイヤか +/
+        /+ レイヤインデックスlがプロパティレイヤかどうか +/
         auto isPropertyLayer ( uint l )
         {
             auto sel_l = selecting.place.layer.value;
