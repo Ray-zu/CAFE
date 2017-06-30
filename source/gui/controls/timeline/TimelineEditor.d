@@ -9,6 +9,8 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.Timeline,
        cafe.project.timeline.PlaceableObject;
 
+debug = 1;
+
 /+ Timelineのオブジェクトを移動/リサイズ +
  + 右クリック時の動作など                +/
 class TimelineEditor
@@ -159,5 +161,9 @@ class TimelineEditor
                 selecting = operating;
             clearOperationState;
             return true;
+        }
+
+        debug (1) unittest {
+            auto hoge = new TimelineEditor();
         }
 }
