@@ -18,6 +18,7 @@ class TimelineEditor
         {
             None,
             Clicking,       // クリック中で操作されていない状態
+
             Move,           // 移動中
             ResizeStart,    // 左端をリサイズ中
             ResizeEnd       // 右端をリサイズ中
@@ -26,6 +27,9 @@ class TimelineEditor
         Timeline tl;
 
         Operation op_type;
+        int       op_offset_frame;
+        int       op_offset_layer;
+
         PlaceableObject selecting;
         PlaceableObject operating;
 
@@ -93,5 +97,38 @@ class TimelineEditor
                 return l;
             else
                 return l + propertyLayerLength;
+        }
+
+
+        /+ タイムラインのオブジェクトがクリックされた時に呼ばれる +/
+        auto onObjectLeftDown ( PlaceableObject obj, uint f, uint l )
+        {
+            op_type = Operation.Clicking;
+            op_offset_frame = f - obj.place.frame.start.value;
+            op_offset_layer = l - obj.place.layer.value;
+        }
+
+        /+ タイムラインのオブジェクトレイヤがクリックされた時に呼ばれる +/
+        auto onObjectLayerLeftDown ( uint f, uint l )
+        {
+            auto obj = timeline[new FrameAt(f), new LayerId(l)];
+            if ( obj )
+                return onObjectLeftDown( obj, f, l );
+            else
+                return false;
+        }
+
+        /+ タイムラインのプロパティレイヤがクリックされた時に呼ばれる +/
+        auto onPropertyLayerLeftDown ( uint f, uint l )
+        {
+            throw new Exception( "Not Implemented" );
+        }
+
+        /+ タイムラインがクリックされたときに呼ばれる +/
+        auto onLeftDown ( uint f, uint l )
+        {
+            return isPropertyLayer(l) ?
+                onPropertyLayerLeftDown( f, layerId(l) ):
+                onObjectLayerLeftDown  ( f, layerId(l) );
         }
 }
