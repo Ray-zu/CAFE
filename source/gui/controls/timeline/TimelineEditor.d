@@ -34,6 +34,7 @@ class TimelineEditor
         PlaceableObject selecting;
         PlaceableObject operating;
 
+
         /+ オペレーション関連の変数を初期化 +/
         void clearOperationState ()
         {
@@ -43,26 +44,6 @@ class TimelineEditor
             operating = null;
         }
 
-    public:
-        @property timeline () { return tl; }
-        @property timeline ( Timeline tl )
-        {
-            if ( this.tl !is tl || !tl ) {
-                op_type = Operation.None;
-                selecting = null;
-                operating = null;
-            }
-            this.tl = tl;
-        }
-        @property currentFrame () { return cur_frame; }
-
-        @property selectedObject () { return selecting; }
-        @property operatedObject () { return operating; }
-
-        this ( Timeline tl = null )
-        {
-            timeline = tl;
-        }
 
         /+ プロパティレイヤの数 +/
         auto propertyLayerLength ()
@@ -136,6 +117,27 @@ class TimelineEditor
             return true;
         }
 
+    public:
+        @property timeline () { return tl; }
+        @property timeline ( Timeline tl )
+        {
+            if ( this.tl !is tl || !tl ) {
+                op_type = Operation.None;
+                selecting = null;
+                operating = null;
+            }
+            this.tl = tl;
+        }
+        @property currentFrame () { return cur_frame; }
+
+        @property selectedObject () { return selecting; }
+        @property operatedObject () { return operating; }
+
+        this ( Timeline tl = null )
+        {
+            timeline = tl;
+        }
+
         /+ タイムラインがクリックされたときに呼ばれる +/
         auto onLeftDown ( uint f, uint l )
         {
@@ -149,7 +151,6 @@ class TimelineEditor
 
             return true;
         }
-
 
         /+ タイムラインがクリックされ終わった時に呼ばれる +/
         auto onLeftUp ( uint f, uint l )
