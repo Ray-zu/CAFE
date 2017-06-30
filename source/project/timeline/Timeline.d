@@ -44,6 +44,12 @@ class Timeline
                 ( x => objs ~= PlaceableObject.create( x, frame_len ) );
         }
 
+        /+ objを削除 +/
+        void remove ( PlaceableObject obj )
+        {
+            objects.remove!( x => x is obj );
+        }
+
         /+ this += obj : オブジェクトを追加 +/
         auto opAddAssign ( PlaceableObject obj )
         {
