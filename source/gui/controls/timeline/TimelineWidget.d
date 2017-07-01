@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.TimelineWidget;
-import cafe.gui.controls.timeline.TimelineEditor;
+import cafe.gui.controls.timeline.TimelineEditor,
+       cafe.gui.controls.timeline.TimelineCanvas;
 import dlangui,
        dlangui.widgets.metadata;
 
@@ -23,6 +24,12 @@ class TimelineWidget : VerticalLayout
             super( id );
             addChild( parseML( q{
                 ScrollBar { id:"hscroll"; orientation:Horizontal }
+            } ) );
+            addChild( parseML( q{
+                HorizontalLayout {
+                    TimelineCanvas { id:"canvas" }
+                    ScrollBar { id:"vscroll"; orientation:Vertical }
+                }
             } ) );
         }
 }
