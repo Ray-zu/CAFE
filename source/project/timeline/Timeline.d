@@ -63,6 +63,12 @@ class Timeline
             return objects.filter!( x => x.place.frame.isInRange(f) ).array;
         }
 
+        /+ this[l] : レイヤlのオブジェクト配列を返す +/
+        auto opIndex ( LayerId l )
+        {
+            return objects.filter!( x => x.place.layer.value == l.value ).array;
+        }
+
         /+ this[f] : フレーム期間fのオブジェクト配列を返す +/
         auto opIndex ( FramePeriod f )
         {
