@@ -47,30 +47,30 @@ class TimelineEditor
         }
 
 
-        /+ プロパティレイヤの数 +/
-        auto propertyLayerLength ()
+        /+ プロパティラインの数 +/
+        auto propertyLineLength ()
         {
             return selecting ?
                 selecting.propertyList.properties.length : 0;
         }
 
-        /+ レイヤインデックスlがプロパティレイヤかどうか +/
-        auto isPropertyLayer ( uint l )
+        /+ ラインインデックスlがプロパティレイヤかどうか +/
+        auto isPropertyLine ( uint l )
         {
             auto sel_l = selecting.place.layer.value;
 
             if ( l <= sel_l )
                 return false;
-            else if ( l <= sel_l + propertyLayerLength )
+            else if ( l <= sel_l + propertyLineLength )
                 return true;
             else
                 return false;
         }
 
-        /+ レイヤインデックスからレイヤIDへ +/
+        /+ ラインインデックスからレイヤIDへ +/
         auto layerId ( uint l )
         {
-            auto prop_len = propertyLayerLength;
+            auto prop_len = propertyLineLength;
             auto sel_l = selecting.place.layer.value;
 
             if ( l <= sel_l )
@@ -81,8 +81,8 @@ class TimelineEditor
                 return l - prop_len;
         }
 
-        /+ レイヤIDからレイヤインデックスへ +/
-        auto layerIndex ( uint l, bool prop_layer )
+        /+ レイヤIDからラインインデックスへ +/
+        auto lineIndex ( uint l, bool prop_layer )
         {
             auto sel_l = selecting.place.layer.value;
             if ( prop_layer )
@@ -90,7 +90,7 @@ class TimelineEditor
             else if ( l <= sel_l )
                 return l;
             else
-                return l + propertyLayerLength;
+                return l + propertyLineLength;
         }
 
 
@@ -102,8 +102,8 @@ class TimelineEditor
             return true;
         }
 
-        /+ タイムラインのオブジェクトレイヤがクリックされた時に呼ばれる +/
-        auto onObjectLayerLeftDown ( uint f, uint l )
+        /+ タイムラインのオブジェクトラインがクリックされた時に呼ばれる +/
+        auto onObjectLineLeftDown ( uint f, uint l )
         {
             auto obj = timeline[new FrameAt(f), new LayerId(l)];
             if ( obj )
@@ -112,8 +112,8 @@ class TimelineEditor
                 return false;
         }
 
-        /+ タイムラインのプロパティレイヤがクリックされた時に呼ばれる +/
-        auto onPropertyLayerLeftDown ( uint f, uint l )
+        /+ タイムラインのプロパティラインがクリックされた時に呼ばれる +/
+        auto onPropertyLineLeftDown ( uint f, uint l )
         {
             // TODO
             return true;
@@ -137,15 +137,18 @@ class TimelineEditor
             timeline = tl;
         }
 
+        /+ ----------------------------------------------- +
+         + イベントハンドラ                                +
+         + ----------------------------------------------- +/
         /+ タイムラインがクリックされたときに呼ばれる +/
         auto onLeftDown ( uint f, uint l )
         {
             clearOperationState;
             op_type = Operation.Clicking;
 
-            auto result = isPropertyLayer(l) ?
-                onPropertyLayerLeftDown( f, layerId(l) ):
-                onObjectLayerLeftDown  ( f, layerId(l) );
+            auto result = isPropertyLine(l) ?
+                onPropertyLineLeftDown( f, layerId(l) ):
+                onObjectLineLeftDown  ( f, layerId(l) );
             if ( !result ) cur_frame = f;
 
             return true;
