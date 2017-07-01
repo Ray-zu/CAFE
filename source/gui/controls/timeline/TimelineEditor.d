@@ -123,11 +123,8 @@ class TimelineEditor
         @property timeline () { return tl; }
         @property timeline ( Timeline tl )
         {
-            if ( this.tl !is tl || !tl ) {
-                op_type = Operation.None;
-                selecting = null;
-                operating = null;
-            }
+            if ( this.tl !is tl || !tl )
+                clearOperationState;
             this.tl = tl;
         }
         @property currentFrame () { return cur_frame; }
