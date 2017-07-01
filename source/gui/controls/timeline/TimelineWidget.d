@@ -19,7 +19,7 @@ class TimelineWidget : VerticalLayout
         {
             super( id );
             addChild( parseML( q{
-                ScrollBar { id:"hscroll"; Orientation:Horizontal }
+                ScrollBar { id:"hscroll"; orientation:Horizontal }
             } ) );
         }
 }
