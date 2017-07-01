@@ -141,6 +141,18 @@ class TimelineEditor
             timeline = tl;
         }
 
+        /+ ラインインデックスlのライン情報を返す +/
+        auto lineInfo ( uint l )
+        {
+            auto id = layerId( l );
+            if ( isPropertyLine(l) ) {
+                auto   prop = selecting.propertyList.properties.values[id];
+                string name = selecting.propertyList.properties.keys[id];
+                return new Line( prop, name );
+            } else
+                return new Line( timeline[new LayerId(id)], "layer %d".format(id) );
+        }
+
         /+ ----------------------------------------------- +
          + イベントハンドラ                                +
          + ----------------------------------------------- +/
