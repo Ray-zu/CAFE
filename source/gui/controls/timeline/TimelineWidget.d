@@ -6,7 +6,10 @@
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.TimelineWidget;
 import cafe.gui.controls.timeline.TimelineEditor;
-import dlangui;
+import dlangui,
+       dlangui.widgets.metadata;
+
+mixin( registerWidgets!TimelineWidget );
 
 /+ タイムラインウィジェット +/
 class TimelineWidget : VerticalLayout
