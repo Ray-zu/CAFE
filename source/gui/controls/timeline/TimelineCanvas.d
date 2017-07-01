@@ -18,4 +18,9 @@ class TimelineCanvas : Widget
         {
             super( id );
         }
+
+        override void measure ( int w, int h )
+        {
+            measuredContent( w, h, w, h );
+        }
 }
