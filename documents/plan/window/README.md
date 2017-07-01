@@ -14,3 +14,4 @@ AULの後継版として開発しているのでAULの進化系であること�
 ## Special Thanks
 
 * [sigu33](https://twitter.com/@sigu_33) ( plan01, plan02を描いて頂きました )
+* [幼女](https://twitter.com/@mamedenkun) ( plan03を書いて頂きました。 )
