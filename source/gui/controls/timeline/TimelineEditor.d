@@ -12,7 +12,7 @@ import cafe.project.ObjectPlacingInfo,
 import std.conv,
        std.format;
 
-debug = 1;
+debug = 0;
 
 /+ Timelineのオブジェクトを移動/リサイズ +
  + 右クリック時の動作など                +/
