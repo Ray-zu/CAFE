@@ -7,7 +7,10 @@
 module cafe.gui.controls.timeline.TimelineEditor;
 import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.Timeline,
-       cafe.project.timeline.PlaceableObject;
+       cafe.project.timeline.PlaceableObject,
+       cafe.gui.controls.timeline.Line;
+import std.conv,
+       std.format;
 
 debug = 1;
 
@@ -57,8 +60,9 @@ class TimelineEditor
         /+ ラインインデックスlがプロパティレイヤかどうか +/
         auto isPropertyLine ( uint l )
         {
-            auto sel_l = selecting.place.layer.value;
+            if ( selecting ) return false;
 
+            auto sel_l = selecting.place.layer.value;
             if ( l <= sel_l )
                 return false;
             else if ( l <= sel_l + propertyLineLength )
@@ -71,7 +75,7 @@ class TimelineEditor
         auto layerId ( uint l )
         {
             auto prop_len = propertyLineLength;
-            auto sel_l = selecting.place.layer.value;
+            auto sel_l = selecting ? selecting.place.layer.value : 0;
 
             if ( l <= sel_l )
                 return l;
@@ -84,7 +88,7 @@ class TimelineEditor
         /+ レイヤIDからラインインデックスへ +/
         auto lineIndex ( uint l, bool prop_layer )
         {
-            auto sel_l = selecting.place.layer.value;
+            auto sel_l = selecting ? selecting.place.layer.value : 0;
             if ( prop_layer )
                 return l + sel_l + 1;
             else if ( l <= sel_l )
