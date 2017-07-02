@@ -16,8 +16,17 @@ mixin( registerWidgets!TimelineCanvas );
 
 class TimelineCanvas : Widget
 {
+    enum LayerSeparaterColor = 0x666666;
+
     private:
         TimelineEditor tl_editor;
+
+        uint start_frame;
+        uint page_width;
+        uint header_width;
+
+        float top_line_index;
+        uint  base_line_height;
 
         /+ 一番上のラインが上部に隠れているサイズ +/
         auto topHiddenPx ()
@@ -56,23 +65,51 @@ class TimelineCanvas : Widget
         /+ ラインの描画 +/
         void drawLine ( DrawBuf b, int y, Line l )
         {
-            enum LayerSeparaterColor = 0x666666;
-
             auto height = (l.height * lineHeight).to!int;
             b.drawLine( Point(0,y+height),
                     Point(b.width,y+height), LayerSeparaterColor );
         }
 
     public:
-        uint  startFrame;
-        uint  pageWidth;
+        @property startFrame () { return start_frame; }
+        @property startFrame ( uint f )
+        {
+            start_frame = h;
+            invalidate;
+        }
 
-        float topLineIndex;
-        uint  lineHeight;
+        @property pageWidth () { return page_width; }
+        @property pageWidth ( uint w )
+        {
+            page_width = w;
+            invalidate;
+        }
+
+        @property headerWidth () { return header_width; }
+        @property headerWidth ( uint h )
+        {
+            header_width = h;
+            invalidate;
+        }
+
+        @property topLineIndex () { return topLineIndex; }
+        @property topLineIndex ( uint t )
+        {
+            top_line_index = t;
+            invalidate;
+        }
+
+        @property lineHeight () { return line_height; }
+        @property lineHeight ( uint l )
+        {
+            line_height = l;
+            invalidate;
+        }
 
         @property timeline ( TimelineEditor tl )
         {
             tl_editor = tl;
+            invalidate;
         }
 
         this ( string id = "" )
