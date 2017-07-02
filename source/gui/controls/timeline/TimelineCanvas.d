@@ -1,0 +1,161 @@
+/+ ------------------------------------------------------------ +
+ + Author : aoitofu <aoitofu@dr.com>                            +
+ + This is part of CAFE ( https://github.com/aoitofu/CAFE ).    +
+ + ------------------------------------------------------------ +
+ + Please see /LICENSE.                                         +
+ + ------------------------------------------------------------ +/
+module cafe.gui.controls.timeline.TimelineCanvas;
+import cafe.gui.controls.timeline.TimelineEditor,
+       cafe.gui.controls.timeline.Line;
+import dlangui,
+       dlangui.widgets.metadata;
+import std.conv,
+       std.math;
+
+mixin( registerWidgets!TimelineCanvas );
+
+class TimelineCanvas : Widget
+{
+    enum BackgroundColor       = 0x333333;
+    enum LayerSeparaterColor   = 0x666666;
+    enum HeaderBackgroundColor = 0x222222;
+
+    private:
+        TimelineEditor tl_editor;
+
+        uint start_frame;
+        uint page_width;
+        uint header_width;
+
+        float top_line_index;
+        uint  base_line_height;
+
+        /+ 一番上のラインが上部に隠れているサイズ +/
+        auto topHiddenPx ()
+        {
+            auto trunced = topLineIndex.trunc.to!int;
+            return ((topLineIndex - trunced) *
+                tl_editor.lineInfo( trunced ).height*lineHeight).to!uint;
+        }
+
+        /+ 表示中のライン情報の配列を返す +/
+        auto showingLineInfo ()
+        {
+            Line[] result = [];
+            auto i = topLineIndex.trunc.to!uint;
+            auto h = 0;
+            auto hidden_px = topHiddenPx;
+            do {
+                result ~= tl_editor.lineInfo( i++ );
+                h += (result[$-1].height*lineHeight).to!int;
+            } while ( h < height + hidden_px );
+            return result;
+        }
+
+        /+ Y座標(キャンバス相対)からラインインデックスへ +/
+        auto yToLineIndex ( int y )
+        {
+            auto i = topLineIndex.trunc.to!uint;
+            auto h = 0;
+            auto hidden_px = topHiddenPx;
+            while ( h < y + hidden_px )
+                h += (tl_editor.lineInfo( i++ ).height * lineHeight).to!int;
+            return i;
+        }
+
+
+        /+ ラインの描画 +/
+        void drawLine ( DrawBuf b, int y, Line l )
+        {
+            auto height = (l.height * lineHeight).to!int;
+
+            // TODO オブジェクト描画
+
+            // 上のラインの線と被るのでyに1足します。
+            b.fillRect( Rect( 0,y+1, headerWidth,y+height ),
+                    HeaderBackgroundColor );
+            // TODO ライン名描画
+
+            b.drawLine( Point(0,y+height), Point(b.width,y+height),
+                    LayerSeparaterColor );
+        }
+
+    public:
+        @property startFrame () { return start_frame; }
+        @property startFrame ( uint f )
+        {
+            start_frame = f;
+            invalidate;
+        }
+
+        @property pageWidth () { return page_width; }
+        @property pageWidth ( uint w )
+        {
+            page_width = w;
+            invalidate;
+        }
+
+        @property headerWidth () { return header_width; }
+        @property headerWidth ( uint h )
+        {
+            header_width = h;
+            invalidate;
+        }
+
+        @property topLineIndex () { return top_line_index; }
+        @property topLineIndex ( uint t )
+        {
+            top_line_index = t;
+            invalidate;
+        }
+
+        @property lineHeight () { return base_line_height; }
+        @property lineHeight ( uint l )
+        {
+            base_line_height = l;
+            invalidate;
+        }
+
+        @property timeline ( TimelineEditor tl )
+        {
+            tl_editor = tl;
+            invalidate;
+        }
+
+        this ( string id = "" )
+        {
+            super( id );
+            tl_editor = null;
+
+            startFrame = 0;
+            pageWidth = 100;
+            headerWidth = 100;
+            topLineIndex = 0;
+            lineHeight = 30;
+        }
+
+        override void measure ( int w, int h )
+        {
+            measuredContent( w, h, w, h );
+        }
+
+        override void onDraw ( DrawBuf b )
+        {
+            super.onDraw( b );
+            if ( !tl_editor ) return;
+
+            auto line_buf = new ColorDrawBuf( width, height );
+            line_buf.fill( BackgroundColor );
+
+            auto lindex = 0;
+            auto y = -topHiddenPx;
+            while ( y < height ) {
+                auto line = tl_editor.lineInfo( lindex++ );
+                drawLine( line_buf, y, line );
+                y += (line.height * lineHeight).to!int;
+            }
+
+            b.drawImage( pos.left, pos.top, line_buf );
+            object.destroy( line_buf );
+        }
+}

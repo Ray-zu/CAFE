@@ -24,20 +24,27 @@ struct Line
         string name;
 
     public:
+        uint  index;    //ラインインデックス
+        float height;   // 標準サイズの何倍か
+
         @property lineName () { return name; }
 
-        this ( PlaceableObject[] objs, string n )
+        this ( uint i, PlaceableObject[] objs, string n, float h = 1 )
         {
             is_layer = true;
             store.objects = objs;
             name = n;
+            index = i;
+            height = h;
         }
 
-        this ( Property prop, string n )
+        this ( uint i, Property prop, string n, float h = 1 )
         {
             is_layer = false;
             store.prop = prop;
             name = n;
+            index = i;
+            height = h;
         }
 
         /+ オブジェクトレイヤかどうか +/

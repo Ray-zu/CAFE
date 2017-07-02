@@ -60,7 +60,7 @@ class TimelineEditor
         /+ ラインインデックスlがプロパティレイヤかどうか +/
         auto isPropertyLine ( uint l )
         {
-            if ( selecting ) return false;
+            if ( !selecting ) return false;
 
             auto sel_l = selecting.place.layer.value;
             if ( l <= sel_l )
@@ -148,9 +148,9 @@ class TimelineEditor
             if ( isPropertyLine(l) ) {
                 auto   prop = selecting.propertyList.properties.values[id];
                 string name = selecting.propertyList.properties.keys[id];
-                return new Line( prop, name );
+                return Line( l, prop, name );
             } else
-                return new Line( timeline[new LayerId(id)], "layer %d".format(id) );
+                return Line( l, timeline[new LayerId(id)], "layer %d".format(id) );
         }
 
         /+ ----------------------------------------------- +
