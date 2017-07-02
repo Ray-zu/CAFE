@@ -42,7 +42,7 @@ class TimelineCanvas : Widget
         }
 
         /+ Y座標(キャンバス相対)からラインインデックスへ +/
-        auto yToLineIndex ( uint y )
+        auto yToLineIndex ( int y )
         {
             auto i = topLineIndex.trunc.to!uint;
             auto h = 0;
