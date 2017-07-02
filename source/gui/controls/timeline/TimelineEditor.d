@@ -148,9 +148,9 @@ class TimelineEditor
             if ( isPropertyLine(l) ) {
                 auto   prop = selecting.propertyList.properties.values[id];
                 string name = selecting.propertyList.properties.keys[id];
-                return new Line( prop, name );
+                return Line( prop, name );
             } else
-                return new Line( timeline[new LayerId(id)], "layer %d".format(id) );
+                return Line( timeline[new LayerId(id)], "layer %d".format(id) );
         }
 
         /+ ----------------------------------------------- +
