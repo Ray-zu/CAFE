@@ -60,7 +60,7 @@ class TimelineEditor
         /+ ラインインデックスlがプロパティレイヤかどうか +/
         auto isPropertyLine ( uint l )
         {
-            if ( selecting ) return false;
+            if ( !selecting ) return false;
 
             auto sel_l = selecting.place.layer.value;
             if ( l <= sel_l )
