@@ -23,9 +23,9 @@ struct Line
 
         string name;
 
+    public:
         float height;   // 標準サイズの何倍か
 
-    public:
         @property lineName () { return name; }
 
         this ( PlaceableObject[] objs, string n, float h = 1 )
