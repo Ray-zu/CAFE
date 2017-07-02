@@ -19,17 +19,37 @@ class TimelineCanvas : Widget
     private:
         TimelineEditor tl_editor;
 
+        /+ 一番上のラインが上部に隠れているサイズ +/
+        auto topHiddenPx ()
+        {
+            auto trunced = topLineIndex.trunc.to!uint;
+            return ((topLineIndex - trunced) *
+                tl_editor.lineInfo( trunced ).height*lineHeight).to!uint;
+        }
+
         /+ 表示中のライン情報の配列を返す +/
         auto showingLineInfo ()
         {
             Line[] result = [];
-            uint i = topLineIndex.trunc.to!uint;
+            auto i = topLineIndex.trunc.to!uint;
             auto h = 0;
+            auto hidden_px = topHiddenPx;
             do {
                 result ~= tl_editor.lineInfo( i++ );
-                h += (result[$-1].height * lineHeight).to!int;
-            } while ( h < height );
+                h += (result[$-1].height*lineHeight).to!int;
+            } while ( h < height + hidden_px );
             return result;
+        }
+
+        /+ Y座標(キャンバス相対)からラインインデックスへ +/
+        auto yToLineIndex ( uint y )
+        {
+            auto i = topLineIndex.trunc.to!uint;
+            auto h = 0;
+            auto hidden_px = topHiddenPx;
+            while ( h < y + hidden_px )
+                h += (tl_editor.lineInfo( i++ ).height * lineHeight).to!int;
+            return i;
         }
 
     public:
