@@ -19,7 +19,7 @@ class TimelineCanvas : Widget
     public:
         uint  startFrame;
         uint  pageWidth;
-        float topLayerIndex;
+        float topLineIndex;
 
         @property timeline ( TimelineEditor tl )
         {
@@ -33,7 +33,7 @@ class TimelineCanvas : Widget
 
             startFrame = 0;
             pageWidth = 100;
-            topLayerIndex = 0;
+            topLineIndex = 0;
         }
 
         override void measure ( int w, int h )
