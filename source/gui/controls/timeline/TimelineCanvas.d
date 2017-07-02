@@ -16,7 +16,9 @@ mixin( registerWidgets!TimelineCanvas );
 
 class TimelineCanvas : Widget
 {
-    enum LayerSeparaterColor = 0x666666;
+    enum BackgroundColor       = 0x333333;
+    enum LayerSeparaterColor   = 0x666666;
+    enum HeaderBackgroundColor = 0x222222;
 
     private:
         TimelineEditor tl_editor;
@@ -66,15 +68,23 @@ class TimelineCanvas : Widget
         void drawLine ( DrawBuf b, int y, Line l )
         {
             auto height = (l.height * lineHeight).to!int;
-            b.drawLine( Point(0,y+height),
-                    Point(b.width,y+height), LayerSeparaterColor );
+
+            // TODO オブジェクト描画
+
+            // 上のラインの線と被るのでyに1足します。
+            b.fillRect( Rect( 0,y+1, headerWidth,y+height ),
+                    HeaderBackgroundColor );
+            // TODO ライン名描画
+
+            b.drawLine( Point(0,y+height), Point(b.width,y+height),
+                    LayerSeparaterColor );
         }
 
     public:
         @property startFrame () { return start_frame; }
         @property startFrame ( uint f )
         {
-            start_frame = h;
+            start_frame = f;
             invalidate;
         }
 
@@ -92,17 +102,17 @@ class TimelineCanvas : Widget
             invalidate;
         }
 
-        @property topLineIndex () { return topLineIndex; }
+        @property topLineIndex () { return top_line_index; }
         @property topLineIndex ( uint t )
         {
             top_line_index = t;
             invalidate;
         }
 
-        @property lineHeight () { return line_height; }
+        @property lineHeight () { return base_line_height; }
         @property lineHeight ( uint l )
         {
-            line_height = l;
+            base_line_height = l;
             invalidate;
         }
 
@@ -119,6 +129,7 @@ class TimelineCanvas : Widget
 
             startFrame = 0;
             pageWidth = 100;
+            headerWidth = 100;
             topLineIndex = 0;
             lineHeight = 30;
         }
@@ -134,6 +145,7 @@ class TimelineCanvas : Widget
             if ( !tl_editor ) return;
 
             auto line_buf = new ColorDrawBuf( width, height );
+            line_buf.fill( BackgroundColor );
 
             auto lindex = 0;
             auto y = -topHiddenPx;
