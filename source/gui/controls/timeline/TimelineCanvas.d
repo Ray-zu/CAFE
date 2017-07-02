@@ -22,7 +22,7 @@ class TimelineCanvas : Widget
         /+ 一番上のラインが上部に隠れているサイズ +/
         auto topHiddenPx ()
         {
-            auto trunced = topLineIndex.trunc.to!uint;
+            auto trunced = topLineIndex.trunc.to!int;
             return ((topLineIndex - trunced) *
                 tl_editor.lineInfo( trunced ).height*lineHeight).to!uint;
         }
@@ -52,6 +52,17 @@ class TimelineCanvas : Widget
             return i;
         }
 
+
+        /+ ラインの描画 +/
+        void drawLine ( DrawBuf b, int y, Line l )
+        {
+            enum LayerSeparaterColor = 0x666666;
+
+            auto height = (l.height * lineHeight).to!int;
+            b.drawLine( Point(0,y+height),
+                    Point(b.width,y+height), LayerSeparaterColor );
+        }
+
     public:
         uint  startFrame;
         uint  pageWidth;
@@ -72,6 +83,7 @@ class TimelineCanvas : Widget
             startFrame = 0;
             pageWidth = 100;
             topLineIndex = 0;
+            lineHeight = 30;
         }
 
         override void measure ( int w, int h )
@@ -82,5 +94,19 @@ class TimelineCanvas : Widget
         override void onDraw ( DrawBuf b )
         {
             super.onDraw( b );
+            if ( !tl_editor ) return;
+
+            auto line_buf = new ColorDrawBuf( width, height );
+
+            auto lindex = 0;
+            auto y = -topHiddenPx;
+            while ( y < height ) {
+                auto line = tl_editor.lineInfo( lindex++ );
+                drawLine( line_buf, y, line );
+                y += (line.height * lineHeight).to!int;
+            }
+
+            b.drawImage( pos.left, pos.top, line_buf );
+            object.destroy( line_buf );
         }
 }

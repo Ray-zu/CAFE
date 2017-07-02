@@ -17,6 +17,7 @@ class TimelineWidget : VerticalLayout
 {
     private:
         TimelineEditor tl_editor;
+        TimelineCanvas tl_canvas;
 
     public:
         this ( string id = "" )
@@ -31,5 +32,15 @@ class TimelineWidget : VerticalLayout
                     ScrollBar { id:"vscroll"; orientation:Vertical }
                 }
             } ) );
+
+            tl_canvas = cast(TimelineCanvas)childById( "canvas" );
+
+            //テストコード
+            import cafe.project.ObjectPlacingInfo,
+                   cafe.project.timeline.Timeline;
+            auto tl = new Timeline( new FrameLength(50) );
+
+            tl_editor = new TimelineEditor(tl);
+            tl_canvas.timeline = tl_editor;
         }
 }
