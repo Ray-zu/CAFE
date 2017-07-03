@@ -17,6 +17,9 @@ mixin( registerWidgets!TimelineCanvas );
 
 class TimelineCanvas : Widget
 {
+    enum VScrollMag   = 10;
+    enum LayerRemnant = 10;
+
     enum GridHeight = 50;
 
     enum BackgroundColor       = 0x333333;
@@ -40,7 +43,7 @@ class TimelineCanvas : Widget
         {
             auto trunced = topLineIndex.trunc.to!int;
             return ((topLineIndex - trunced) *
-                tl_editor.lineInfo( trunced ).height*lineHeight).to!uint;
+                tl_editor.lineInfo( trunced ).height*lineHeight).to!int;
         }
 
         /+ 表示中のライン情報の配列を返す +/
@@ -66,6 +69,16 @@ class TimelineCanvas : Widget
             while ( h < y + hidden_px )
                 h += (tl_editor.lineInfo( i++ ).height * lineHeight).to!int;
             return i;
+        }
+
+
+        /+ Timelineとプロパティを同期 +/
+        void updateProperties ()
+        {
+            auto max_layer = 0 + LayerRemnant;
+
+            vscroll.minValue = 0;
+            vscroll.maxValue = max_layer*VScrollMag;
         }
 
 
@@ -113,10 +126,10 @@ class TimelineCanvas : Widget
             invalidate;
         }
 
-        @property topLineIndex () { return vscroll.position.to!float; }
+        @property topLineIndex () { return vscroll.position/VScrollMag.to!float; }
         @property topLineIndex ( float t )
         {
-            vscroll.position = t.to!int;
+            vscroll.position = (t*VScrollMag).to!int;
             invalidate;
         }
 
@@ -136,8 +149,6 @@ class TimelineCanvas : Widget
         @property verticalScroll ( AbstractSlider a )
         {
             vscroll = a;
-            vscroll.minValue = 0;
-            vscroll.position = 0;
             invalidate;
         }
 
@@ -161,6 +172,7 @@ class TimelineCanvas : Widget
         {
             super.onDraw( b );
             if ( !tl_editor ) return;
+            updateProperties;
 
             // グリッドの描画
             auto grid_r = Rect( pos.left,
@@ -179,12 +191,14 @@ class TimelineCanvas : Widget
             body_buf.fill( BackgroundColor );
 
             auto lindex = topLineIndex.trunc.to!int;
-            auto y = -topHiddenPx;
+            auto y = -topHiddenPx, i = 0;
             while ( y < height ) {
                 auto line = tl_editor.lineInfo( lindex++ );
                 drawLine( body_buf, y, line );
                 y += (line.height * lineHeight).to!int;
+                i++;
             }
+            //vscroll.pageSize = i*VScrollMag;
 
             b.drawRescaled( body_r, body_buf,
                    Rect( 0, 0, body_buf.width, body_buf.height ) );
