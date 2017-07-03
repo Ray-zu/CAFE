@@ -19,6 +19,9 @@ class TimelineWidget : VerticalLayout
         TimelineEditor tl_editor;
         TimelineCanvas tl_canvas;
 
+        ScrollBar hscroll;
+        ScrollBar vscroll;
+
     public:
         this ( string id = "" )
         {
@@ -34,6 +37,8 @@ class TimelineWidget : VerticalLayout
             } ) );
 
             tl_canvas = cast(TimelineCanvas)childById( "canvas" );
+            hscroll   = cast(ScrollBar)childById( "hscroll" );
+            vscroll   = cast(ScrollBar)childById( "vscroll" );
 
             //テストコード
             import cafe.project.ObjectPlacingInfo,
@@ -42,5 +47,11 @@ class TimelineWidget : VerticalLayout
 
             tl_editor = new TimelineEditor(tl);
             tl_canvas.timeline = tl_editor;
+            vscroll.scrollEvent =
+                delegate ( AbstractSlider w, ScrollEvent e )
+                {
+                    tl_canvas.topLineIndex = e.position;
+                    return true;
+                };
         }
 }

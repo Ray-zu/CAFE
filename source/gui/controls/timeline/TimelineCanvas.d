@@ -114,7 +114,7 @@ class TimelineCanvas : Widget
         }
 
         @property topLineIndex () { return top_line_index; }
-        @property topLineIndex ( uint t )
+        @property topLineIndex ( float t )
         {
             top_line_index = t;
             invalidate;
@@ -171,7 +171,7 @@ class TimelineCanvas : Widget
             auto body_buf = new ColorDrawBuf( body_r.width, body_r.height );
             body_buf.fill( BackgroundColor );
 
-            auto lindex = 0;
+            auto lindex = topLineIndex.trunc.to!int;
             auto y = -topHiddenPx;
             while ( y < height ) {
                 auto line = tl_editor.lineInfo( lindex++ );
