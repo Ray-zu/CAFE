@@ -54,6 +54,8 @@ class Timeline
         auto opAddAssign ( PlaceableObject obj )
         {
             objs ~= obj;
+            if ( obj.place.frame.end.value >= length.value )
+                length.value = obj.place.frame.end.value;
             return this;
         }
 
