@@ -27,12 +27,12 @@ class TimelineCanvas : Widget
 
     private:
         TimelineEditor tl_editor;
+        AbstractSlider hscroll;
 
         uint start_frame;
         uint page_width;
         uint header_width;
 
-        float top_line_index;
         uint  base_line_height;
 
         /+ 一番上のラインが上部に隠れているサイズ +/
@@ -113,10 +113,10 @@ class TimelineCanvas : Widget
             invalidate;
         }
 
-        @property topLineIndex () { return top_line_index; }
+        @property topLineIndex () { return hscroll.position.to!float; }
         @property topLineIndex ( float t )
         {
-            top_line_index = t;
+            hscroll.position = t.to!int;
             invalidate;
         }
 
@@ -133,6 +133,14 @@ class TimelineCanvas : Widget
             invalidate;
         }
 
+        @property horizontalScroll ( AbstractSlider a )
+        {
+            hscroll = a;
+            hscroll.minValue = 0;
+            hscroll.position = 0;
+            invalidate;
+        }
+
         this ( string id = "" )
         {
             super( id );
@@ -141,7 +149,6 @@ class TimelineCanvas : Widget
             startFrame = 0;
             pageWidth = 100;
             headerWidth = 100;
-            topLineIndex = 0;
             lineHeight = 30;
         }
 

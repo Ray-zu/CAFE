@@ -22,12 +22,33 @@ class TimelineWidget : VerticalLayout
         ScrollBar hscroll;
         ScrollBar vscroll;
 
+        auto onMouseEvent ( Widget w, MouseEvent e )
+        {
+            auto m = cast(TimelineWidget)w;
+            switch ( e.action ) {
+
+                case MouseAction.Wheel:
+                    m.vscroll.position =
+                        m.vscroll.position - e.wheelDelta;
+                    m.invalidate;
+                    return true;
+
+                default:
+            }
+            return false;
+        }
+
     public:
         this ( string id = "" )
         {
             super( id );
+            mouseEvent = &onMouseEvent;
+
             addChild( parseML( q{
-                ScrollBar { id:"hscroll"; orientation:Horizontal }
+                ScrollBar {
+                    id:"hscroll";
+                    orientation:Horizontal
+                }
             } ) );
             addChild( parseML( q{
                 HorizontalLayout {
@@ -45,13 +66,8 @@ class TimelineWidget : VerticalLayout
                    cafe.project.timeline.Timeline;
             auto tl = new Timeline( new FrameLength(50) );
 
-            tl_editor = new TimelineEditor(tl);
-            tl_canvas.timeline = tl_editor;
-            vscroll.scrollEvent =
-                delegate ( AbstractSlider w, ScrollEvent e )
-                {
-                    tl_canvas.topLineIndex = e.position;
-                    return true;
-                };
+            tl_editor                  = new TimelineEditor(tl);
+            tl_canvas.timeline         = tl_editor;
+            tl_canvas.horizontalScroll = vscroll;
         }
 }
