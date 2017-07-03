@@ -19,12 +19,36 @@ class TimelineWidget : VerticalLayout
         TimelineEditor tl_editor;
         TimelineCanvas tl_canvas;
 
+        ScrollBar hscroll;
+        ScrollBar vscroll;
+
+        auto onMouseEvent ( Widget w, MouseEvent e )
+        {
+            auto m = cast(TimelineWidget)w;
+            switch ( e.action ) {
+
+                case MouseAction.Wheel:
+                    m.vscroll.position =
+                        m.vscroll.position - e.wheelDelta;
+                    m.invalidate;
+                    return true;
+
+                default:
+            }
+            return false;
+        }
+
     public:
         this ( string id = "" )
         {
             super( id );
+            mouseEvent = &onMouseEvent;
+
             addChild( parseML( q{
-                ScrollBar { id:"hscroll"; orientation:Horizontal }
+                ScrollBar {
+                    id:"hscroll";
+                    orientation:Horizontal
+                }
             } ) );
             addChild( parseML( q{
                 HorizontalLayout {
@@ -34,13 +58,16 @@ class TimelineWidget : VerticalLayout
             } ) );
 
             tl_canvas = cast(TimelineCanvas)childById( "canvas" );
+            hscroll   = cast(ScrollBar)childById( "hscroll" );
+            vscroll   = cast(ScrollBar)childById( "vscroll" );
 
             //テストコード
             import cafe.project.ObjectPlacingInfo,
                    cafe.project.timeline.Timeline;
             auto tl = new Timeline( new FrameLength(50) );
 
-            tl_editor = new TimelineEditor(tl);
-            tl_canvas.timeline = tl_editor;
+            tl_editor                  = new TimelineEditor(tl);
+            tl_canvas.timeline         = tl_editor;
+            tl_canvas.horizontalScroll = vscroll;
         }
 }
