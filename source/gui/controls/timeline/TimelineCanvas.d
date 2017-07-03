@@ -6,7 +6,8 @@
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.TimelineCanvas;
 import cafe.gui.controls.timeline.TimelineEditor,
-       cafe.gui.controls.timeline.Line;
+       cafe.gui.controls.timeline.Line,
+       cafe.gui.utils.Font;
 import dlangui,
        dlangui.widgets.metadata;
 import std.conv,
@@ -17,7 +18,8 @@ mixin( registerWidgets!TimelineCanvas );
 class TimelineCanvas : Widget
 {
     enum BackgroundColor       = 0x333333;
-    enum LayerSeparaterColor   = 0x666666;
+    enum LineSeparaterColor    = 0x666666;
+    enum LineTextColor         = 0x555555;
     enum HeaderBackgroundColor = 0x222222;
 
     private:
@@ -74,10 +76,11 @@ class TimelineCanvas : Widget
             // 上のラインの線と被るのでyに1足します。
             b.fillRect( Rect( 0,y+1, headerWidth,y+height ),
                     HeaderBackgroundColor );
-            // TODO ライン名描画
+            font.drawCenteredText( b, headerWidth/2, y+height/2,
+                   l.lineName, LineTextColor );
 
             b.drawLine( Point(0,y+height), Point(b.width,y+height),
-                    LayerSeparaterColor );
+                    LineSeparaterColor );
         }
 
     public:
