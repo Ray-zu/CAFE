@@ -25,16 +25,6 @@ class TimelineWidget : VerticalLayout
         auto onMouseEvent ( Widget w, MouseEvent e )
         {
             auto m = cast(TimelineWidget)w;
-            switch ( e.action ) {
-
-                case MouseAction.Wheel:
-                    m.vscroll.position =
-                        m.vscroll.position - e.wheelDelta;
-                    m.invalidate;
-                    return true;
-
-                default:
-            }
             return false;
         }
 
