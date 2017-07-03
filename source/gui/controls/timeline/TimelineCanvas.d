@@ -17,10 +17,13 @@ mixin( registerWidgets!TimelineCanvas );
 
 class TimelineCanvas : Widget
 {
+    enum GridHeight = 50;
+
     enum BackgroundColor       = 0x333333;
     enum LineSeparaterColor    = 0x666666;
     enum LineTextColor         = 0x555555;
     enum HeaderBackgroundColor = 0x222222;
+    enum GridBackgroundColor   = 0x444444;
 
     private:
         TimelineEditor tl_editor;
@@ -65,6 +68,11 @@ class TimelineCanvas : Widget
             return i;
         }
 
+
+        /+ グリッドの描画 +/
+        void drawGrid ( DrawBuf b )
+        {
+        }
 
         /+ ラインの描画 +/
         void drawLine ( DrawBuf b, int y, Line l )
@@ -147,18 +155,32 @@ class TimelineCanvas : Widget
             super.onDraw( b );
             if ( !tl_editor ) return;
 
-            auto line_buf = new ColorDrawBuf( width, height );
-            line_buf.fill( BackgroundColor );
+            // グリッドの描画
+            auto grid_r = Rect( pos.left,
+                    pos.top, pos.right, pos.top + GridHeight );
+            auto grid_buf = new ColorDrawBuf( grid_r.width, grid_r.height );
+            grid_buf.fill( GridBackgroundColor );
+
+            b.drawRescaled( grid_r, grid_buf,
+                   Rect( 0, 0, grid_buf.width, grid_buf.height ) );
+            object.destroy( grid_buf );
+
+            // コンテンツの描画
+            auto body_r = Rect( pos.left,
+                    pos.top + GridHeight, pos.right, pos.bottom );
+            auto body_buf = new ColorDrawBuf( body_r.width, body_r.height );
+            body_buf.fill( BackgroundColor );
 
             auto lindex = 0;
             auto y = -topHiddenPx;
             while ( y < height ) {
                 auto line = tl_editor.lineInfo( lindex++ );
-                drawLine( line_buf, y, line );
+                drawLine( body_buf, y, line );
                 y += (line.height * lineHeight).to!int;
             }
 
-            b.drawImage( pos.left, pos.top, line_buf );
-            object.destroy( line_buf );
+            b.drawRescaled( body_r, body_buf,
+                   Rect( 0, 0, body_buf.width, body_buf.height ) );
+            object.destroy( body_buf );
         }
 }
