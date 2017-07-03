@@ -66,8 +66,8 @@ class TimelineWidget : VerticalLayout
                    cafe.project.timeline.Timeline;
             auto tl = new Timeline( new FrameLength(50) );
 
-            tl_editor                  = new TimelineEditor(tl);
-            tl_canvas.timeline         = tl_editor;
-            tl_canvas.horizontalScroll = vscroll;
+            tl_editor                = new TimelineEditor(tl);
+            tl_canvas.timeline       = tl_editor;
+            tl_canvas.verticalScroll = vscroll;
         }
 }

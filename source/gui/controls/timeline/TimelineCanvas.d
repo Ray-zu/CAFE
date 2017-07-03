@@ -27,7 +27,7 @@ class TimelineCanvas : Widget
 
     private:
         TimelineEditor tl_editor;
-        AbstractSlider hscroll;
+        AbstractSlider vscroll;
 
         uint start_frame;
         uint page_width;
@@ -113,10 +113,10 @@ class TimelineCanvas : Widget
             invalidate;
         }
 
-        @property topLineIndex () { return hscroll.position.to!float; }
+        @property topLineIndex () { return vscroll.position.to!float; }
         @property topLineIndex ( float t )
         {
-            hscroll.position = t.to!int;
+            vscroll.position = t.to!int;
             invalidate;
         }
 
@@ -133,11 +133,11 @@ class TimelineCanvas : Widget
             invalidate;
         }
 
-        @property horizontalScroll ( AbstractSlider a )
+        @property verticalScroll ( AbstractSlider a )
         {
-            hscroll = a;
-            hscroll.minValue = 0;
-            hscroll.position = 0;
+            vscroll = a;
+            vscroll.minValue = 0;
+            vscroll.position = 0;
             invalidate;
         }
 
