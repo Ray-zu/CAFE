@@ -44,6 +44,14 @@ class Timeline
                 ( x => objs ~= PlaceableObject.create( x, frame_len ) );
         }
 
+        /+ オブジェクトの配置されている最大のレイヤ数を返す +/
+        @property layerLength ()
+        {
+            auto r = 0;
+            objects.each!( x => (r = x > r ? x : r)  );
+            return new LayerId( r );
+        }
+
         /+ objを削除 +/
         void remove ( PlaceableObject obj )
         {
