@@ -10,7 +10,8 @@ import cafe.gui.controls.timeline.TimelineEditor,
        cafe.gui.utils.Font;
 import dlangui,
        dlangui.widgets.metadata;
-import std.conv,
+import std.algorithm,
+       std.conv,
        std.math;
 
 mixin( registerWidgets!TimelineCanvas );
@@ -18,7 +19,7 @@ mixin( registerWidgets!TimelineCanvas );
 class TimelineCanvas : Widget
 {
     enum VScrollMag   = 10;
-    enum LayerRemnant = 10;
+    enum LayerRemnant = 50;
 
     enum GridHeight = 50;
 
@@ -75,7 +76,9 @@ class TimelineCanvas : Widget
         /+ Timelineとプロパティを同期 +/
         void updateProperties ()
         {
+            // TODO : レイヤの最大値を適用
             auto max_layer = 0 + LayerRemnant;
+            auto line_len  = showingLineInfo.length;
 
             vscroll.minValue = 0;
             vscroll.maxValue = max_layer*VScrollMag;
@@ -191,14 +194,14 @@ class TimelineCanvas : Widget
             body_buf.fill( BackgroundColor );
 
             auto lindex = topLineIndex.trunc.to!int;
-            auto y = -topHiddenPx, i = 0;
+            auto y = -topHiddenPx, i = 1;
             while ( y < height ) {
                 auto line = tl_editor.lineInfo( lindex++ );
                 drawLine( body_buf, y, line );
                 y += (line.height * lineHeight).to!int;
                 i++;
             }
-            //vscroll.pageSize = i*VScrollMag;
+            vscroll.pageSize = i*VScrollMag;
 
             b.drawRescaled( body_r, body_buf,
                    Rect( 0, 0, body_buf.width, body_buf.height ) );
