@@ -47,9 +47,8 @@ class Timeline
         /+ オブジェクトの配置されている最大のレイヤ数を返す +/
         @property layerLength ()
         {
-            auto r = 0;
-            objects.each!( x => (r = x > r ? x : r)  );
-            return new LayerId( r );
+            auto r = objects.maxElement!"a.place.layer.value";
+            return new LayerId( r.place.layer.value );
         }
 
         /+ objを削除 +/
