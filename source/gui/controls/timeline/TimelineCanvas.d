@@ -10,29 +10,36 @@ import cafe.gui.controls.timeline.TimelineEditor,
        cafe.gui.utils.Font;
 import dlangui,
        dlangui.widgets.metadata;
-import std.conv,
+import std.algorithm,
+       std.conv,
        std.math;
 
 mixin( registerWidgets!TimelineCanvas );
 
 class TimelineCanvas : Widget
 {
-    enum GridHeight = 50;
+    enum VScrollMag   = 10;
+    enum LayerRemnant = 20;
+    enum FrameRemnant = 100;
+
+    enum GridHeight       = 50;
+    enum GridLineHeight   = 10;
+    enum GridMinInterval  = 5;
+    enum LongGridInterval = 5;
 
     enum BackgroundColor       = 0x333333;
     enum LineSeparaterColor    = 0x666666;
     enum LineTextColor         = 0x555555;
     enum HeaderBackgroundColor = 0x222222;
     enum GridBackgroundColor   = 0x444444;
+    enum GridForegroundColor   = 0x888888;
 
     private:
         TimelineEditor tl_editor;
+        AbstractSlider vscroll;
         AbstractSlider hscroll;
 
-        uint start_frame;
-        uint page_width;
         uint header_width;
-
         uint  base_line_height;
 
         /+ 一番上のラインが上部に隠れているサイズ +/
@@ -40,7 +47,7 @@ class TimelineCanvas : Widget
         {
             auto trunced = topLineIndex.trunc.to!int;
             return ((topLineIndex - trunced) *
-                tl_editor.lineInfo( trunced ).height*lineHeight).to!uint;
+                tl_editor.lineInfo( trunced ).height*lineHeight).to!int;
         }
 
         /+ 表示中のライン情報の配列を返す +/
@@ -48,13 +55,21 @@ class TimelineCanvas : Widget
         {
             Line[] result = [];
             auto i = topLineIndex.trunc.to!uint;
-            auto h = 0;
+            auto h = GridHeight;
             auto hidden_px = topHiddenPx;
             do {
                 result ~= tl_editor.lineInfo( i++ );
                 h += (result[$-1].height*lineHeight).to!int;
             } while ( h < height + hidden_px );
             return result;
+        }
+
+        /+ X座標(キャンバス相対)からフレーム数へ +/
+        auto xToFrame ( int x )
+        {
+            auto width = width - headerWidth;
+            auto unit  = width / pageWidth.to!float;
+            return (x / unit).to!int;
         }
 
         /+ Y座標(キャンバス相対)からラインインデックスへ +/
@@ -69,9 +84,50 @@ class TimelineCanvas : Widget
         }
 
 
+        /+ Timelineとプロパティを同期 +/
+        void updateProperties ()
+        {
+            auto max_layer = tl_editor.timeline.
+                layerLength.value + LayerRemnant;
+            vscroll.minValue = 0;
+            vscroll.maxValue = max_layer*VScrollMag;
+            vscroll.pageSize = ((height-GridHeight) / lineHeight)*VScrollMag;
+
+            auto max_frame = tl_editor.timeline.
+                length.value + FrameRemnant;
+            hscroll.minValue = 0;
+            hscroll.maxValue = max_frame;
+        }
+
+
         /+ グリッドの描画 +/
         void drawGrid ( DrawBuf b )
         {
+            auto r = Rect( headerWidth,0,b.width,b.height );
+            auto unit = delegate ()
+            {
+                auto result = 1;
+                while ( r.width / (pageWidth/result) < GridMinInterval )
+                    result++;
+                return result;
+            }();
+            auto glen = pageWidth / unit;
+            auto px_per_grid = width / glen.to!float;
+
+            foreach ( i; 0 .. glen ) {
+                auto f = i*unit + startFrame;
+                auto x = (px_per_grid*i).to!int + r.left;
+                auto top = r.bottom - GridLineHeight;
+                auto btm = r.bottom;
+
+                if ( f%LongGridInterval == 0 ) {
+                    top -= GridLineHeight;
+                    auto y = (r.height - top) / 3 * 2;
+                    font.drawCenteredText( b, x,y, f.to!string, GridForegroundColor );
+                }
+
+                b.drawLine( Point(x,top), Point(x,btm), GridForegroundColor );
+            }
         }
 
         /+ ラインの描画 +/
@@ -92,17 +148,17 @@ class TimelineCanvas : Widget
         }
 
     public:
-        @property startFrame () { return start_frame; }
+        @property startFrame () { return hscroll.position; }
         @property startFrame ( uint f )
         {
-            start_frame = f;
+            hscroll.position = f;
             invalidate;
         }
 
-        @property pageWidth () { return page_width; }
+        @property pageWidth () { return hscroll.pageSize; }
         @property pageWidth ( uint w )
         {
-            page_width = w;
+            hscroll.position = w;
             invalidate;
         }
 
@@ -113,10 +169,10 @@ class TimelineCanvas : Widget
             invalidate;
         }
 
-        @property topLineIndex () { return hscroll.position.to!float; }
+        @property topLineIndex () { return vscroll.position/VScrollMag.to!float; }
         @property topLineIndex ( float t )
         {
-            hscroll.position = t.to!int;
+            vscroll.position = (t*VScrollMag).to!int;
             invalidate;
         }
 
@@ -133,11 +189,18 @@ class TimelineCanvas : Widget
             invalidate;
         }
 
+        @property verticalScroll ( AbstractSlider a )
+        {
+            vscroll = a;
+            vscroll.position = 0;
+            invalidate;
+        }
+
         @property horizontalScroll ( AbstractSlider a )
         {
             hscroll = a;
-            hscroll.minValue = 0;
             hscroll.position = 0;
+            hscroll.pageSize = 10;
             invalidate;
         }
 
@@ -146,8 +209,6 @@ class TimelineCanvas : Widget
             super( id );
             tl_editor = null;
 
-            startFrame = 0;
-            pageWidth = 100;
             headerWidth = 100;
             lineHeight = 30;
         }
@@ -161,13 +222,14 @@ class TimelineCanvas : Widget
         {
             super.onDraw( b );
             if ( !tl_editor ) return;
+            updateProperties;
 
             // グリッドの描画
             auto grid_r = Rect( pos.left,
                     pos.top, pos.right, pos.top + GridHeight );
             auto grid_buf = new ColorDrawBuf( grid_r.width, grid_r.height );
             grid_buf.fill( GridBackgroundColor );
-
+            drawGrid( grid_buf );
             b.drawRescaled( grid_r, grid_buf,
                    Rect( 0, 0, grid_buf.width, grid_buf.height ) );
             object.destroy( grid_buf );
@@ -179,11 +241,12 @@ class TimelineCanvas : Widget
             body_buf.fill( BackgroundColor );
 
             auto lindex = topLineIndex.trunc.to!int;
-            auto y = -topHiddenPx;
+            auto y = -topHiddenPx, i = 1;
             while ( y < height ) {
                 auto line = tl_editor.lineInfo( lindex++ );
                 drawLine( body_buf, y, line );
                 y += (line.height * lineHeight).to!int;
+                i++;
             }
 
             b.drawRescaled( body_r, body_buf,
