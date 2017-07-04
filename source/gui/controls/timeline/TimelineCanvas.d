@@ -115,7 +115,7 @@ class TimelineCanvas : Widget
             auto px_per_grid = width / glen.to!float;
 
             foreach ( i; 0 .. glen ) {
-                auto f = i + startFrame*unit;
+                auto f = i*unit + startFrame;
                 auto x = (px_per_grid*i).to!int + r.left;
                 auto top = r.bottom - GridLineHeight;
                 auto btm = r.bottom;
