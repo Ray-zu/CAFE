@@ -52,7 +52,7 @@ class TimelineCanvas : Widget
         {
             Line[] result = [];
             auto i = topLineIndex.trunc.to!uint;
-            auto h = 0;
+            auto h = GridHeight;
             auto hidden_px = topHiddenPx;
             do {
                 result ~= tl_editor.lineInfo( i++ );
@@ -76,9 +76,8 @@ class TimelineCanvas : Widget
         /+ Timelineとプロパティを同期 +/
         void updateProperties ()
         {
-            // TODO : レイヤの最大値を適用
-            auto max_layer = 0 + LayerRemnant;
-            auto line_len  = showingLineInfo.length;
+            auto max_layer = tl_editor.timeline.
+                layerLength.value + LayerRemnant;
 
             vscroll.minValue = 0;
             vscroll.maxValue = max_layer*VScrollMag;
