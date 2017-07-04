@@ -21,13 +21,17 @@ class TimelineCanvas : Widget
     enum VScrollMag   = 10;
     enum LayerRemnant = 20;
 
-    enum GridHeight = 50;
+    enum GridHeight       = 50;
+    enum GridLineHeight   = 10;
+    enum GridMinInterval  = 5;
+    enum LongGridInterval = 5;
 
     enum BackgroundColor       = 0x333333;
     enum LineSeparaterColor    = 0x666666;
     enum LineTextColor         = 0x555555;
     enum HeaderBackgroundColor = 0x222222;
     enum GridBackgroundColor   = 0x444444;
+    enum GridForegroundColor   = 0x888888;
 
     private:
         TimelineEditor tl_editor;
@@ -96,6 +100,31 @@ class TimelineCanvas : Widget
         /+ グリッドの描画 +/
         void drawGrid ( DrawBuf b )
         {
+            auto r = Rect( headerWidth,0,b.width,b.height );
+            auto unit = delegate ()
+            {
+                auto result = 1;
+                while ( r.width / (pageWidth/result) < GridMinInterval )
+                    result++;
+                return result;
+            }();
+            auto glen = pageWidth / unit;
+            auto px_per_grid = width / glen.to!float;
+
+            foreach ( i; 0 .. glen ) {
+                auto f = i + startFrame*unit;
+                auto x = (px_per_grid*i).to!int + r.left;
+                auto top = r.bottom - GridLineHeight;
+                auto btm = r.bottom;
+
+                if ( f%LongGridInterval == 0 ) {
+                    top -= GridLineHeight;
+                    auto y = (r.height - top) / 3 * 2;
+                    font.drawCenteredText( b, x,y, f.to!string, GridForegroundColor );
+                }
+
+                b.drawLine( Point(x,top), Point(x,btm), GridForegroundColor );
+            }
         }
 
         /+ ラインの描画 +/
@@ -160,6 +189,7 @@ class TimelineCanvas : Widget
         @property verticalScroll ( AbstractSlider a )
         {
             vscroll = a;
+            vscroll.position = 0;
             invalidate;
         }
 
@@ -190,7 +220,7 @@ class TimelineCanvas : Widget
                     pos.top, pos.right, pos.top + GridHeight );
             auto grid_buf = new ColorDrawBuf( grid_r.width, grid_r.height );
             grid_buf.fill( GridBackgroundColor );
-
+            drawGrid( grid_buf );
             b.drawRescaled( grid_r, grid_buf,
                    Rect( 0, 0, grid_buf.width, grid_buf.height ) );
             object.destroy( grid_buf );
