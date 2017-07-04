@@ -19,7 +19,7 @@ mixin( registerWidgets!TimelineCanvas );
 class TimelineCanvas : Widget
 {
     enum VScrollMag   = 10;
-    enum LayerRemnant = 50;
+    enum LayerRemnant = 20;
 
     enum GridHeight = 50;
 
@@ -82,6 +82,7 @@ class TimelineCanvas : Widget
 
             vscroll.minValue = 0;
             vscroll.maxValue = max_layer*VScrollMag;
+            vscroll.pageSize = ((height-GridHeight) / lineHeight)*VScrollMag;
         }
 
 
@@ -201,7 +202,6 @@ class TimelineCanvas : Widget
                 y += (line.height * lineHeight).to!int;
                 i++;
             }
-            vscroll.pageSize = i*VScrollMag;
 
             b.drawRescaled( body_r, body_buf,
                    Rect( 0, 0, body_buf.width, body_buf.height ) );
