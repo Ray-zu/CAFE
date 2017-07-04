@@ -24,12 +24,23 @@ class TimelineWidget : VerticalLayout
         ScrollBar hscroll;
         ScrollBar vscroll;
 
-        void wheel ( short delta )
+        void wheel ( short delta, ushort key )
         {
-            auto npos = vscroll.position - delta*WheelMag;
-            npos = max( vscroll.minValue,
-                    min( npos, vscroll.maxValue ) );
-            vscroll.position = npos;
+            if ( key & KeyFlag.Control ) {
+                hscroll.pageSize = hscroll.pageSize - delta;
+
+            } else if ( key & KeyFlag.Shift ) {
+                auto npos = vscroll.position - delta*WheelMag;
+                npos = max( vscroll.minValue,
+                        min( npos, vscroll.maxValue - vscroll.pageSize ) );
+                vscroll.position = npos;
+
+            } else {
+                auto npos = hscroll.position - delta*WheelMag;
+                npos = max( hscroll.minValue,
+                       min( npos, hscroll.maxValue - hscroll.pageSize ) );
+                hscroll.position = npos;
+            }
             invalidate;
         }
 
@@ -39,7 +50,7 @@ class TimelineWidget : VerticalLayout
             switch ( e.action )
             {
                 case MouseAction.Wheel:
-                    m.wheel( e.wheelDelta );
+                    m.wheel( e.wheelDelta, e.keyFlags );
                     return true;
 
                 default:
@@ -75,8 +86,9 @@ class TimelineWidget : VerticalLayout
                    cafe.project.timeline.Timeline;
             auto tl = new Timeline( new FrameLength(50) );
 
-            tl_editor                = new TimelineEditor(tl);
-            tl_canvas.timeline       = tl_editor;
-            tl_canvas.verticalScroll = vscroll;
+            tl_editor                  = new TimelineEditor(tl);
+            tl_canvas.timeline         = tl_editor;
+            tl_canvas.verticalScroll   = vscroll;
+            tl_canvas.horizontalScroll = hscroll;
         }
 }

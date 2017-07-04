@@ -20,6 +20,7 @@ class TimelineCanvas : Widget
 {
     enum VScrollMag   = 10;
     enum LayerRemnant = 20;
+    enum FrameRemnant = 100;
 
     enum GridHeight       = 50;
     enum GridLineHeight   = 10;
@@ -36,11 +37,9 @@ class TimelineCanvas : Widget
     private:
         TimelineEditor tl_editor;
         AbstractSlider vscroll;
+        AbstractSlider hscroll;
 
-        uint start_frame;
-        uint page_width;
         uint header_width;
-
         uint  base_line_height;
 
         /+ 一番上のラインが上部に隠れているサイズ +/
@@ -90,10 +89,14 @@ class TimelineCanvas : Widget
         {
             auto max_layer = tl_editor.timeline.
                 layerLength.value + LayerRemnant;
-
             vscroll.minValue = 0;
             vscroll.maxValue = max_layer*VScrollMag;
             vscroll.pageSize = ((height-GridHeight) / lineHeight)*VScrollMag;
+
+            auto max_frame = tl_editor.timeline.
+                length.value + FrameRemnant;
+            hscroll.minValue = 0;
+            hscroll.maxValue = max_frame;
         }
 
 
@@ -145,17 +148,17 @@ class TimelineCanvas : Widget
         }
 
     public:
-        @property startFrame () { return start_frame; }
+        @property startFrame () { return hscroll.position; }
         @property startFrame ( uint f )
         {
-            start_frame = f;
+            hscroll.position = f;
             invalidate;
         }
 
-        @property pageWidth () { return page_width; }
+        @property pageWidth () { return hscroll.pageSize; }
         @property pageWidth ( uint w )
         {
-            page_width = w;
+            hscroll.position = w;
             invalidate;
         }
 
@@ -193,13 +196,19 @@ class TimelineCanvas : Widget
             invalidate;
         }
 
+        @property horizontalScroll ( AbstractSlider a )
+        {
+            hscroll = a;
+            hscroll.position = 0;
+            hscroll.pageSize = 10;
+            invalidate;
+        }
+
         this ( string id = "" )
         {
             super( id );
             tl_editor = null;
 
-            startFrame = 0;
-            pageWidth = 100;
             headerWidth = 100;
             lineHeight = 30;
         }
