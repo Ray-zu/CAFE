@@ -81,7 +81,7 @@ class TimelineCanvas : Widget
         auto xToFrame ( int x )
         {
             auto unit  = (width - headerWidth) / pageWidth.to!float;
-            return (x / unit).to!int;
+            return (x / unit).to!int + startFrame;
         }
 
         /+ フレーム数からX座標(キャンバス相対)へ +/
@@ -275,6 +275,7 @@ class TimelineCanvas : Widget
         this ( string id = "" )
         {
             super( id );
+            mouseEvent = &onMouseEvent;
             tl_editor = null;
 
             headerWidth = 100;
@@ -322,5 +323,35 @@ class TimelineCanvas : Widget
             object.destroy( body_buf );
 
             drawBars( b );
+        }
+
+        private auto onMouseEvent ( Widget w, MouseEvent e )
+        {
+            auto f = max( xToFrame( e.x - headerWidth ), 0 );
+            auto l = max( yToLineIndex( e.y ), 0 );
+
+            switch ( e.action ) {
+                case MouseAction.ButtonDown:
+                    invalidate;
+                    if ( e.button & MouseButton.Left )
+                        return tl_editor.onLeftDown(f,l);
+                    break;
+
+                case MouseAction.Move:
+                    if ( tl_editor.onMouseMove(f,l) ) {
+                        invalidate;
+                        return true;
+                    }
+                    break;
+
+                case MouseAction.ButtonUp:
+                    invalidate;
+                    if ( e.button & MouseButton.Left )
+                        return tl_editor.onLeftUp(f,l);
+                    break;
+
+                default:
+            }
+            return false;
         }
 }

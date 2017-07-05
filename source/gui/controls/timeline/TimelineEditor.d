@@ -173,6 +173,25 @@ class TimelineEditor
             return true;
         }
 
+        /+ タイムライン上でカーソルが動いた時に呼ばれる +/
+        auto onMouseMove ( uint f, uint l )
+        {
+            if ( op_type == Operation.Clicking ) {
+                if ( operating ) {
+                    // TODO
+                } else {
+                    op_type = Operation.Move;
+                }
+            }
+            switch ( op_type ) {
+                case Operation.Move:
+                    if ( !operating ) cur_frame = f;
+                    break;
+                default:
+            }
+            return true;
+        }
+
         /+ タイムラインがクリックされ終わった時に呼ばれる +/
         auto onLeftUp ( uint f, uint l )
         {
