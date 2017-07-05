@@ -34,6 +34,9 @@ class TimelineCanvas : Widget
     enum GridBackgroundColor   = 0x444444;
     enum GridForegroundColor   = 0x888888;
 
+    enum CurFrameBarColor   = 0x883333;
+    enum EndOfFrameBarColor = 0x444444;
+
     private:
         TimelineEditor tl_editor;
         AbstractSlider vscroll;
@@ -155,6 +158,21 @@ class TimelineCanvas : Widget
                     LineSeparaterColor );
         }
 
+        /+ シークバーとかを描画 +/
+        void drawBars ( DrawBuf b )
+        {
+            void draw ( uint f, uint col )
+            {
+                if ( f >= startFrame && f < startFrame + pageWidth ) {
+                    auto x = frameToX( f );
+                    b.drawLine( Point(x,pos.top), Point(x,pos.bottom), col );
+                }
+            }
+
+            draw( tl_editor.currentFrame, CurFrameBarColor );               // シークバー
+            draw( tl_editor.timeline.length.value, EndOfFrameBarColor );    // 終端のあれ
+        }
+
     public:
         @property startFrame () { return hscroll.position; }
         @property startFrame ( uint f )
@@ -260,5 +278,7 @@ class TimelineCanvas : Widget
             b.drawRescaled( body_r, body_buf,
                    Rect( 0, 0, body_buf.width, body_buf.height ) );
             object.destroy( body_buf );
+
+            drawBars( b );
         }
 }
