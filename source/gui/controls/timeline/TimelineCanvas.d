@@ -152,7 +152,7 @@ class TimelineCanvas : Widget
             auto height = (l.height * lineHeight).to!int;
 
             /+ オブジェクトの描画 +/
-            void draw ( PlaceableObject obj )
+            void drawObject ( PlaceableObject obj )
             {
                 auto st = frameToX(obj.place.frame.start.value);
                 auto ed = frameToX(obj.place.frame.end.value);
@@ -168,7 +168,8 @@ class TimelineCanvas : Widget
 
                 b.drawFrame( r, ObjectFrameColor, Rect(1,1,1,1) );
             }
-            l.objects.each!draw;
+            if ( l.isLayer ) l.objects.each!drawObject;
+            // TODO プロパティの描画
 
             // 上のラインの線と被るのでyに1足します。
             b.fillRect( Rect( 0,y+1, headerWidth,y+height ),
