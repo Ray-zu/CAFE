@@ -25,6 +25,9 @@ abstract class PlaceableObject : PropertyKeepableObject
         /+ オブジェクトの種類名 +/
         @property string type ();
 
+        /+ オブジェクトの表示名 +/
+        @property string name ();
+
         @property place () { return opi; }
 
         override @property PropertyList propertyList ()
