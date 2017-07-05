@@ -39,7 +39,7 @@ class TimelineCanvas : Widget
     enum GridForegroundColor   = 0x888888;
 
     enum CurFrameBarColor   = 0x883333;
-    enum EndOfFrameBarColor = 0x444444;
+    enum EndOfFrameBarColor = 0x555555;
 
     enum ObjectFrameColor = 0x888888;
     enum ObjectNameColor  = 0xbbbbbb;
