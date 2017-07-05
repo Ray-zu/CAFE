@@ -72,6 +72,14 @@ class TimelineCanvas : Widget
             return (x / unit).to!int;
         }
 
+        /+ フレーム数からX座標(キャンバス相対)へ +/
+        auto frameToX ( uint f )
+        {
+            auto width = width - headerWidth;
+            auto unit = width / pageWidth.to!float;
+            return ((f.to!int-startFrame)*unit).to!int;
+        }
+
         /+ Y座標(キャンバス相対)からラインインデックスへ +/
         auto yToLineIndex ( int y )
         {
