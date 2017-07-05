@@ -71,16 +71,14 @@ class TimelineCanvas : Widget
         /+ X座標(キャンバス相対)からフレーム数へ +/
         auto xToFrame ( int x )
         {
-            auto width = width - headerWidth;
-            auto unit  = width / pageWidth.to!float;
+            auto unit  = (width - headerWidth) / pageWidth.to!float;
             return (x / unit).to!int;
         }
 
         /+ フレーム数からX座標(キャンバス相対)へ +/
         auto frameToX ( uint f )
         {
-            auto width = width - headerWidth;
-            auto unit = width / pageWidth.to!float;
+            auto unit = (width - headerWidth) / pageWidth.to!float;
             return ((f.to!int-startFrame)*unit).to!int + headerWidth;
         }
 
@@ -128,7 +126,7 @@ class TimelineCanvas : Widget
 
             foreach ( i; 0 .. glen ) {
                 auto f = i*unit + startFrame;
-                auto x = (px_per_grid*i).to!int + r.left;
+                auto x = frameToX(f);
                 auto top = r.bottom - GridLineHeight;
                 auto btm = r.bottom;
 
@@ -150,9 +148,9 @@ class TimelineCanvas : Widget
             /+ オブジェクトの描画 +/
             void draw ( PlaceableObject obj )
             {
-                auto st = obj.place.frame.start.value;
-                auto ed = obj.place.frame.end.value;
-                auto r = Rect( frameToX(st), y, frameToX(ed), y+height );
+                auto st = frameToX(obj.place.frame.start.value);
+                auto ed = frameToX(obj.place.frame.end.value);
+                auto r = Rect( st, y, ed, y+height );
                 auto obj_buf = new ColorDrawBuf( r.width, r.height );
 
                 obj.draw( obj_buf );
