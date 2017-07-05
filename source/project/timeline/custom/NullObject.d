@@ -55,6 +55,8 @@ class NullObject : PlaceableObject
 
         override void initProperties ( FrameLength f )
         {
+            import cafe.project.timeline.property.Preset;
+            PropertyPresets.position( propertyList, f );
         }
 
         override void apply ( RenderingInfo rinfo )

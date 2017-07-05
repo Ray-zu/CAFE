@@ -8,7 +8,8 @@ module cafe.gui.controls.timeline.TimelineCanvas;
 import cafe.gui.controls.timeline.TimelineEditor,
        cafe.gui.controls.timeline.Line,
        cafe.gui.utils.Font,
-       cafe.project.timeline.PlaceableObject;
+       cafe.project.timeline.PlaceableObject,
+       cafe.project.timeline.property.Property;
 import dlangui,
        dlangui.widgets.metadata;
 import std.algorithm,
@@ -30,6 +31,7 @@ class TimelineCanvas : Widget
 
     enum ObjectMarginTopBtm = 3;
     enum ObjectPaddingLeft  = 5;
+    enum PropertyRectSize   = 7;
 
     enum BackgroundColor       = 0x333333;
     enum LineSeparaterColor    = 0x666666;
@@ -41,8 +43,9 @@ class TimelineCanvas : Widget
     enum CurFrameBarColor   = 0x883333;
     enum EndOfFrameBarColor = 0x555555;
 
-    enum ObjectFrameColor = 0x888888;
-    enum ObjectNameColor  = 0xbbbbbb;
+    enum ObjectFrameColor  = 0x888888;
+    enum ObjectNameColor   = 0xbbbbbb;
+    enum PropertyRectColor = 0x888888;
 
     private:
         TimelineEditor tl_editor;
@@ -168,8 +171,24 @@ class TimelineCanvas : Widget
 
                 b.drawFrame( r, ObjectFrameColor, Rect(1,1,1,1) );
             }
+
+            /+ プロパティレクトの描画 +/
+            void drawPropertyRect ( uint f )
+            {
+                f += tl_editor.selectedObject.place.frame.start.value;
+                enum prs = PropertyRectSize/2;
+                auto x = frameToX(f);
+                auto y = y + height/2;
+                auto r = Rect( x-prs, y-prs, x+prs, y+prs );
+                b.fillRect( r, PropertyRectColor );
+            }
+
             if ( l.isLayer ) l.objects.each!drawObject;
-            // TODO プロパティの描画
+            else {
+                l.property.middlePoints.each!(
+                    x => drawPropertyRect( x.frame.start.value ) );
+                drawPropertyRect( l.property.frame.value );
+            }
 
             // 上のラインの線と被るのでyに1足します。
             b.fillRect( Rect( 0,y+1, headerWidth,y+height ),

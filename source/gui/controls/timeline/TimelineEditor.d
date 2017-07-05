@@ -139,6 +139,9 @@ class TimelineEditor
         this ( Timeline tl = null )
         {
             timeline = tl;
+
+            //TODO : テストコード
+            selecting = tl.objects[0];
         }
 
         /+ ラインインデックスlのライン情報を返す +/
