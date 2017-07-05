@@ -151,7 +151,7 @@ class TimelineEditor
             if ( isPropertyLine(l) ) {
                 auto   prop = selecting.propertyList.properties.values[id];
                 string name = selecting.propertyList.properties.keys[id];
-                return Line( l, prop, name );
+                return Line( l, prop, name, 0.7 );
             } else
                 return Line( l, timeline[new LayerId(id)], "layer %d".format(id) );
         }
