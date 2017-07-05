@@ -77,7 +77,7 @@ class TimelineCanvas : Widget
         {
             auto width = width - headerWidth;
             auto unit = width / pageWidth.to!float;
-            return ((f.to!int-startFrame)*unit).to!int;
+            return ((f.to!int-startFrame)*unit).to!int + headerWidth;
         }
 
         /+ Y座標(キャンバス相対)からラインインデックスへ +/
