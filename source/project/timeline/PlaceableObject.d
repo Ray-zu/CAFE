@@ -12,6 +12,7 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.property.PropertyList,
        cafe.project.timeline.custom.NullObject;
 import std.json;
+import dlangui;
 
 /+ タイムラインに配置可能なオブジェクトの共通部分 +/
 abstract class PlaceableObject : PropertyKeepableObject
@@ -70,6 +71,12 @@ abstract class PlaceableObject : PropertyKeepableObject
             j["effects"]    = JSONValue(effectList.json);
             j["type"]       = JSONValue(type);
             return j;
+        }
+
+        /+ 指定された画像バッファにタイムラインのオブジェクト画像を描画 +/
+        void draw ( DrawBuf b )
+        {
+            b.fill( 0x333388 );
         }
 
         /+ レンダリング情報にオブジェクトの内容を適用 +/
