@@ -7,7 +7,8 @@
 module cafe.gui.controls.timeline.TimelineCanvas;
 import cafe.gui.controls.timeline.TimelineEditor,
        cafe.gui.controls.timeline.Line,
-       cafe.gui.utils.Font;
+       cafe.gui.utils.Font,
+       cafe.project.timeline.PlaceableObject;
 import dlangui,
        dlangui.widgets.metadata;
 import std.algorithm,
@@ -146,7 +147,19 @@ class TimelineCanvas : Widget
         {
             auto height = (l.height * lineHeight).to!int;
 
-            // TODO オブジェクト描画
+            /+ オブジェクトの描画 +/
+            void draw ( PlaceableObject obj )
+            {
+                auto st = obj.place.frame.start.value;
+                auto ed = obj.place.frame.end.value;
+                auto r = Rect( frameToX(st), y, frameToX(ed), y+height );
+                auto obj_buf = new ColorDrawBuf( r.width, r.height );
+
+                obj.draw( obj_buf );
+                b.drawImage( r.left, r.top, obj_buf );
+                object.destroy( obj_buf );
+            }
+            l.objects.each!draw;
 
             // 上のラインの線と被るのでyに1足します。
             b.fillRect( Rect( 0,y+1, headerWidth,y+height ),
