@@ -42,6 +42,7 @@ class TimelineCanvas : Widget
     enum EndOfFrameBarColor = 0x444444;
 
     enum ObjectFrameColor = 0x888888;
+    enum ObjectNameColor  = 0xbbbbbb;
 
     private:
         TimelineEditor tl_editor;
@@ -159,6 +160,8 @@ class TimelineCanvas : Widget
                         ed, y+height-ObjectMarginTopBtm );
                 auto obj_buf = new ColorDrawBuf( r.width, r.height );
                 obj.draw( obj_buf );
+                font.drawLeftCenteredText( obj_buf,
+                        ObjectPaddingLeft,r.height/2, obj.name, ObjectNameColor );
 
                 b.drawImage( r.left, r.top, obj_buf );
                 object.destroy( obj_buf );
