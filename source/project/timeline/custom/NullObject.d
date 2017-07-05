@@ -25,6 +25,11 @@ class NullObject : PlaceableObject
             return "NullObject";
         }
 
+        override @property string name ()
+        {
+            return "Null - NullObject";
+        }
+
         override @property PlaceableObject copy ()
         {
             return new NullObject( this );

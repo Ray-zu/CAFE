@@ -6,7 +6,8 @@
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.TimelineWidget;
 import cafe.gui.controls.timeline.TimelineEditor,
-       cafe.gui.controls.timeline.TimelineCanvas;
+       cafe.gui.controls.timeline.TimelineCanvas,
+       cafe.project.timeline.custom.NullObject;
 import std.algorithm;
 import dlangui,
        dlangui.widgets.metadata;
@@ -85,6 +86,9 @@ class TimelineWidget : VerticalLayout
             import cafe.project.ObjectPlacingInfo,
                    cafe.project.timeline.Timeline;
             auto tl = new Timeline( new FrameLength(50) );
+            tl += new NullObject( new ObjectPlacingInfo(
+                        new LayerId(0), new FramePeriod( tl.length,
+                            new FrameAt(30), new FrameLength(20) ) ) );
 
             tl_editor                  = new TimelineEditor(tl);
             tl_canvas.timeline         = tl_editor;

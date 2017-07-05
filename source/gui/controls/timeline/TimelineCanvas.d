@@ -7,7 +7,8 @@
 module cafe.gui.controls.timeline.TimelineCanvas;
 import cafe.gui.controls.timeline.TimelineEditor,
        cafe.gui.controls.timeline.Line,
-       cafe.gui.utils.Font;
+       cafe.gui.utils.Font,
+       cafe.project.timeline.PlaceableObject;
 import dlangui,
        dlangui.widgets.metadata;
 import std.algorithm,
@@ -27,12 +28,21 @@ class TimelineCanvas : Widget
     enum GridMinInterval  = 5;
     enum LongGridInterval = 5;
 
+    enum ObjectMarginTopBtm = 3;
+    enum ObjectPaddingLeft  = 5;
+
     enum BackgroundColor       = 0x333333;
     enum LineSeparaterColor    = 0x666666;
     enum LineTextColor         = 0x555555;
     enum HeaderBackgroundColor = 0x222222;
     enum GridBackgroundColor   = 0x444444;
     enum GridForegroundColor   = 0x888888;
+
+    enum CurFrameBarColor   = 0x883333;
+    enum EndOfFrameBarColor = 0x555555;
+
+    enum ObjectFrameColor = 0x888888;
+    enum ObjectNameColor  = 0xbbbbbb;
 
     private:
         TimelineEditor tl_editor;
@@ -67,9 +77,15 @@ class TimelineCanvas : Widget
         /+ X座標(キャンバス相対)からフレーム数へ +/
         auto xToFrame ( int x )
         {
-            auto width = width - headerWidth;
-            auto unit  = width / pageWidth.to!float;
+            auto unit  = (width - headerWidth) / pageWidth.to!float;
             return (x / unit).to!int;
+        }
+
+        /+ フレーム数からX座標(キャンバス相対)へ +/
+        auto frameToX ( uint f )
+        {
+            auto unit = (width - headerWidth) / pageWidth.to!float;
+            return ((f.to!int-startFrame)*unit).to!int + headerWidth;
         }
 
         /+ Y座標(キャンバス相対)からラインインデックスへ +/
@@ -116,7 +132,7 @@ class TimelineCanvas : Widget
 
             foreach ( i; 0 .. glen ) {
                 auto f = i*unit + startFrame;
-                auto x = (px_per_grid*i).to!int + r.left;
+                auto x = frameToX(f);
                 auto top = r.bottom - GridLineHeight;
                 auto btm = r.bottom;
 
@@ -135,7 +151,25 @@ class TimelineCanvas : Widget
         {
             auto height = (l.height * lineHeight).to!int;
 
-            // TODO オブジェクト描画
+            /+ オブジェクトの描画 +/
+            void drawObject ( PlaceableObject obj )
+            {
+                auto st = frameToX(obj.place.frame.start.value);
+                auto ed = frameToX(obj.place.frame.end.value);
+                auto r = Rect( st, y+ObjectMarginTopBtm,
+                        ed, y+height-ObjectMarginTopBtm );
+                auto obj_buf = new ColorDrawBuf( r.width, r.height );
+                obj.draw( obj_buf );
+                font.drawLeftCenteredText( obj_buf,
+                        ObjectPaddingLeft,r.height/2, obj.name, ObjectNameColor );
+
+                b.drawImage( r.left, r.top, obj_buf );
+                object.destroy( obj_buf );
+
+                b.drawFrame( r, ObjectFrameColor, Rect(1,1,1,1) );
+            }
+            if ( l.isLayer ) l.objects.each!drawObject;
+            // TODO プロパティの描画
 
             // 上のラインの線と被るのでyに1足します。
             b.fillRect( Rect( 0,y+1, headerWidth,y+height ),
@@ -145,6 +179,21 @@ class TimelineCanvas : Widget
 
             b.drawLine( Point(0,y+height), Point(b.width,y+height),
                     LineSeparaterColor );
+        }
+
+        /+ シークバーとかを描画 +/
+        void drawBars ( DrawBuf b )
+        {
+            void draw ( uint f, uint col )
+            {
+                if ( f >= startFrame && f < startFrame + pageWidth ) {
+                    auto x = frameToX( f );
+                    b.drawLine( Point(x,pos.top), Point(x,pos.bottom), col );
+                }
+            }
+
+            draw( tl_editor.currentFrame, CurFrameBarColor );               // シークバー
+            draw( tl_editor.timeline.length.value, EndOfFrameBarColor );    // 終端のあれ
         }
 
     public:
@@ -252,5 +301,7 @@ class TimelineCanvas : Widget
             b.drawRescaled( body_r, body_buf,
                    Rect( 0, 0, body_buf.width, body_buf.height ) );
             object.destroy( body_buf );
+
+            drawBars( b );
         }
 }
