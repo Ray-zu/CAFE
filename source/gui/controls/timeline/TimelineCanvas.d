@@ -28,6 +28,9 @@ class TimelineCanvas : Widget
     enum GridMinInterval  = 5;
     enum LongGridInterval = 5;
 
+    enum ObjectMarginTopBtm = 3;
+    enum ObjectPaddingLeft  = 5;
+
     enum BackgroundColor       = 0x333333;
     enum LineSeparaterColor    = 0x666666;
     enum LineTextColor         = 0x555555;
@@ -37,6 +40,8 @@ class TimelineCanvas : Widget
 
     enum CurFrameBarColor   = 0x883333;
     enum EndOfFrameBarColor = 0x444444;
+
+    enum ObjectFrameColor = 0x888888;
 
     private:
         TimelineEditor tl_editor;
@@ -150,12 +155,15 @@ class TimelineCanvas : Widget
             {
                 auto st = frameToX(obj.place.frame.start.value);
                 auto ed = frameToX(obj.place.frame.end.value);
-                auto r = Rect( st, y, ed, y+height );
+                auto r = Rect( st, y+ObjectMarginTopBtm,
+                        ed, y+height-ObjectMarginTopBtm );
                 auto obj_buf = new ColorDrawBuf( r.width, r.height );
-
                 obj.draw( obj_buf );
+
                 b.drawImage( r.left, r.top, obj_buf );
                 object.destroy( obj_buf );
+
+                b.drawFrame( r, ObjectFrameColor, Rect(1,1,1,1) );
             }
             l.objects.each!draw;
 
