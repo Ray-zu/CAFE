@@ -202,7 +202,7 @@ class TimelineEditor
             }
 
             if ( operating ) {
-                operating.place.frame.move( new FrameAt(f) );
+                operating.place.frame.move( new FrameAt(f-op_offset_frame) );
             } else if ( operating_prop ) {
 
             } else {
