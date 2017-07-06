@@ -8,6 +8,7 @@ module cafe.gui.controls.timeline.TimelineEditor;
 import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.Timeline,
        cafe.project.timeline.PlaceableObject,
+       cafe.project.timeline.property.Property,
        cafe.gui.controls.timeline.Line;
 import std.algorithm,
        std.conv,
@@ -40,6 +41,10 @@ class TimelineEditor
         PlaceableObject selecting;
         PlaceableObject operating;
 
+        Property selecting_prop;
+        Property operating_prop;
+        uint op_mp_index;
+
 
         /+ オペレーション関連の変数を初期化 +/
         void clearOperationState ()
@@ -48,6 +53,8 @@ class TimelineEditor
             op_offset_frame = 0;
             op_offset_layer = 0;
             operating = null;
+            operating_prop = null;
+            op_mp_index = 0;
         }
 
 
@@ -102,6 +109,7 @@ class TimelineEditor
         /+ タイムラインのオブジェクトがクリックされた時に呼ばれる +/
         auto onObjectLeftDown ( PlaceableObject obj, uint f, uint l )
         {
+            operating = obj;
             op_offset_frame = f - obj.place.frame.start.value;
             op_offset_layer = l - obj.place.layer.value;
             return true;
@@ -111,16 +119,13 @@ class TimelineEditor
         auto onObjectLineLeftDown ( uint f, uint l )
         {
             auto obj = timeline[new FrameAt(f), new LayerId(l)];
-            if ( obj )
-                return onObjectLeftDown( obj, f, l );
-            else
-                return false;
+            return obj ? onObjectLeftDown(obj,f,l) : false;
         }
 
         /+ タイムラインのプロパティラインがクリックされた時に呼ばれる +/
         auto onPropertyLineLeftDown ( uint f, uint l )
         {
-            // TODO
+            operating_prop = selectedObject.propertyList.properties.values[l];
             return true;
         }
 
@@ -140,6 +145,9 @@ class TimelineEditor
 
         @property selectedObject () { return selecting; }
         @property operatedObject () { return operating; }
+
+        @property operatedProperty () { return operating_prop; }
+        @property selectedProperty () { return selecting_prop; }
 
         this ( Timeline tl = null )
         {
@@ -181,18 +189,23 @@ class TimelineEditor
         /+ タイムライン上でカーソルが動いた時に呼ばれる +/
         auto onMouseMove ( uint f, uint l )
         {
+            if ( op_type == Operation.None ) return false;
+
+            op_type = Operation.Move;
             if ( op_type == Operation.Clicking ) {
                 if ( operating ) {
                     // TODO
-                } else {
-                    op_type = Operation.Move;
+                } else if ( operating_prop ) {
+
                 }
             }
-            switch ( op_type ) {
-                case Operation.Move:
-                    if ( !operating ) currentFrame = f;
-                    break;
-                default:
+
+            if ( operating ) {
+                operating.place.frame.move( new FrameAt(f) );
+            } else if ( operating_prop ) {
+
+            } else {
+                currentFrame = f;
             }
             return true;
         }
@@ -200,8 +213,14 @@ class TimelineEditor
         /+ タイムラインがクリックされ終わった時に呼ばれる +/
         auto onLeftUp ( uint f, uint l )
         {
-            if ( op_type == Operation.Clicking && operating )
-                selecting = operating;
+            if ( op_type == Operation.Clicking ) {
+                if ( operating )
+                    selecting = operating;
+                else if ( operating_prop )
+                    selecting_prop = operating_prop;
+                else
+                    currentFrame = f;
+            }
             clearOperationState;
             return true;
         }
