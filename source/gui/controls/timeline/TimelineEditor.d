@@ -9,7 +9,8 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.Timeline,
        cafe.project.timeline.PlaceableObject,
        cafe.gui.controls.timeline.Line;
-import std.conv,
+import std.algorithm,
+       std.conv,
        std.format;
 
 debug = 0;
@@ -132,6 +133,10 @@ class TimelineEditor
             this.tl = tl;
         }
         @property currentFrame () { return cur_frame; }
+        @property currentFrame ( uint f )
+        {
+            cur_frame = min( f, timeline.length.value-1 );
+        }
 
         @property selectedObject () { return selecting; }
         @property operatedObject () { return operating; }
@@ -168,7 +173,7 @@ class TimelineEditor
             auto result = isPropertyLine(l) ?
                 onPropertyLineLeftDown( f, layerId(l) ):
                 onObjectLineLeftDown  ( f, layerId(l) );
-            if ( !result ) cur_frame = f;
+            if ( !result ) currentFrame = f;
 
             return true;
         }
@@ -185,7 +190,7 @@ class TimelineEditor
             }
             switch ( op_type ) {
                 case Operation.Move:
-                    if ( !operating ) cur_frame = f;
+                    if ( !operating ) currentFrame = f;
                     break;
                 default:
             }
