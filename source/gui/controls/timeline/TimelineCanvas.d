@@ -327,7 +327,7 @@ class TimelineCanvas : Widget
 
         private auto onMouseEvent ( Widget w, MouseEvent e )
         {
-            auto top = GridHeight + pos.left;
+            auto top = GridHeight + pos.top;
             auto left = headerWidth;
 
             auto f = max( xToFrame( e.x - left ), 0 );
