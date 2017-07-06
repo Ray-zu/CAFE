@@ -165,7 +165,7 @@ class TimelineEditor
                 auto   prop = selecting.propertyList.properties.values[id];
                 string name = selecting.propertyList.properties.keys[id];
                 return Line( l, prop, name,
-                        prop == selecting_prop ? 2 : 0.7 );
+                        prop == selecting_prop ? 3 : 0.7 );
             } else
                 return Line( l, timeline[new LayerId(id)], "layer %d".format(id) );
         }
@@ -215,12 +215,14 @@ class TimelineEditor
         auto onLeftUp ( uint f, uint l )
         {
             if ( op_type == Operation.Clicking ) {
-                if ( operating )
-                    selecting = operating;
-                else if ( operating_prop )
+                if ( operating ) {
+                    selecting = selecting is operating ?
+                        null : operating;
+                } else if ( operating_prop ) {
                     selecting_prop = operating_prop;
-                else
+                } else {
                     currentFrame = f;
+                }
             }
             clearOperationState;
             return true;
