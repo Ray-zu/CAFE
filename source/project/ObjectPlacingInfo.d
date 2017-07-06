@@ -13,23 +13,23 @@ import std.algorithm,
 debug = 0;
 
 /+ ひとつの変数を持つプロパティクラスの雛形 +/
-private template SingleValueProperty (N, T)
+private template UIntSingleValueProperty (N)
 {
     private:
-        T val;
+        uint val;
 
     public:
         @property value ()      { return val; }
-        @property value ( T f ) { val = f;    }
+        @property value ( uint f ) { val = f;    }
 
         this ( N src )
         {
             value = src.value;
         }
 
-        this ( T f )
+        this ( int f )
         {
-            value = f;
+            value = max( min( f, uint.max ), uint.min );
         }
 
         override @property string toString ()
@@ -42,14 +42,14 @@ private template SingleValueProperty (N, T)
  + 0から始まるフレーム総数を表現します。 +
  + 例:シーン全体の長さ                   +/
 class FrameLength {
-    mixin SingleValueProperty!(FrameLength,uint);
+    mixin UIntSingleValueProperty!FrameLength;
 }
 
 /+ フレーム数(一点)             +
  + ある１フレームを表現します。 +
  + 例:再生中フレーム            +/
 class FrameAt {
-    mixin SingleValueProperty!(FrameAt,uint);
+    mixin UIntSingleValueProperty!FrameAt;
 }
 
 /+ フレーム数(期間)                                   +
@@ -198,7 +198,7 @@ class FramePeriod
 
 /+ レイヤID +/
 class LayerId {
-    mixin SingleValueProperty!(LayerId, uint);
+    mixin UIntSingleValueProperty!LayerId;
 }
 
 /+ オブジェクトの配置情報(レイヤ数/開始・終了フレーム数) +/
