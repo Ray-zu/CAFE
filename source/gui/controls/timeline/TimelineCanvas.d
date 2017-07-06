@@ -211,8 +211,8 @@ class TimelineCanvas : Widget
                 }
             }
 
-            draw( tl_editor.currentFrame, CurFrameBarColor );               // シークバー
             draw( tl_editor.timeline.length.value, EndOfFrameBarColor );    // 終端のあれ
+            draw( tl_editor.currentFrame, CurFrameBarColor );               // シークバー
         }
 
     public:
