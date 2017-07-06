@@ -95,7 +95,8 @@ class TimelineCanvas : Widget
         auto yToLineIndex ( int y )
         {
             auto i = topLineIndex.trunc.to!uint;
-            auto h = -topHiddenPx;
+            auto h = 0;
+            y -= topHiddenPx;
             while ( h < y )
                 h += (tl_editor.lineInfo( i++ ).height * lineHeight).to!int;
             return i - 1;
@@ -326,8 +327,8 @@ class TimelineCanvas : Widget
 
         private auto onMouseEvent ( Widget w, MouseEvent e )
         {
-            auto f = max( xToFrame( e.x - headerWidth ), 0 );
-            auto l = max( yToLineIndex( e.y - GridHeight ), 0 );
+            auto f = max( xToFrame( e.x - headerWidth - pos.left ), 0 );
+            auto l = max( yToLineIndex( e.y - GridHeight - pos.top ), 0 );
 
             switch ( e.action ) {
                 case MouseAction.ButtonDown:

@@ -88,7 +88,7 @@ class TimelineEditor
             if ( l <= sel_l )
                 return l;
             else if ( l <= sel_l + prop_len )
-                return l - (sel_l + 1);
+                return l - sel_l - 1;
             else
                 return l - prop_len;
         }
@@ -164,7 +164,8 @@ class TimelineEditor
             if ( isPropertyLine(l) ) {
                 auto   prop = selecting.propertyList.properties.values[id];
                 string name = selecting.propertyList.properties.keys[id];
-                return Line( l, prop, name, 0.7 );
+                return Line( l, prop, name,
+                        prop == selecting_prop ? 2 : 0.7 );
             } else
                 return Line( l, timeline[new LayerId(id)], "layer %d".format(id) );
         }
