@@ -174,21 +174,25 @@ class TimelineEditor
          + イベントハンドラ                                +
          + ----------------------------------------------- +/
         /+ タイムラインがクリックされたときに呼ばれる +/
-        auto onLeftDown ( uint f, uint l )
+        auto onLeftDown ( int f, int l )
         {
             clearOperationState;
             op_type = Operation.Clicking;
 
-            auto result = isPropertyLine(l) ?
-                onPropertyLineLeftDown( f, layerId(l) ):
-                onObjectLineLeftDown  ( f, layerId(l) );
-            if ( !result ) currentFrame = f;
+            if ( l < 0 )
+                currentFrame = f;
+            else {
+                auto result = isPropertyLine(l) ?
+                    onPropertyLineLeftDown( f, layerId(l) ):
+                    onObjectLineLeftDown  ( f, layerId(l) );
+                if ( !result ) currentFrame = f;
+            }
 
             return true;
         }
 
         /+ タイムライン上でカーソルが動いた時に呼ばれる +/
-        auto onMouseMove ( uint f, uint l )
+        auto onMouseMove ( int f, int l )
         {
             if ( op_type == Operation.None ) return false;
 
@@ -212,7 +216,7 @@ class TimelineEditor
         }
 
         /+ タイムラインがクリックされ終わった時に呼ばれる +/
-        auto onLeftUp ( uint f, uint l )
+        auto onLeftUp ( int f, int l )
         {
             if ( op_type == Operation.Clicking ) {
                 if ( operating ) {

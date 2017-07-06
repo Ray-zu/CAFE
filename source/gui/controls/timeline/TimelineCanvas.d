@@ -327,8 +327,12 @@ class TimelineCanvas : Widget
 
         private auto onMouseEvent ( Widget w, MouseEvent e )
         {
-            auto f = max( xToFrame( e.x - headerWidth - pos.left ), 0 );
-            auto l = max( yToLineIndex( e.y - GridHeight - pos.top ), 0 );
+            auto top = GridHeight + pos.left;
+            auto left = headerWidth;
+
+            auto f = max( xToFrame( e.x - left ), 0 );
+            auto l = e.y < top ?
+                -1 : max( yToLineIndex( e.y - top ), 0 );
 
             switch ( e.action ) {
                 case MouseAction.ButtonDown:
@@ -352,6 +356,7 @@ class TimelineCanvas : Widget
 
                 default:
             }
+
             return false;
         }
 }
