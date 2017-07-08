@@ -35,6 +35,10 @@ interface Property
         void   setString ( FrameAt, string );
         string getString ( FrameAt );
 
+        /+ 強制的にfloatで取得&設定 +/
+        void  setFloat ( FrameAt, float );
+        float getFloat ( FrameAt );
+
         /+ プロパティが数値かどうか +/
         @property bool increasable ();
         /+ プロパティの文字列変換で、複数行文字列を許可するかどうか +/
@@ -205,6 +209,13 @@ class PropertyBase (T) : Property
             set( f, v.to!T );
         }
 
+        override void setFloat ( FrameAt f, float v )
+        {
+            static if ( isNumeric!T )
+                set( f, v.to!T );
+            else throw new Exception( "The property isn't increasable." );
+        }
+
         /+ 元の型でプロパティを取得 +/
         T get ( FrameAt f )
         {
@@ -226,6 +237,13 @@ class PropertyBase (T) : Property
         override string getString ( FrameAt f )
         {
             return get( f ).to!string;
+        }
+
+        override float getFloat ( FrameAt f )
+        {
+            static if ( isNumeric!T )
+                return get( f );
+            else throw new Exception( "The property isn't increasable." );
         }
 
         override @property bool increasable ()
