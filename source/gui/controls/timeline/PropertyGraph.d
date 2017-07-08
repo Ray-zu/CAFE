@@ -72,14 +72,16 @@ class PropertyGraph
             int last_frame = -1;
             Point last_point;
 
-            foreach ( x; 0 .. (drawArea.width) ) {
+            foreach ( x; 0 .. (drawArea.width + 1) ) {
                 auto f = xToFrame( x );
-                if ( last_frame == f ) continue;
+
+                if ( last_frame == f || f >= property.frame.value )
+                    continue;
 
                 auto v = property.getFloat( new FrameAt(f) );
                 auto point = Point( x, valueToY(v).to!int );
 
-                if ( last_frame > 0 ) {
+                if ( last_frame >= 0 ) {
                     auto l = drawArea.left;
                     auto t = drawArea.top;
                     auto p1 = Point( last_point.x+l, last_point.y+t );
