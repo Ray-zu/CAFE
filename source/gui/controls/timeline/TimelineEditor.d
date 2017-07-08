@@ -125,8 +125,11 @@ class TimelineEditor
         /+ タイムラインのプロパティラインがクリックされた時に呼ばれる +/
         auto onPropertyLineLeftDown ( uint f, uint l )
         {
-            operating_prop = selectedObject.propertyList.properties.values[l];
-            return true;
+            if ( selectedObject.place.frame.isInRange( new FrameAt(f) ) ) {
+                operating_prop = selectedObject.propertyList.properties.values[l];
+                return true;
+            }
+            return false;
         }
 
     public:
