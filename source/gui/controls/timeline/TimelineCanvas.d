@@ -7,6 +7,7 @@
 module cafe.gui.controls.timeline.TimelineCanvas;
 import cafe.gui.controls.timeline.TimelineEditor,
        cafe.gui.controls.timeline.Line,
+       cafe.gui.controls.timeline.PropertyGraph,
        cafe.gui.utils.Font,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.property.Property;
@@ -51,6 +52,8 @@ class TimelineCanvas : Widget
         TimelineEditor tl_editor;
         AbstractSlider vscroll;
         AbstractSlider hscroll;
+
+        PropertyGraph graph;
 
         uint header_width;
         uint  base_line_height;
@@ -106,6 +109,8 @@ class TimelineCanvas : Widget
         /+ Timelineとプロパティを同期 +/
         void updateProperties ()
         {
+            auto sel = tl_editor.selectedObject;
+
             auto max_layer = tl_editor.timeline.
                 layerLength.value + LayerRemnant;
             vscroll.minValue = 0;
@@ -116,6 +121,13 @@ class TimelineCanvas : Widget
                 length.value + FrameRemnant;
             hscroll.minValue = 0;
             hscroll.maxValue = max_frame;
+
+            if ( sel ) {
+                auto st  = max( startFrame, sel.place.frame.start.value );
+                auto ed  = min( startFrame + pageWidth, sel.place.frame.end.value );
+                if ( st < ed ) graph.setProperty( tl_editor.selectedProperty, st, ed-st );
+                else graph.setProperty( null );
+            } else graph.setProperty( null );
         }
 
 
@@ -185,9 +197,18 @@ class TimelineCanvas : Widget
 
             if ( l.isLayer ) l.objects.each!drawObject;
             else {
-                l.property.middlePoints.each!(
-                    x => drawPropertyRect( x.frame.start.value ) );
-                drawPropertyRect( l.property.frame.value );
+                if ( l.property is graph.property ) {
+                    // グラフの描画
+                    auto st = frameToX( graph.startFrame );
+                    auto ed = frameToX( graph.startFrame + graph.frameLength );
+                    graph.drawArea = Rect( st, y, ed, y + height );
+                    graph.draw( b );
+
+                } else {
+                    l.property.middlePoints.each!(
+                            x => drawPropertyRect( x.frame.start.value ) );
+                    drawPropertyRect( l.property.frame.value );
+                }
             }
 
             // 上のラインの線と被るのでyに1足します。
@@ -277,6 +298,7 @@ class TimelineCanvas : Widget
             super( id );
             mouseEvent = &onMouseEvent;
             tl_editor = null;
+            graph = new PropertyGraph;
 
             headerWidth = 100;
             lineHeight = 30;
