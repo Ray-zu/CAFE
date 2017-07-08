@@ -28,6 +28,10 @@ interface Property
         @property FrameLength   frame        ();
         @property MiddlePoint[] middlePoints ();
 
+        /+ 値の最大値と最小値を返す +/
+        @property float maxFloat ();
+        @property float minFloat ();
+
         /+ フレーム数から中間点クラスを返す +/
         MiddlePoint middlePointAtFrame ( FrameAt );
 
@@ -82,6 +86,8 @@ interface Property
 /+ プロパティデータ +/
 class PropertyBase (T) : Property
 {
+    enum MaximumValue = 10000;
+    enum MinimumValue = -10000;
     private:
         FrameLength         frame_len;
         MiddlePointBase!T[] middle_points; // MiddlePointBase!T型で取得したい場合はプロパティではなく変数を参照する
@@ -147,6 +153,19 @@ class PropertyBase (T) : Property
             MiddlePoint[] result;
             foreach ( mp; middle_points ) result ~= mp;
             return result;
+        }
+
+        override @property float maxFloat ()
+        {
+            static if ( isNumeric!T )
+                return MaximumValue;
+            else throw new Exception( "The property isn't increasable." );
+        }
+        override @property float minFloat ()
+        {
+            static if ( isNumeric!T )
+                return MinimumValue;
+            else throw new Exception( "The property isn't increasable." );
         }
 
         this ( PropertyBase!T src )
