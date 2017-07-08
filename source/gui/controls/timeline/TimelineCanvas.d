@@ -32,7 +32,7 @@ class TimelineCanvas : Widget
 
     enum ObjectMarginTopBtm = 3;
     enum ObjectPaddingLeft  = 5;
-    enum PropertyRectSize   = 7;
+    enum PropertyRectSize   = 8;
 
     enum BackgroundColor       = 0x333333;
     enum LineSeparaterColor    = 0x666666;
@@ -47,6 +47,7 @@ class TimelineCanvas : Widget
     enum ObjectFrameColor  = 0x888888;
     enum ObjectNameColor   = 0xbbbbbb;
     enum PropertyRectColor = 0x888888;
+    enum MPSeparatorColor  = 0x666666;
 
     private:
         TimelineEditor tl_editor;
@@ -187,31 +188,36 @@ class TimelineCanvas : Widget
             }
 
             /+ プロパティレクトの描画 +/
-            void drawPropertyRect ( uint f )
+            void drawPropertyRect ( uint f, bool line )
             {
                 f += tl_editor.selectedObject.place.frame.start.value;
                 enum prs = PropertyRectSize/2;
-                auto x = frameToX(f);
-                auto y = y + height/2;
-                auto r = Rect( x-prs, y-prs, x+prs, y+prs );
-                b.fillRect( r, PropertyRectColor );
+                auto rx = frameToX(f);
+                auto ry = y + height/2;
+                auto r = Rect( rx-prs, ry-prs, rx+prs, ry+prs );
+
+                if ( line )
+                    b.drawLine( Point(rx,y+height), Point(rx,y), MPSeparatorColor );
+                else
+                    b.fillRect( r, PropertyRectColor );
             }
 
             if ( l.isLayer ) l.objects.each!drawObject;
             else {
-                if ( l.property is graph.property ) {
+                // プロパティラインの描画
+                auto line  = l.property is graph.property;
+                if ( line ) {
                     // グラフの描画
                     auto abs_st = tl_editor.selectedObject.place.frame.start.value;
                     auto st = frameToX( graph.startFrame + abs_st );
                     auto ed = frameToX( graph.startFrame + graph.frameLength + abs_st );
                     graph.drawArea = Rect( st, y, ed, y + height );
                     graph.draw( b );
-
-                } else {
-                    l.property.middlePoints.each!(
-                            x => drawPropertyRect( x.frame.start.value ) );
-                    drawPropertyRect( l.property.frame.value );
                 }
+
+                l.property.middlePoints.each!(
+                        x => drawPropertyRect( x.frame.start.value, line ) );
+                drawPropertyRect( l.property.frame.value-1, line );
             }
 
             // 上のラインの線と被るのでyに1足します。

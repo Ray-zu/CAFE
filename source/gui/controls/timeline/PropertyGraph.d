@@ -72,10 +72,10 @@ class PropertyGraph
             int last_frame = -1;
             Point last_point;
 
-            foreach ( x; 0 .. (drawArea.width + 1) ) {
+            foreach ( x; 0 .. (drawArea.width+1) ) {
                 auto f = xToFrame( x );
 
-                if ( last_frame == f || f >= property.frame.value )
+                if ( last_frame == f || property.frame.value <= f )
                     continue;
 
                 auto v = property.getFloat( new FrameAt(f) );
