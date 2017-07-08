@@ -84,11 +84,14 @@ class TimelineWidget : VerticalLayout
 
             //テストコード
             import cafe.project.ObjectPlacingInfo,
-                   cafe.project.timeline.Timeline;
+                   cafe.project.timeline.Timeline,
+                   cafe.project.timeline.property.Easing;
             auto tl = new Timeline( new FrameLength(50) );
             tl += new NullObject( new ObjectPlacingInfo(
                         new LayerId(0), new FramePeriod( tl.length,
                             new FrameAt(30), new FrameLength(20) ) ) );
+            tl.objects[0].propertyList["X"].setString( new FrameAt(10), "5000" );
+            tl.objects[0].propertyList["X"].middlePoints[0].easing = EasingType.Linear;
 
             tl_editor                  = new TimelineEditor(tl);
             tl_canvas.timeline         = tl_editor;
