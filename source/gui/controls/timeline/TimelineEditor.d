@@ -20,6 +20,9 @@ debug = 0;
  + 右クリック時の動作など                +/
 class TimelineEditor
 {
+    enum PropertyLineHeightMag         = 0.8;
+    enum SelectedPropertyLineHeightMag = 3;
+
     private:
         enum Operation
         {
@@ -168,7 +171,9 @@ class TimelineEditor
                 auto   prop = selecting.propertyList.properties.values[id];
                 string name = selecting.propertyList.properties.keys[id];
                 return Line( l, prop, name,
-                        prop == selecting_prop ? 3 : 0.7 );
+                        prop == selecting_prop ?
+                            (SelectedPropertyLineHeightMag) :
+                            (PropertyLineHeightMag) );
             } else
                 return Line( l, timeline[new LayerId(id)], "layer %d".format(id) );
         }
