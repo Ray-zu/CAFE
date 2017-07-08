@@ -213,7 +213,7 @@ class PropertyBase (T) : Property
                 if ( mp.frame.start.value == f.value ) { // 中間点の開始点を指定された場合
                     (cast(MiddlePointBase!T)mp).value = v;
                 } else {                                 // 中間点の真ん中を指定された場合
-                    auto flength = new FrameLength( nextFrame(mp).value - f.value );
+                    auto flength = new FrameLength( nextFrame(mp).value - f.value - 1 );
                     auto fperiod = new FramePeriod( frame, f, flength );
 
                     auto mp_new = new MiddlePointBase!T( v, fperiod );
@@ -238,13 +238,13 @@ class PropertyBase (T) : Property
         /+ 元の型でプロパティを取得 +/
         T get ( FrameAt f )
         {
+            if ( f.value == frame.value - 1 ) return endValue;
+
             auto mp = middlePointAtFrame(f);
             auto st = (cast(MiddlePointBase!T)mp).value;
 
             static if ( !isNumeric!T ) return st;
             else {
-                if ( f.value == frame.value - 1 ) return endValue;
-
                 auto easing_type = mp.easing;
                 if ( easing_type == EasingType.None ) return st;
 
