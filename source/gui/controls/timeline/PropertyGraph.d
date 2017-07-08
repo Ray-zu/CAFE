@@ -13,11 +13,29 @@ import dlangui;
 /+ プロパティラインに表示するグラフを描画＆処理する +/
 class PropertyGraph
 {
+    enum MPRectSize = 7;
+    enum GraphColor = 0x888888;
+
     private:
         Property prop;
         uint st_frame;
         uint frame_length;
         Rect draw_area;
+
+        @property valueToY ( float v )
+        {
+            v -= prop.minFloat;
+            auto ratio = v/(prop.maxFloat - prop.minFloat);
+            auto y = drawArea.height - ratio*drawArea.height;
+            return y;
+        }
+
+        /+ グラフ位置相対座標Xからフレーム数へ +/
+        @property xToFrame ( int x )
+        {
+            auto unit = drawArea.width / frameLength.to!float;
+            return (startFrame + x/unit).to!int;
+        }
 
     public:
         @property property    () { return prop; }
@@ -48,8 +66,34 @@ class PropertyGraph
             frame_length = len.to!uint;
         }
 
+        /+ グラフ描画 +/
         void draw ( DrawBuf b )
         {
-            b.fillRect( drawArea, 0xfffffff );
+            auto last_frame = -1;
+            auto last_point  = Point(-1,-1);
+
+            void drawMPRect ( int x, int y )
+            {
+                auto sz = MPRectSize;
+                Rect r = Rect( x-sz, y-sz, x+sz, y+sz );
+                b.fillRect( r, GraphColor );
+            }
+
+            foreach ( x; 0 .. (drawArea.width) ) {
+                auto f = xToFrame( x );
+                if ( last_frame == f ) continue;
+
+                auto v = property.getFloat( new FrameAt(f) );
+                auto point = Point( x, valueToY(v).to!int );
+
+                if ( last_point.x > 0 ) {
+                    auto l = drawArea.left;
+                    auto t = drawArea.top;
+                    auto p1 = Point( last_point.x+l, last_point.y+t );
+                    auto p2 = Point( point.x     +l, point.y     +t );
+                    b.drawLine( p1, p2, GraphColor );
+                }
+                last_point = point;
+            }
         }
 }

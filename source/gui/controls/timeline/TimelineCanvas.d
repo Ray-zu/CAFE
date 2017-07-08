@@ -123,8 +123,10 @@ class TimelineCanvas : Widget
             hscroll.maxValue = max_frame;
 
             if ( sel ) {
-                auto st  = max( startFrame, sel.place.frame.start.value );
-                auto ed  = min( startFrame + pageWidth, sel.place.frame.end.value );
+                auto abs_st = sel.place.frame.start.value.to!int;
+                auto st  = max( startFrame, abs_st ) - abs_st;
+                auto ed  = min( startFrame + pageWidth, sel.place.frame.end.value ) - abs_st;
+
                 if ( st < ed ) graph.setProperty( tl_editor.selectedProperty, st, ed-st );
                 else graph.setProperty( null );
             } else graph.setProperty( null );
@@ -199,8 +201,9 @@ class TimelineCanvas : Widget
             else {
                 if ( l.property is graph.property ) {
                     // グラフの描画
-                    auto st = frameToX( graph.startFrame );
-                    auto ed = frameToX( graph.startFrame + graph.frameLength );
+                    auto abs_st = tl_editor.selectedObject.place.frame.start.value;
+                    auto st = frameToX( graph.startFrame + abs_st );
+                    auto ed = frameToX( graph.startFrame + graph.frameLength + abs_st );
                     graph.drawArea = Rect( st, y, ed, y + height );
                     graph.draw( b );
 
