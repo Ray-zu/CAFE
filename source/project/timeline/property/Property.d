@@ -243,6 +243,8 @@ class PropertyBase (T) : Property
 
             static if ( !isNumeric!T ) return st;
             else {
+                if ( f.value == frame.value - 1 ) return endValue;
+
                 auto easing_type = mp.easing;
                 if ( easing_type == EasingType.None ) return st;
 
