@@ -359,27 +359,40 @@ class TimelineCanvas : Widget
         private auto onMouseEvent ( Widget w, MouseEvent e )
         {
             auto top = GridHeight + pos.top;
-            auto left = headerWidth;
+            auto left = headerWidth + pos.left;
 
+            /+ カーソル位置のフレーム数とラインインデックス +/
             auto f = max( xToFrame( e.x - left ), 0 );
             auto l = e.y < top ?
                 -1 : max( yToLineIndex( e.y - top ), 0 );
 
+            /+ コンテンツ(ラインヘッダとラインの描画領域)相対座標 +/
             auto conts_x = e.x - pos.left;
             auto conts_y = e.y - pos.top - GridHeight;
 
+            /+ グラフ相対座標 +/
             auto graph_x = conts_x - graph.drawArea.left;
             auto graph_y = conts_y - graph.drawArea.top;
 
-            switch ( e.action ) {
-                case MouseAction.ButtonDown:
-                    invalidate;
-                    if ( graph.drawArea.isPointInside( conts_x, conts_y ) )
-                        return graph.onLeftDown( graph_x, graph_y, e.keyFlags );
+            /+ どれかのボタンをクリックしたとき +/
+            bool buttonDown ()
+            {
+                invalidate;
+                if ( e.button & MouseButton.Left ) {
+
+                    if ( graph.drawArea.isPointInside( conts_x, conts_y )
+                            && graph.onLeftDown( graph_x, graph_y, e.keyFlags ) )
+                        return true;
 
                     else if ( e.button & MouseButton.Left )
                         return tl_editor.onLeftDown(f,l);
-                    break;
+                }
+                return false;
+            }
+
+            switch ( e.action ) {
+                case MouseAction.ButtonDown:
+                    return buttonDown;
 
                 case MouseAction.Move:
                     if ( tl_editor.onMouseMove(f,l) ) {
