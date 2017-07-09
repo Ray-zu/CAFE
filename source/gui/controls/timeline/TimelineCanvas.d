@@ -306,6 +306,9 @@ class TimelineCanvas : Widget
         {
             super( id );
             mouseEvent = &onMouseEvent;
+            layoutWidth  = FILL_PARENT;
+            layoutHeight = FILL_PARENT;
+
             tl_editor = null;
             graph = new PropertyGraph;
 
@@ -315,7 +318,8 @@ class TimelineCanvas : Widget
 
         override void measure ( int w, int h )
         {
-            measuredContent( w, h, w, h );
+            measuredContent( w, h, w, h == SIZE_UNSPECIFIED ?
+                    GridHeight + lineHeight : h );
         }
 
         override void onDraw ( DrawBuf b )

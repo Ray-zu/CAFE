@@ -64,6 +64,8 @@ class TimelineWidget : VerticalLayout
         {
             super( id );
             mouseEvent = &onMouseEvent;
+            layoutWidth  = FILL_PARENT;
+            layoutHeight = FILL_PARENT;
 
             addChild( parseML( q{
                 ScrollBar {

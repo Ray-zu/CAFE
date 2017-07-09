@@ -34,6 +34,7 @@ class Cafe
             // テストコード
             auto window = Platform.instance.createWindow("Hello dlang!",null);
             window.mainWidget = new TimelineWidget( "test" );
+            window.windowOrContentResizeMode = WindowOrContentResizeMode.shrinkWidgets;
             window.show;
         }
 
