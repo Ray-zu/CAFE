@@ -213,7 +213,7 @@ class PropertyBase (T) : Property
                 if ( mp.frame.start.value == f.value ) { // 中間点の開始点を指定された場合
                     (cast(MiddlePointBase!T)mp).value = v;
                 } else {                                 // 中間点の真ん中を指定された場合
-                    auto flength = new FrameLength( nextFrame(mp).value - f.value - 1 );
+                    auto flength = new FrameLength( nextFrame(mp).value - f.value );
                     auto fperiod = new FramePeriod( frame, f, flength );
 
                     auto mp_new = new MiddlePointBase!T( v, fperiod );
