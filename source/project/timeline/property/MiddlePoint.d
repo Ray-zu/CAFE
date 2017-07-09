@@ -6,7 +6,8 @@
  + ------------------------------------------------------------ +/
 module cafe.project.timeline.property.MiddlePoint;
 import cafe.project.ObjectPlacingInfo,
-       cafe.project.timeline.property.Easing;
+       cafe.project.timeline.property.Easing,
+       cafe.project.timeline.property.RendererProperty;
 import std.conv,
        std.traits,
        std.json;
@@ -39,6 +40,12 @@ interface MiddlePoint
                     return new MiddlePointBase!float( value.floating, frame, easing );
                 case "string":
                     return new MiddlePointBase!string( value.str, frame );
+                case "bool":
+                    return new MiddlePointBase!bool( value.type==JSON_TYPE.TRUE, frame );
+
+                case "RendererType":
+                    return new MiddlePointBase!RendererType( value.str.to!RendererType, frame );
+
                 default: 
                     throw new Exception( "Undefined Type." );
             }
@@ -67,7 +74,7 @@ class MiddlePointBase (T) : MiddlePoint
         } else {
             override @property EasingType easing ()             { return EasingType.None; }
             override @property void       easing ( EasingType ) {
-                throw new Exception( "You can't do easing to this property." );
+                throw new Exception( "This property is not increasable." );
             }
         }
 
