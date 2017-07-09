@@ -230,7 +230,7 @@ class TimelineEditor
                 if ( operating ) {
                     selecting = selecting is operating ?
                         null : operating;
-                } else if ( operating_prop ) {
+                } else if ( operating_prop && operating_prop.increasable ) {
                     selecting_prop = operating_prop;
                 } else {
                     currentFrame = f;

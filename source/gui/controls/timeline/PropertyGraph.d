@@ -61,9 +61,11 @@ class PropertyGraph
         /+ プロパティを更新 +/
         void setProperty ( Property p, int st = 0, int len = 0 )
         {
-            prop = p;
-            st_frame = st.to!uint;
-            frame_length = len.to!uint;
+            if ( p is null || p.increasable ) {
+                prop = p;
+                st_frame = st.to!uint;
+                frame_length = len.to!uint;
+            }
         }
 
         /+ グラフ描画 +/
