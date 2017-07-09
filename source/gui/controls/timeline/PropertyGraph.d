@@ -22,6 +22,15 @@ class PropertyGraph
         uint frame_length;
         Rect draw_area;
 
+        /+ グラフ位置相対Y座標から値へ +/
+        @property yToValue ( int y )
+        {
+            auto ratio = y/drawArea.height.to!float;
+            auto topv  = ratio*(prop.maxFloat - prop.minFloat);
+            return prop.maxFloat - topv;
+        }
+
+        /+ 値からグラフ位置相対Y座標へ +/
         @property valueToY ( float v )
         {
             v -= prop.minFloat;
@@ -93,5 +102,15 @@ class PropertyGraph
                 last_frame = f;
                 last_point = point;
             }
+        }
+
+        /+ 左クリックされた時に呼ばれる(グラフ相対座標) +/
+        bool onLeftDown ( int x, int y, ushort keys )
+        {
+            auto f = xToFrame(x);
+            auto v = yToValue(y);
+            Log.d( f.to!string );
+            prop.setFloat( new FrameAt(f), v );
+            return true;
         }
 }

@@ -365,10 +365,19 @@ class TimelineCanvas : Widget
             auto l = e.y < top ?
                 -1 : max( yToLineIndex( e.y - top ), 0 );
 
+            auto conts_x = e.x - pos.left;
+            auto conts_y = e.y - pos.top - GridHeight;
+
+            auto graph_x = conts_x - graph.drawArea.left;
+            auto graph_y = conts_y - graph.drawArea.top;
+
             switch ( e.action ) {
                 case MouseAction.ButtonDown:
                     invalidate;
-                    if ( e.button & MouseButton.Left )
+                    if ( graph.drawArea.isPointInside( conts_x, conts_y ) )
+                        return graph.onLeftDown( graph_x, graph_y, e.keyFlags );
+
+                    else if ( e.button & MouseButton.Left )
                         return tl_editor.onLeftDown(f,l);
                     break;
 
