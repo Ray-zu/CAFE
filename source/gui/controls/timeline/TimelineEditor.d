@@ -14,8 +14,6 @@ import std.algorithm,
        std.conv,
        std.format;
 
-debug = 0;
-
 /+ Timelineのオブジェクトを移動/リサイズ +
  + 右クリック時の動作など                +/
 class TimelineEditor
@@ -238,9 +236,5 @@ class TimelineEditor
             }
             clearOperationState;
             return true;
-        }
-
-        debug (1) unittest {
-            auto hoge = new TimelineEditor();
         }
 }
