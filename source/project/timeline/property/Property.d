@@ -35,6 +35,10 @@ interface Property
         /+ フレーム数から中間点クラスを返す +/
         MiddlePoint middlePointAtFrame ( FrameAt );
 
+        /+ 中間点を削除 +/
+        void removeMiddlePoint ( int );
+        void removeMiddlePoint ( MiddlePoint );
+
         /+ ユーザーの入力した文字列をプロパティに変換 +/
         void   setString ( FrameAt, string );
         string getString ( FrameAt );
@@ -200,6 +204,16 @@ class PropertyBase (T) : Property
             foreach ( mp; middlePoints )
                 if ( mp.frame.isInRange(f) ) return mp;
             throw new Exception( "We can't find middle point at that frame." );
+        }
+
+        override void removeMiddlePoint ( int i )
+        {
+            middle_points = middle_points.remove( i );
+        }
+
+        override void removeMiddlePoint ( MiddlePoint mp )
+        {
+            middle_points = middle_points.remove!( x => x is mp );
         }
 
         /+ 元の型でプロパティを設定 +/
