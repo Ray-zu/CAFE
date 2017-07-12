@@ -48,11 +48,28 @@ class ObjectEditor
                     mp.frame.length.value =
                         (len - mp.frame.start.value.to!int).to!uint;
                 } else {
-                    //TODO 
+                    // 縮まされたときは余分な中間点を消す
+                    auto mp = prop.middlePoints[cut_mp];
+                    auto new_len = len - mp.frame.start.value;
+                    if ( new_len > 0 )
+                        mp.frame.length.value = new_len;
+                    else cut_mp--;
+                }
+
+                /+ cut_mp以降の中間点を削除 +/
+                if ( cut_mp >= 0 ) {
+                    foreach ( i; cut_mp .. prop.middlePoints.length )
+                        prop.removeMiddlePoint( i );
                 }
             }
 
             obj.propertyList.properties.values.each!proc;
+        }
+
+        /+ 現在の設定を元にリサイズ +/
+        void resize ( int len )
+        {
+            resizeDestroy( len );
         }
 
         debug (1) unittest {
