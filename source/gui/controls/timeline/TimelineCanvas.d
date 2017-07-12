@@ -387,7 +387,8 @@ class TimelineCanvas : Widget
                 invalidate;
                 if ( e.button & MouseButton.Left ) {
 
-                    if ( graph.drawArea.isPointInside( conts_x, conts_y )
+                    if ( graph.visible
+                            && graph.drawArea.isPointInside( conts_x, conts_y )
                             && graph.onLeftDown( graph_x, graph_y, e.keyFlags ) )
                         return true;
 
