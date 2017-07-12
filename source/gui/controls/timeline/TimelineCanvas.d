@@ -182,6 +182,7 @@ class TimelineCanvas : Widget
                         ObjectPaddingLeft,r.height/2, obj.name, ObjectNameColor );
 
                 b.drawImage( r.left, r.top, obj_buf );
+                obj_buf.releaseRef;
                 object.destroy( obj_buf );
 
                 b.drawFrame( r, ObjectFrameColor, Rect(1,1,1,1) );
@@ -336,6 +337,7 @@ class TimelineCanvas : Widget
             drawGrid( grid_buf );
             b.drawRescaled( grid_r, grid_buf,
                    Rect( 0, 0, grid_buf.width, grid_buf.height ) );
+            grid_buf.releaseRef;
             object.destroy( grid_buf );
 
             // コンテンツの描画
@@ -355,6 +357,7 @@ class TimelineCanvas : Widget
 
             b.drawRescaled( body_r, body_buf,
                    Rect( 0, 0, body_buf.width, body_buf.height ) );
+            body_buf.releaseRef;
             object.destroy( body_buf );
 
             drawBars( b );
