@@ -21,6 +21,17 @@ void resize ( PlaceableObject obj, int len )
     oe.resize( len );
 }
 
+/+ 左端をリサイズ +/
+void resizeStart ( PlaceableObject obj, FrameAt f )
+{
+    auto ed = obj.place.frame.end.value;
+    f.value = f.value >= ed ? ed - 1 : f.value;
+
+    auto new_len = ed - f.value;
+    obj.resize( new_len );
+    obj.place.frame.resizeStart( f );
+}
+
 
 /+ オブジェクトをリサイズ                    +
  + 当たり判定処理はTimelineEditorで行います。+/
@@ -69,5 +80,11 @@ class ObjectEditor
             }
 
             obj.propertyList.properties.values.each!proc;
+        }
+
+        /+ 現在の設定でリサイズ +/
+        void resize ( int len )
+        {
+            resizeDestroy( len );
         }
 }
