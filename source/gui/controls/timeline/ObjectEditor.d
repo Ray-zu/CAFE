@@ -14,8 +14,6 @@ import std.algorithm,
        std.conv,
        std.exception;
 
-debug = 1;
-
 /+ オブジェクトをリサイズ                    +
  + 当たり判定処理はTimelineEditorで行います。+/
 class ObjectEditor
@@ -70,9 +68,5 @@ class ObjectEditor
         void resize ( int len )
         {
             resizeDestroy( len );
-        }
-
-        debug (1) unittest {
-            auto hoge = new ObjectEditor( null );
         }
 }
