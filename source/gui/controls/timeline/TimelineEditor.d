@@ -9,7 +9,8 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.Timeline,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.property.Property,
-       cafe.gui.controls.timeline.Line;
+       cafe.gui.controls.timeline.Line,
+       cafe.gui.controls.timeline.ObjectEditor;
 import std.algorithm,
        std.conv,
        std.format;
@@ -111,8 +112,12 @@ class TimelineEditor
         auto onObjectLeftDown ( PlaceableObject obj, uint f, uint l )
         {
             operating = obj;
-            op_offset_frame = f - obj.place.frame.start.value;
-            op_offset_layer = l - obj.place.layer.value;
+            if ( obj.place.frame.start.value == f )
+                op_type = Operation.ResizeStart;
+            else {
+                op_offset_frame = f - obj.place.frame.start.value;
+                op_offset_layer = l - obj.place.layer.value;
+            }
             return true;
         }
 
@@ -202,8 +207,8 @@ class TimelineEditor
         {
             if ( op_type == Operation.None ) return false;
 
-            op_type = Operation.Move;
             if ( op_type == Operation.Clicking ) {
+                op_type = Operation.Move;
                 if ( operating ) {
                     // TODO
                 } else if ( operating_prop ) {
@@ -212,7 +217,15 @@ class TimelineEditor
             }
 
             if ( operating ) {
-                operating.place.frame.move( new FrameAt(f-op_offset_frame) );
+                switch ( op_type ) {
+                    case Operation.Move:
+                        operating.place.frame.move( new FrameAt(f-op_offset_frame) );
+                        break;
+                    case Operation.ResizeStart:
+                        operating.resizeStart( new FrameAt( f ) );
+                        break;
+                    default:
+                }
             } else if ( operating_prop ) {
 
             } else {
