@@ -14,6 +14,14 @@ import std.algorithm,
        std.conv,
        std.exception;
 
+/+ ObjectEditorインスタンスを作らずにobjをリサイズ +/
+void resize ( PlaceableObject obj, int len )
+{
+    auto oe = new ObjectEditor( obj );
+    oe.resize( len );
+}
+
+
 /+ オブジェクトをリサイズ                    +
  + 当たり判定処理はTimelineEditorで行います。+/
 class ObjectEditor
@@ -27,13 +35,12 @@ class ObjectEditor
             obj = o;
         }
 
-        /+ 中間点を破壊しながらリサイズ                +
-         + 縮めた場合は後ろの中間点を消し、            +
+        /+ 中間点を破壊しながらリサイズ                    +
+         + 縮めた場合は後ろの中間点を消し、                +
          + 伸ばした場合は後ろの中間点からのみを伸ばします。+/
         void resizeDestroy ( int len )
         {
             enforce( len > 0, "Length must be 1 or more." );
-            obj.place.frame.length.value = len.to!uint;
 
             void proc ( Property prop )
             {
@@ -62,11 +69,5 @@ class ObjectEditor
             }
 
             obj.propertyList.properties.values.each!proc;
-        }
-
-        /+ 現在の設定を元にリサイズ +/
-        void resize ( int len )
-        {
-            resizeDestroy( len );
         }
 }
