@@ -36,6 +36,8 @@ void resizeStart ( PlaceableObject obj, FrameAt f )
 void resizeEnd ( PlaceableObject obj, FrameAt f )
 {
     auto st = obj.place.frame.start.value;
+    f.value = f.value <= st ? st + 1 : f.value;
+
     auto new_len = f.value - st;
     obj.resize( new_len );
     obj.place.frame.resizeEnd( f );

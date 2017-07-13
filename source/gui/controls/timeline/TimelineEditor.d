@@ -114,6 +114,8 @@ class TimelineEditor
             operating = obj;
             if ( obj.place.frame.start.value == f )
                 op_type = Operation.ResizeStart;
+            else if ( obj.place.frame.end.value-1 == f )
+                op_type = Operation.ResizeEnd;
             else {
                 op_offset_frame = f - obj.place.frame.start.value;
                 op_offset_layer = l - obj.place.layer.value;
@@ -223,6 +225,9 @@ class TimelineEditor
                         break;
                     case Operation.ResizeStart:
                         operating.resizeStart( new FrameAt( f ) );
+                        break;
+                    case Operation.ResizeEnd:
+                        operating.resizeEnd( new FrameAt( f ) );
                         break;
                     default:
                 }
