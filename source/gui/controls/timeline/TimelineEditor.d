@@ -276,6 +276,7 @@ class TimelineEditor
                 if ( operating ) {
                     selecting = selecting is operating ?
                         null : operating;
+                    selecting_prop = null;
                 } else if ( operating_prop && operating_prop.increasable ) {
                     selecting_prop = operating_prop;
                 } else {
