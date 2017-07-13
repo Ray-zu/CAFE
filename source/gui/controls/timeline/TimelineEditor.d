@@ -108,6 +108,35 @@ class TimelineEditor
         }
 
 
+        /+ タイムライン上のオブジェクトを移動させる +/
+        void moveObject ( PlaceableObject obj, int f, int l )
+        {
+            if ( isPropertyLine(l) )
+                moveObject( obj, f, selecting.place.layer.value + propertyLineLength + 1 );
+            else {
+                auto layer   = layerId(l);
+                auto len     = obj.place.frame.length.value;
+                auto max_len = timeline.length.value;
+
+                if ( f < 0 || l < 0 ) {
+                    moveObject( obj, f < 0 ? 0 : f, l < 0 ? 0 : l );
+                } else {
+                    auto colls = timeline[
+                        new FrameAt(f), new FrameLength(len), new LayerId(layer) ]
+                        .remove!( x => x is obj );
+
+                    if ( colls.length ) {
+                        // TODO ほかオブジェクトとぶつかった時の動作
+                        moveObject( obj, colls[$-1].place.frame.end.value, l );
+                    } else {
+                        obj.place.frame.move( new FrameAt(f) );
+                        obj.place.layer.value = l;
+                    }
+                }
+            }
+        }
+
+
         /+ タイムラインのオブジェクトがクリックされた時に呼ばれる +/
         auto onObjectLeftDown ( PlaceableObject obj, uint f, uint l )
         {
@@ -221,7 +250,7 @@ class TimelineEditor
             if ( operating ) {
                 switch ( op_type ) {
                     case Operation.Move:
-                        operating.place.frame.move( new FrameAt(f-op_offset_frame) );
+                        moveObject( operating, f-op_offset_frame, l-op_offset_layer );
                         break;
                     case Operation.ResizeStart:
                         operating.resizeStart( new FrameAt( f ) );
