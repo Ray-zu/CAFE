@@ -131,7 +131,7 @@ class TimelineEditor
                         moveObject( obj, colls[$-1].place.frame.end.value, l );
                     } else {
                         obj.place.frame.move( new FrameAt(f) );
-                        obj.place.layer.value = l;
+                        obj.place.layer.value = layer;
                     }
                 }
             }
