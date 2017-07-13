@@ -393,7 +393,7 @@ class TimelineCanvas : Widget
                         return true;
 
                     else if ( e.button & MouseButton.Left )
-                        return tl_editor.onLeftDown(f,l);
+                        return tl_editor.onLeftDown(f,l,e);
                 }
                 return false;
             }
@@ -403,7 +403,7 @@ class TimelineCanvas : Widget
                     return buttonDown;
 
                 case MouseAction.Move:
-                    if ( tl_editor.onMouseMove(f,l) ) {
+                    if ( tl_editor.onMouseMove(f,l,e) ) {
                         invalidate;
                         return true;
                     }
@@ -412,7 +412,7 @@ class TimelineCanvas : Widget
                 case MouseAction.ButtonUp:
                     invalidate;
                     if ( e.button & MouseButton.Left )
-                        return tl_editor.onLeftUp(f,l);
+                        return tl_editor.onLeftUp(f,l,e);
                     break;
 
                 default:

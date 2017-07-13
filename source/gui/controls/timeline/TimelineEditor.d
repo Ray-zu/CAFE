@@ -14,6 +14,7 @@ import cafe.project.ObjectPlacingInfo,
 import std.algorithm,
        std.conv,
        std.format;
+import dlangui;
 
 /+ Timelineのオブジェクトを移動/リサイズ +
  + 右クリック時の動作など                +/
@@ -216,7 +217,7 @@ class TimelineEditor
          + イベントハンドラ                                +
          + ----------------------------------------------- +/
         /+ タイムラインがクリックされたときに呼ばれる +/
-        auto onLeftDown ( int f, int l )
+        auto onLeftDown ( int f, int l, MouseEvent )
         {
             clearOperationState;
             op_type = Operation.Clicking;
@@ -234,14 +235,15 @@ class TimelineEditor
         }
 
         /+ タイムライン上でカーソルが動いた時に呼ばれる +/
-        auto onMouseMove ( int f, int l )
+        auto onMouseMove ( int f, int l, MouseEvent e )
         {
             if ( op_type == Operation.None ) return false;
 
             if ( op_type == Operation.Clicking ) {
                 op_type = Operation.Move;
-                if ( operating ) {
-                    // TODO
+                if ( operating && (e.keyFlags & KeyFlag.Control) ) {
+                    operating = operating.copy;
+                    timeline += operating;
                 } else if ( operating_prop ) {
 
                 }
@@ -269,7 +271,7 @@ class TimelineEditor
         }
 
         /+ タイムラインがクリックされ終わった時に呼ばれる +/
-        auto onLeftUp ( int f, int l )
+        auto onLeftUp ( int f, int l, MouseEvent )
         {
             if ( op_type == Operation.Clicking ) {
                 if ( operating ) {
