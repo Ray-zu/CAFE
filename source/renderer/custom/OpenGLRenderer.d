@@ -15,7 +15,8 @@ import cafe.renderer.Renderer,
        cafe.renderer.polygon.PolygonEffect,
        cafe.renderer.polygon.Vector,
        cafe.renderer.sound.PCM,
-       cafe.renderer.sound.Sound;
+       cafe.renderer.sound.Sound,
+       cafe.renderer.sound.SoundList;
 import derelict.opengl3.gl3;
 
 debug = 1;
@@ -27,10 +28,14 @@ class OpenGLRenderer : Renderer
     public:
         this () {}
 
-        override RenderingResult render ( World, Camera, uint w, uint h )
+        override PCM soundRender ( SoundList w )
         {
-            // TODO : レンダリング処理
-            return new RenderingResult( new BMP( w, h ), new PCM( 2, 100, 0 ) );
+            return new PCM( 2, 100, 0 );
+        }
+
+        override BMP bmpRender ( World w, Camera c, uint wi, uint he )
+        {
+            return new BMP( wi, he );
         }
 
         /+ レンダリングのテスト +/
