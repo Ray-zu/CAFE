@@ -193,6 +193,8 @@ class TimelineEditor
         this ( Timeline tl = null )
         {
             timeline = tl;
+            selecting = null;
+            selecting_prop = null;
         }
 
         /+ ラインインデックスlのライン情報を返す +/
