@@ -21,6 +21,6 @@ class BitmapLight : ColorDrawBuf
             super( src.width.to!int, src.height.to!int );
             foreach ( y; 0 .. src.height )
                 foreach ( x; 0 .. src.width )
-                    _buf[y*_dx+x] = src[x,y].normalizedColor.toHex;
+                    _buf[y*_dx+x] = src[x,y].toHex;
         }
 }

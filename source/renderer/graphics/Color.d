@@ -8,47 +8,33 @@ module cafe.renderer.graphics.Color;
 import std.algorithm,
        std.conv;
 
-debug = 0;
+debug = 1;
 
 /+ RGBA色情報                                     +
- + RGBの値はそれぞれshortで保持し、劣化を防ぎます +/
+ + RGBAの値はそれぞれfloatで保持し、劣化を防ぎます +/
 struct RGBA
 {
     public:
-        short r,g,b;
-        ubyte a;
+        float r,g,b;
+        float a;
 
-        this ( short r, short g, short b, ubyte a = 0 )
+        this ( float r, float g, float b, float a = 0 )
         {
             this.r = r; this.g = g; this.b = b; this.a = a;
         }
 
-        /+ 正規化された色を返す +/
-        @property normalizedColor ()
-        {
-            ubyte n ( short t ) {
-                return max( min( t, ubyte.max ), ubyte.min ).to!ubyte;
-            }
-
-            auto r = n(this.r);
-            auto g = n(this.g);
-            auto b = n(this.b);
-            return RGBA( r, g, b, a );
-        }
-
-        /+ uint型に変換 +/
+        /+ uint型に正規化して変換 +/
         @property uint toHex ()
         {
-            return (r << 16) | (g << 8) | b | (a << 24);
+            ubyte n ( float f )
+            {
+                return max( min( f, ubyte.max ), ubyte.min ).to!ubyte;
+            }
+            return (n(r) << 16) | (n(g) << 8) | n(b) | (n(a) << 24);
         }
 
         debug (1) unittest {
-            auto hoge = RGBA( 300, 400, 500 );
-            auto nhoge = hoge.normalizedColor;
-            assert( nhoge.r == 255 );
-            assert( nhoge.g == 255 );
-            assert( nhoge.b == 255 );
-            assert( nhoge.a == 0 );
-            assert( nhoge.toHex == 0xffffff );
+            auto hoge = RGBA( 255, 0, 0 );
+            assert( hoge.toHex == 0xff0000 );
         }
 }
