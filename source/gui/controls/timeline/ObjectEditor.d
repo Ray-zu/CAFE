@@ -32,6 +32,15 @@ void resizeStart ( PlaceableObject obj, FrameAt f )
     obj.place.frame.resizeStart( f );
 }
 
+/+ 右端をリサイズ +/
+void resizeEnd ( PlaceableObject obj, FrameAt f )
+{
+    auto st = obj.place.frame.start.value;
+    auto new_len = f.value - st;
+    obj.resize( new_len );
+    obj.place.frame.resizeEnd( f );
+}
+
 
 /+ オブジェクトをリサイズ                    +
  + 当たり判定処理はTimelineEditorで行います。+/
