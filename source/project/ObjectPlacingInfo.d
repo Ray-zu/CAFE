@@ -140,7 +140,7 @@ class FramePeriod
         {
             auto start = start.value;
             auto fv = max( f.value, start+1 );
-            length.value = start-fv;
+            length.value = fv-start;
         }
 
         /+ FrameAtをこのクラスを元にしたFrameAtに変換 +/
