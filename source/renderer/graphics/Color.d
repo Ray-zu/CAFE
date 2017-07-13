@@ -8,7 +8,7 @@ module cafe.renderer.graphics.Color;
 import std.algorithm,
        std.conv;
 
-debug = 1;
+debug = 0;
 
 /+ RGBA色情報                                     +
  + RGBAの値はそれぞれfloatで保持し、劣化を防ぎます +/
