@@ -31,6 +31,9 @@ class Cafe
             Platform.instance.uiLanguage="en";
             Platform.instance.uiTheme="cafe";
 
+            Log.setStdoutLogger;
+            Log.setLogLevel( LogLevel.Info );
+
             // テストコード
             auto window = Platform.instance.createWindow("Hello dlang!",null);
             window.mainWidget = new TimelineWidget( "test" );
