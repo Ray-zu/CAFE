@@ -27,6 +27,12 @@ class PropertyList
                 props[key] = val.copy;
         }
 
+        this ( PropertyList src, FrameLength f )
+        {
+            foreach ( key,val; src.properties )
+                props[key] = val.copy(f);
+        }
+
         this ()
         {
         }

@@ -86,6 +86,14 @@ class MiddlePointBase (T) : MiddlePoint
                 easing_func = src.easing;
         }
 
+        this ( MiddlePointBase!T src, FrameLength f )
+        {
+            value = src.value;
+            frame_period = new FramePeriod( src.frame, f );
+            static if ( isNumeric!T )
+                easing_func = src.easing;
+        }
+
         this ( T s, FramePeriod f, EasingType e = EasingType.None )
         {
             value = s;

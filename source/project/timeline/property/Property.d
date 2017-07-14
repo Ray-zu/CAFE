@@ -24,6 +24,7 @@ interface Property
 {
     public:
         @property Property copy ();
+        @property Property copy ( FrameLength );
 
         @property FrameLength   frame        ();
         @property MiddlePoint[] middlePoints ();
@@ -150,6 +151,11 @@ class PropertyBase (T) : Property
             return new PropertyBase!T( this );
         }
 
+        override @property Property copy ( FrameLength f )
+        {
+            return new PropertyBase!T( this, f );
+        }
+
         override @property FrameLength   frame        () { return frame_len;     }
                  @property T             endValue     () { return end_value;     }
 
@@ -177,6 +183,14 @@ class PropertyBase (T) : Property
             frame_len = new FrameLength( src.frame );
             foreach ( mp; src.middle_points )
                 middle_points ~= new MiddlePointBase!T( mp );
+            end_value = src.endValue;
+        }
+
+        this ( PropertyBase!T src, FrameLength f )
+        {
+            frame_len = f;
+            foreach ( mp; src.middle_points )
+                middle_points ~= new MiddlePointBase!T( mp, f );
             end_value = src.endValue;
         }
 

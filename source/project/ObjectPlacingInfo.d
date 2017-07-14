@@ -91,6 +91,13 @@ class FramePeriod
             frame_length = new FrameLength( src.length );
         }
 
+        this ( FramePeriod src, FrameLength f )
+        {
+            parent_length = src.parentLength;
+            start_frame = new FrameAt( src.start );
+            frame_length = f;
+        }
+
         this ( FrameLength t, FrameAt s, FrameLength l )
         {
             parent_length = t;
