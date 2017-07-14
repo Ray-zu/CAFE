@@ -23,7 +23,6 @@ debug = 0;
 interface Property
 {
     public:
-        @property Property copy ();
         @property Property copy ( FrameLength );
 
         @property FrameLength   frame        ();
@@ -146,11 +145,6 @@ class PropertyBase (T) : Property
         }
 
     public:
-        override @property Property copy ()
-        {
-            return new PropertyBase!T( this );
-        }
-
         override @property Property copy ( FrameLength f )
         {
             return new PropertyBase!T( this, f );
@@ -176,14 +170,6 @@ class PropertyBase (T) : Property
             static if ( isNumeric!T )
                 return MinimumValue;
             else throw new Exception( "The property isn't increasable." );
-        }
-
-        this ( PropertyBase!T src )
-        {
-            frame_len = new FrameLength( src.frame );
-            foreach ( mp; src.middle_points )
-                middle_points ~= new MiddlePointBase!T( mp );
-            end_value = src.endValue;
         }
 
         this ( PropertyBase!T src, FrameLength f )

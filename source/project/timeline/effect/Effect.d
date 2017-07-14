@@ -28,13 +28,14 @@ abstract class Effect : PropertyKeepableObject
 
         @property Effect copy ();
 
-        this ( Effect src )
-        {
-            props = new PropertyList( src.propertyList );
-        }
+        //TODO this ( Effect src )
+        //{
+        //    props = new PropertyList( src.propertyList,  );
+        //}
 
         this ( FrameLength f )
         {
+            props = new PropertyList;
             initProperties(f);
         }
 
