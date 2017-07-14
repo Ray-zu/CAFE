@@ -27,7 +27,7 @@ class NullObject : PlaceableObject
 
         override @property string name ()
         {
-            return "Null - NullObject";
+            return propertyList.properties.values[0].middlePoints.length.to!string;
         }
 
         override @property PlaceableObject copy ()
