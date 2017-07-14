@@ -84,7 +84,8 @@ class ObjectEditor
                 }
 
                 /+ cut_mp以降の中間点を削除 +/
-                if ( cut_mp > 0 ) {
+                if ( cut_mp >= 0 ) {
+                    if ( cut_mp == 0 ) cut_mp = 1;
                     foreach ( i; cut_mp .. prop.middlePoints.length )
                         prop.removeMiddlePoint( prop.middlePoints[$-1] );
                 }
