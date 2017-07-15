@@ -44,7 +44,7 @@ abstract class PlaceableObject : PropertyKeepableObject
         this ( PlaceableObject src )
         {
             opi = new ObjectPlacingInfo( src.place );
-            props = new PropertyList( src.propertyList );
+            props = new PropertyList( src.propertyList, place.frame.length );
         }
 
         this ( ObjectPlacingInfo p )

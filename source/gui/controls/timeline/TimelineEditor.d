@@ -9,12 +9,12 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.Timeline,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.property.Property,
-       cafe.gui.controls.timeline.Line;
+       cafe.gui.controls.timeline.Line,
+       cafe.gui.controls.timeline.ObjectEditor;
 import std.algorithm,
        std.conv,
        std.format;
-
-debug = 0;
+import dlangui;
 
 /+ Timelineのオブジェクトを移動/リサイズ +
  + 右クリック時の動作など                +/
@@ -109,12 +109,47 @@ class TimelineEditor
         }
 
 
+        /+ タイムライン上のオブジェクトを移動させる +/
+        void moveObject ( PlaceableObject obj, int f, int l )
+        {
+            if ( isPropertyLine(l) )
+                moveObject( obj, f, selecting.place.layer.value + propertyLineLength + 1 );
+            else {
+                auto layer   = layerId(l);
+                auto len     = obj.place.frame.length.value;
+                auto max_len = timeline.length.value;
+
+                if ( f < 0 || l < 0 ) {
+                    moveObject( obj, f < 0 ? 0 : f, l < 0 ? 0 : l );
+                } else {
+                    auto colls = timeline[
+                        new FrameAt(f), new FrameLength(len), new LayerId(layer) ]
+                        .remove!( x => x is obj );
+
+                    if ( colls.length ) {
+                        // TODO ほかオブジェクトとぶつかった時の動作
+                        moveObject( obj, colls[$-1].place.frame.end.value, l );
+                    } else {
+                        obj.place.frame.move( new FrameAt(f) );
+                        obj.place.layer.value = layer;
+                    }
+                }
+            }
+        }
+
+
         /+ タイムラインのオブジェクトがクリックされた時に呼ばれる +/
         auto onObjectLeftDown ( PlaceableObject obj, uint f, uint l )
         {
             operating = obj;
-            op_offset_frame = f - obj.place.frame.start.value;
-            op_offset_layer = l - obj.place.layer.value;
+            if ( obj.place.frame.start.value == f )
+                op_type = Operation.ResizeStart;
+            else if ( obj.place.frame.end.value-1 == f )
+                op_type = Operation.ResizeEnd;
+            else {
+                op_offset_frame = f - obj.place.frame.start.value;
+                op_offset_layer = l - obj.place.layer.value;
+            }
             return true;
         }
 
@@ -158,9 +193,8 @@ class TimelineEditor
         this ( Timeline tl = null )
         {
             timeline = tl;
-
-            //TODO : テストコード
-            selecting = tl.objects[0];
+            selecting = null;
+            selecting_prop = null;
         }
 
         /+ ラインインデックスlのライン情報を返す +/
@@ -182,7 +216,7 @@ class TimelineEditor
          + イベントハンドラ                                +
          + ----------------------------------------------- +/
         /+ タイムラインがクリックされたときに呼ばれる +/
-        auto onLeftDown ( int f, int l )
+        auto onLeftDown ( int f, int l, MouseEvent )
         {
             clearOperationState;
             op_type = Operation.Clicking;
@@ -200,21 +234,33 @@ class TimelineEditor
         }
 
         /+ タイムライン上でカーソルが動いた時に呼ばれる +/
-        auto onMouseMove ( int f, int l )
+        auto onMouseMove ( int f, int l, MouseEvent e )
         {
             if ( op_type == Operation.None ) return false;
 
-            op_type = Operation.Move;
             if ( op_type == Operation.Clicking ) {
-                if ( operating ) {
-                    // TODO
+                op_type = Operation.Move;
+                if ( operating && (e.keyFlags & KeyFlag.Control) ) {
+                    operating = operating.copy;
+                    timeline += operating;
                 } else if ( operating_prop ) {
 
                 }
             }
 
             if ( operating ) {
-                operating.place.frame.move( new FrameAt(f-op_offset_frame) );
+                switch ( op_type ) {
+                    case Operation.Move:
+                        moveObject( operating, f-op_offset_frame, l-op_offset_layer );
+                        break;
+                    case Operation.ResizeStart:
+                        operating.resizeStart( new FrameAt( f ) );
+                        break;
+                    case Operation.ResizeEnd:
+                        operating.resizeEnd( new FrameAt( f ) );
+                        break;
+                    default:
+                }
             } else if ( operating_prop ) {
 
             } else {
@@ -224,12 +270,13 @@ class TimelineEditor
         }
 
         /+ タイムラインがクリックされ終わった時に呼ばれる +/
-        auto onLeftUp ( int f, int l )
+        auto onLeftUp ( int f, int l, MouseEvent )
         {
             if ( op_type == Operation.Clicking ) {
                 if ( operating ) {
                     selecting = selecting is operating ?
                         null : operating;
+                    selecting_prop = null;
                 } else if ( operating_prop && operating_prop.increasable ) {
                     selecting_prop = operating_prop;
                 } else {
@@ -238,9 +285,5 @@ class TimelineEditor
             }
             clearOperationState;
             return true;
-        }
-
-        debug (1) unittest {
-            auto hoge = new TimelineEditor();
         }
 }

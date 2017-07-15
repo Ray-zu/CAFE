@@ -23,7 +23,7 @@ debug = 0;
 interface Property
 {
     public:
-        @property Property copy ();
+        @property Property copy ( FrameLength );
 
         @property FrameLength   frame        ();
         @property MiddlePoint[] middlePoints ();
@@ -34,6 +34,10 @@ interface Property
 
         /+ フレーム数から中間点クラスを返す +/
         MiddlePoint middlePointAtFrame ( FrameAt );
+
+        /+ 中間点を削除 +/
+        void removeMiddlePoint ( int );
+        void removeMiddlePoint ( MiddlePoint );
 
         /+ ユーザーの入力した文字列をプロパティに変換 +/
         void   setString ( FrameAt, string );
@@ -141,9 +145,9 @@ class PropertyBase (T) : Property
         }
 
     public:
-        override @property Property copy ()
+        override @property Property copy ( FrameLength f )
         {
-            return new PropertyBase!T( this );
+            return new PropertyBase!T( this, f );
         }
 
         override @property FrameLength   frame        () { return frame_len;     }
@@ -168,11 +172,11 @@ class PropertyBase (T) : Property
             else throw new Exception( "The property isn't increasable." );
         }
 
-        this ( PropertyBase!T src )
+        this ( PropertyBase!T src, FrameLength f )
         {
-            frame_len = new FrameLength( src.frame );
+            frame_len = f;
             foreach ( mp; src.middle_points )
-                middle_points ~= new MiddlePointBase!T( mp );
+                middle_points ~= new MiddlePointBase!T( mp, f );
             end_value = src.endValue;
         }
 
@@ -200,6 +204,16 @@ class PropertyBase (T) : Property
             foreach ( mp; middlePoints )
                 if ( mp.frame.isInRange(f) ) return mp;
             throw new Exception( "We can't find middle point at that frame." );
+        }
+
+        override void removeMiddlePoint ( int i )
+        {
+            middle_points = middle_points.remove( i );
+        }
+
+        override void removeMiddlePoint ( MiddlePoint mp )
+        {
+            middle_points = middle_points.remove!( x => x is mp );
         }
 
         /+ 元の型でプロパティを設定 +/

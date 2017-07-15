@@ -86,7 +86,12 @@ class FramePeriod
 
         this ( FramePeriod src )
         {
-            parent_length = new FrameLength( src.parentLength );
+            this( src, src.parentLength );
+        }
+
+        this ( FramePeriod src, FrameLength f )
+        {
+            parent_length = f;
             start_frame = new FrameAt( src.start );
             frame_length = new FrameLength( src.length );
         }
@@ -140,7 +145,7 @@ class FramePeriod
         {
             auto start = start.value;
             auto fv = max( f.value, start+1 );
-            length.value = start-fv;
+            length.value = fv-start;
         }
 
         /+ FrameAtをこのクラスを元にしたFrameAtに変換 +/

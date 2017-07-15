@@ -182,6 +182,7 @@ class TimelineCanvas : Widget
                         ObjectPaddingLeft,r.height/2, obj.name, ObjectNameColor );
 
                 b.drawImage( r.left, r.top, obj_buf );
+                obj_buf.releaseRef;
                 object.destroy( obj_buf );
 
                 b.drawFrame( r, ObjectFrameColor, Rect(1,1,1,1) );
@@ -336,6 +337,7 @@ class TimelineCanvas : Widget
             drawGrid( grid_buf );
             b.drawRescaled( grid_r, grid_buf,
                    Rect( 0, 0, grid_buf.width, grid_buf.height ) );
+            grid_buf.releaseRef;
             object.destroy( grid_buf );
 
             // コンテンツの描画
@@ -355,6 +357,7 @@ class TimelineCanvas : Widget
 
             b.drawRescaled( body_r, body_buf,
                    Rect( 0, 0, body_buf.width, body_buf.height ) );
+            body_buf.releaseRef;
             object.destroy( body_buf );
 
             drawBars( b );
@@ -384,12 +387,13 @@ class TimelineCanvas : Widget
                 invalidate;
                 if ( e.button & MouseButton.Left ) {
 
-                    if ( graph.drawArea.isPointInside( conts_x, conts_y )
+                    if ( graph.visible
+                            && graph.drawArea.isPointInside( conts_x, conts_y )
                             && graph.onLeftDown( graph_x, graph_y, e.keyFlags ) )
                         return true;
 
                     else if ( e.button & MouseButton.Left )
-                        return tl_editor.onLeftDown(f,l);
+                        return tl_editor.onLeftDown(f,l,e);
                 }
                 return false;
             }
@@ -399,7 +403,7 @@ class TimelineCanvas : Widget
                     return buttonDown;
 
                 case MouseAction.Move:
-                    if ( tl_editor.onMouseMove(f,l) ) {
+                    if ( tl_editor.onMouseMove(f,l,e) ) {
                         invalidate;
                         return true;
                     }
@@ -408,7 +412,7 @@ class TimelineCanvas : Widget
                 case MouseAction.ButtonUp:
                     invalidate;
                     if ( e.button & MouseButton.Left )
-                        return tl_editor.onLeftUp(f,l);
+                        return tl_editor.onLeftUp(f,l,e);
                     break;
 
                 default:

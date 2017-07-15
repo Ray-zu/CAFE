@@ -25,14 +25,14 @@ class BoolProperty : PropertyBase!bool
         }
 
     public:
-        override @property Property copy ()
+        override @property Property copy ( FrameLength f )
         {
-            return new BoolProperty( this );
+            return new BoolProperty( this, f );
         }
 
-        this ( BoolProperty src )
+        this ( BoolProperty src, FrameLength f )
         {
-            super( src );
+            super( src, f );
         }
 
         this ( FrameLength f, bool v )

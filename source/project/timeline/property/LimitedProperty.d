@@ -22,17 +22,17 @@ class LimitedProperty (T) : PropertyBase!T
         T max;
         T min;
 
-        override @property Property copy ()
+        override @property Property copy ( FrameLength f )
         {
-            return new LimitedProperty!T( this );
+            return new LimitedProperty!T( this, f );
         }
 
         override @property float maxFloat () { return max.to!float; }
         override @property float minFloat () { return min.to!float; }
 
-        this ( LimitedProperty!T src )
+        this ( LimitedProperty!T src, FrameLength f )
         {
-            super( src );
+            super( src, f );
             max = src.max;
             min = src.min;
         }
