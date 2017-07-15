@@ -69,17 +69,17 @@ class ObjectEditor
                 auto cut_mp = prop.middlePoints.countUntil
                     !( x => x.frame.start.value >= len-1 );
 
-                if ( cut_mp == -1 ) {
-                    // 伸ばされたときは最後の中間点からを伸ばす
+                if ( cut_mp == -1 || cut_mp == 0 ) {
+                    // 最後の中間点からを伸ばす
                     auto mp = prop.middlePoints[$-1];
                     mp.frame.length.value =
-                        (len - mp.frame.start.value.to!int).to!uint;
+                        (len - mp.frame.start.value).to!uint;
                 } else {
-                    // 縮まされたときは余分な中間点を消す
-                    auto mp = prop.middlePoints[cut_mp];
-                    auto new_len = len - mp.frame.start.value.to!int;
+                    // 余分な中間点を消す
+                    auto last_mp  = prop.middlePoints[cut_mp-1];
+                    auto new_len = len - last_mp.frame.start.value.to!int;
                     if ( new_len > 0 )
-                        mp.frame.length.value = new_len;
+                        last_mp.frame.length.value = new_len;
                     else cut_mp--;
                 }
 
