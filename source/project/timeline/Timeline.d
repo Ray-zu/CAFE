@@ -96,9 +96,9 @@ class Timeline
          + 無い場合はNULL                                        +/
         auto opIndex ( FrameAt f, LayerId l )
         {
-            auto i = this[f].find!( x => x.place.layer.value == l.value ).array;
-            if ( i.length != 1 ) return null;
-            return i[0];
+            auto objs = this[f];
+            auto i = objs.countUntil!( x => x.place.layer.value == l.value );
+            return i >= 0 ? objs[i] : null;
         }
 
         /+ this[f1,len,l] : f1からlen期間中からレイヤlに配置されている +
