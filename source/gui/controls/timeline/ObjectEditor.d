@@ -9,7 +9,8 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.Timeline,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.property.Property,
-       cafe.project.timeline.property.MiddlePoint;
+       cafe.project.timeline.property.MiddlePoint,
+       cafe.gui.controls.timeline.PropertyEditor;
 import std.algorithm,
        std.conv,
        std.exception;
@@ -63,35 +64,7 @@ class ObjectEditor
         void resizeDestroy ( int len )
         {
             enforce( len > 0, "Length must be 1 or more." );
-
-            void proc ( Property prop )
-            {
-                auto cut_mp = prop.middlePoints.countUntil
-                    !( x => x.frame.start.value >= len-1 );
-
-                if ( cut_mp == -1 || cut_mp == 0 ) {
-                    // 最後の中間点からを伸ばす
-                    auto mp = prop.middlePoints[$-1];
-                    mp.frame.length.value =
-                        (len - mp.frame.start.value).to!uint;
-                } else {
-                    // 余分な中間点を消す
-                    auto last_mp  = prop.middlePoints[cut_mp-1];
-                    auto new_len = len - last_mp.frame.start.value.to!int;
-                    if ( new_len > 0 )
-                        last_mp.frame.length.value = new_len;
-                    else cut_mp--;
-                }
-
-                /+ cut_mp以降の中間点を削除 +/
-                if ( cut_mp >= 0 ) {
-                    if ( cut_mp == 0 ) cut_mp = 1;
-                    foreach ( i; cut_mp .. prop.middlePoints.length )
-                        prop.removeMiddlePoint( prop.middlePoints[$-1] );
-                }
-            }
-
-            obj.propertyList.properties.values.each!proc;
+            obj.propertyList.properties.values.each!( x => x.resizeDestroy(len) );
         }
 
         /+ 現在の設定でリサイズ +/
