@@ -38,13 +38,13 @@ class Bitmap (T)
         /+ this[x,y]で指定座標のT構造体取得 +/
         T opIndex ( size_t x, size_t y )
         {
-            return bmp[x][y];
+            return bmp[y][x];
         }
 
         /+ this[x,y] = vで指定座標のT構造体設定 +/
         T opIndexAssign ( T v, size_t x, size_t y )
         {
-            return bmp[x][y] = v;
+            return bmp[y][x] = v;
         }
 
         debug (1) unittest {
