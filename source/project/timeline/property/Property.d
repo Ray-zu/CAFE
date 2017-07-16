@@ -23,17 +23,29 @@ debug = 0;
 interface Property
 {
     public:
-        @property Property copy ();
+        @property Property copy ( FrameLength );
 
         @property FrameLength   frame        ();
         @property MiddlePoint[] middlePoints ();
 
+        /+ 値の最大値と最小値を返す +/
+        @property float maxFloat ();
+        @property float minFloat ();
+
         /+ フレーム数から中間点クラスを返す +/
         MiddlePoint middlePointAtFrame ( FrameAt );
+
+        /+ 中間点を削除 +/
+        void removeMiddlePoint ( int );
+        void removeMiddlePoint ( MiddlePoint );
 
         /+ ユーザーの入力した文字列をプロパティに変換 +/
         void   setString ( FrameAt, string );
         string getString ( FrameAt );
+
+        /+ 強制的にfloatで取得&設定 +/
+        void  setFloat ( FrameAt, float );
+        float getFloat ( FrameAt );
 
         /+ プロパティが数値かどうか +/
         @property bool increasable ();
@@ -78,6 +90,8 @@ interface Property
 /+ プロパティデータ +/
 class PropertyBase (T) : Property
 {
+    enum MaximumValue = 10000;
+    enum MinimumValue = -10000;
     private:
         FrameLength         frame_len;
         MiddlePointBase!T[] middle_points; // MiddlePointBase!T型で取得したい場合はプロパティではなく変数を参照する
@@ -131,9 +145,9 @@ class PropertyBase (T) : Property
         }
 
     public:
-        override @property Property copy ()
+        override @property Property copy ( FrameLength f )
         {
-            return new PropertyBase!T( this );
+            return new PropertyBase!T( this, f );
         }
 
         override @property FrameLength   frame        () { return frame_len;     }
@@ -145,11 +159,24 @@ class PropertyBase (T) : Property
             return result;
         }
 
-        this ( PropertyBase!T src )
+        override @property float maxFloat ()
         {
-            frame_len = new FrameLength( src.frame );
+            static if ( isNumeric!T )
+                return MaximumValue;
+            else throw new Exception( "The property isn't increasable." );
+        }
+        override @property float minFloat ()
+        {
+            static if ( isNumeric!T )
+                return MinimumValue;
+            else throw new Exception( "The property isn't increasable." );
+        }
+
+        this ( PropertyBase!T src, FrameLength f )
+        {
+            frame_len = f;
             foreach ( mp; src.middle_points )
-                middle_points ~= new MiddlePointBase!T( mp );
+                middle_points ~= new MiddlePointBase!T( mp, f );
             end_value = src.endValue;
         }
 
@@ -179,6 +206,16 @@ class PropertyBase (T) : Property
             throw new Exception( "We can't find middle point at that frame." );
         }
 
+        override void removeMiddlePoint ( int i )
+        {
+            middle_points = middle_points.remove( i );
+        }
+
+        override void removeMiddlePoint ( MiddlePoint mp )
+        {
+            middle_points = middle_points.remove!( x => x is mp );
+        }
+
         /+ 元の型でプロパティを設定 +/
         void set ( FrameAt f, T v )
         {
@@ -205,9 +242,18 @@ class PropertyBase (T) : Property
             set( f, v.to!T );
         }
 
+        override void setFloat ( FrameAt f, float v )
+        {
+            static if ( isNumeric!T )
+                set( f, v.to!T );
+            else throw new Exception( "The property isn't increasable." );
+        }
+
         /+ 元の型でプロパティを取得 +/
         T get ( FrameAt f )
         {
+            if ( f.value == frame.value - 1 ) return endValue;
+
             auto mp = middlePointAtFrame(f);
             auto st = (cast(MiddlePointBase!T)mp).value;
 
@@ -226,6 +272,13 @@ class PropertyBase (T) : Property
         override string getString ( FrameAt f )
         {
             return get( f ).to!string;
+        }
+
+        override float getFloat ( FrameAt f )
+        {
+            static if ( isNumeric!T )
+                return get( f );
+            else throw new Exception( "The property isn't increasable." );
         }
 
         override @property bool increasable ()

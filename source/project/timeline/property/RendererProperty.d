@@ -28,14 +28,14 @@ class RendererProperty : PropertyBase!RendererType
         }
 
     public:
-        override @property Property copy ()
+        override @property Property copy ( FrameLength f )
         {
-            return new RendererProperty( this );
+            return new RendererProperty( this, f );
         }
 
-        this ( RendererProperty src )
+        this ( RendererProperty src, FrameLength f )
         {
-            super( src );
+            super( src, f );
         }
 
         this ( FrameLength f, RendererType r = RendererType.NoRendering )

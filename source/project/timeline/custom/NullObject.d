@@ -25,6 +25,11 @@ class NullObject : PlaceableObject
             return "NullObject";
         }
 
+        override @property string name ()
+        {
+            return propertyList.properties.values[0].middlePoints.length.to!string;
+        }
+
         override @property PlaceableObject copy ()
         {
             return new NullObject( this );
@@ -50,6 +55,8 @@ class NullObject : PlaceableObject
 
         override void initProperties ( FrameLength f )
         {
+            import cafe.project.timeline.property.Preset;
+            PropertyPresets.position( propertyList, f );
         }
 
         override void apply ( RenderingInfo rinfo )

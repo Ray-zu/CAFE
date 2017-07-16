@@ -30,8 +30,8 @@ class Cafe
             Platform.instance.uiLanguage="en";
             Platform.instance.uiTheme="cafe";
 
-            import dlangui.core.logger;
-            Log.setLogLevel( LogLevel.Fatal );
+            Log.setStdoutLogger;
+            Log.setLogLevel( LogLevel.Info );
 
             // テストコード
             auto window = Platform.instance.createWindow("Hello dlang!",null);

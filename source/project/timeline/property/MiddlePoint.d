@@ -78,10 +78,10 @@ class MiddlePointBase (T) : MiddlePoint
             }
         }
 
-        this ( MiddlePointBase!T src )
+        this ( MiddlePointBase!T src, FrameLength f )
         {
             value = src.value;
-            frame_period = new FramePeriod( src.frame );
+            frame_period = new FramePeriod( src.frame, f );
             static if ( isNumeric!T )
                 easing_func = src.easing;
         }
