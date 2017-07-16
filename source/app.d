@@ -6,8 +6,7 @@
  + ------------------------------------------------------------ +/
 module cafe.app;
 import cafe.project.Project,
-       cafe.gui.controls.BMPViewer,
-       cafe.renderer.graphics.Bitmap;
+       cafe.gui.controls.timeline.TimelineWidget;
 import dlangui;
 
 mixin APP_ENTRY_POINT;
@@ -37,7 +36,7 @@ class Cafe
 
             // テストコード
             auto window = Platform.instance.createWindow("Hello dlang!",null);
-            window.mainWidget = new BMPViewer( "test", new BMP( 640, 480 ) );
+            window.mainWidget = new TimelineWidget( "test" );
             window.windowOrContentResizeMode = WindowOrContentResizeMode.shrinkWidgets;
             window.show;
         }
