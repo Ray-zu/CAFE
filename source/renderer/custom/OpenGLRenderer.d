@@ -11,8 +11,10 @@ import cafe.renderer.Renderer,
        cafe.renderer.Camera,
        cafe.renderer.graphics.Bitmap,
        cafe.renderer.graphics.Color,
+       cafe.renderer.polygon.Material,
        cafe.renderer.polygon.Polygon,
        cafe.renderer.polygon.Vector,
+       cafe.renderer.polygon.Vertex,
        cafe.renderer.sound.PCM,
        cafe.renderer.sound.Sound,
        cafe.renderer.sound.SoundList;
@@ -40,11 +42,14 @@ class OpenGLRenderer : Renderer
         /+ レンダリングのテスト +/
         debug (1) auto renderTest ()
         {
-            //auto white_bmp = new BMP(1,1);
-            //white_bmp[0,0] = RGBA( 255, 255, 255 );
-            //auto polygon = new Polygon( white_bmp, Vector3D(-100,-100,0),
-            //        Vector3D(100,-100,0), Vector3D(100,100,0), Vector3D(-100,100,0) );
-            //return render( new World([polygon]), new Camera, 0, 0 ).bitmap;
-            return new BMP( 1,1 );
+            auto white_bmp = new BMP(1,1);
+            white_bmp[0,0] = RGBA( 255, 255, 255 );
+            auto polygon = new Polygon( white_bmp, [
+                    Vertex( Vector3D(-50,-50,0), Vector2D(0,0) ),
+                    Vertex( Vector3D( 50,-50,0), Vector2D(1,0) ),
+                    Vertex( Vector3D( 50, 50,0), Vector2D(1,1) ),
+                    Vertex( Vector3D(-50, 50,0), Vector2D(0,1) )
+                ] );
+            return render( new World([polygon]), new Camera, 640, 480 ).bitmap;
         }
 }
