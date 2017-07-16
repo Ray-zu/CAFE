@@ -100,7 +100,7 @@ class TimelineCanvas : Widget
         {
             auto i = topLineIndex.trunc.to!uint;
             auto h = 0;
-            y -= topHiddenPx;
+            y += topHiddenPx;
             while ( h < y )
                 h += (tl_editor.lineInfo( i++ ).height * lineHeight).to!int;
             return i - 1;
