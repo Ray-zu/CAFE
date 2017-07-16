@@ -42,7 +42,6 @@ class PropertyEditor
         void moveMP ( int f, int n )
         {
             auto mps = prop.middlePoints;
-            enforce( f >= 0 && f < prop.frame.value, "The frame is over than parent's." );
             enforce( n >= 0 && n < mps.length , "The middle point is undefined." );
 
             if ( n == 0 ) return;   // 0番目の中間点は動かせない
@@ -51,7 +50,7 @@ class PropertyEditor
             auto prev = mps[n-1];
             auto next = n < mps.length-1 ? mps[n+1] : null;
 
-            auto next_frame = next ? next.frame.start.value : prop.frame.value;
+            auto next_frame = next ? next.frame.start.value : prop.frame.value - 1;
 
             f = max( prev.frame.start.value + 1, min( f, next_frame - 1 ) );
 
