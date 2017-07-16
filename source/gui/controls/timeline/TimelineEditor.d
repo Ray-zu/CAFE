@@ -10,7 +10,8 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.property.Property,
        cafe.gui.controls.timeline.Line,
-       cafe.gui.controls.timeline.ObjectEditor;
+       cafe.gui.controls.timeline.ObjectEditor,
+       cafe.gui.controls.timeline.PropertyEditor;
 import std.algorithm,
        std.conv,
        std.format;
@@ -165,6 +166,11 @@ class TimelineEditor
         {
             if ( selectedObject.place.frame.isInRange( new FrameAt(f) ) ) {
                 operating_prop = selectedObject.propertyList.properties.values[l];
+                op_mp_index = delegate () {
+                    auto f  = new FrameAt( f - selectedObject.place.frame.start.value );
+                    auto mp = operating_prop.middlePointAtFrame( new FrameAt(f) );
+                    return operating_prop.middlePoints.countUntil!( x => x is mp );
+                } ();
                 return true;
             }
             return false;
@@ -262,7 +268,13 @@ class TimelineEditor
                     default:
                 }
             } else if ( operating_prop ) {
-
+                auto relative_f = f.to!int - selectedObject.place.frame.start.value;
+                switch ( op_type ) {
+                    case Operation.Move:
+                        operating_prop.moveMP( relative_f, op_mp_index.to!int );
+                        break;
+                    default:
+                }
             } else {
                 currentFrame = f;
             }
