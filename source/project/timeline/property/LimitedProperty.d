@@ -8,6 +8,7 @@ module cafe.project.timeline.property.LimitedProperty;
 import cafe.project.timeline.property.Property,
        cafe.project.ObjectPlacingInfo;
 import std.algorithm,
+       std.conv,
        std.json,
        std.traits;
 
@@ -21,14 +22,17 @@ class LimitedProperty (T) : PropertyBase!T
         T max;
         T min;
 
-        override @property Property copy ()
+        override @property Property copy ( FrameLength f )
         {
-            return new LimitedProperty!T( this );
+            return new LimitedProperty!T( this, f );
         }
 
-        this ( LimitedProperty!T src )
+        override @property float maxFloat () { return max.to!float; }
+        override @property float minFloat () { return min.to!float; }
+
+        this ( LimitedProperty!T src, FrameLength f )
         {
-            super( src );
+            super( src, f );
             max = src.max;
             min = src.min;
         }

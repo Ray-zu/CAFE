@@ -21,10 +21,10 @@ class PropertyList
     public:
         @property properties () { return props; }
 
-        this ( PropertyList src )
+        this ( PropertyList src, FrameLength f )
         {
             foreach ( key,val; src.properties )
-                props[key] = val.copy;
+                props[key] = val.copy(f);
         }
 
         this ()

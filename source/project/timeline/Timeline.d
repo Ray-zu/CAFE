@@ -44,52 +44,27 @@ class Timeline
                 ( x => objs ~= PlaceableObject.create( x, frame_len ) );
         }
 
-        /+ objの位置をフレームf,レイヤlに変更 +/
-        void move ( PlaceableObject obj, FrameAt f, LayerId l )
+        /+ オブジェクトの配置されている最大のレイヤ数を返す +/
+        @property layerLength ()
         {
-            auto length = obj.place.frame.length;
-            auto col = this[f,length,l].remove!(x => x is obj);
-
-            if ( col.length ) {
-                // TODO : オブジェクトが邪魔で移動できないときの処理
-            } else {
-                obj.place.frame.move( f );
-                obj.place.layer.value = l.value;
-            }
+            auto r = objects.length ?
+                objects.maxElement!"a.place.layer.value".place.layer.value:
+                0;
+            return new LayerId( r );
         }
 
-        /+ objの開始フレームをfにリサイズ +/
-        void resizeStart ( PlaceableObject obj, FrameAt f )
+        /+ objを削除 +/
+        void remove ( PlaceableObject obj )
         {
-            auto layer         = obj.place.layer;
-            auto now_start     = obj.place.frame.start;
-            auto expand_frames = now_start.value - f.value;
-            auto expand_length = new FrameLength( expand_frames );
-            auto col = this[f,expand_length,layer].remove!(x => x is obj);
-
-            if ( expand_frames > 0 && col.length )
-                resizeStart( obj, col[$-1].place.frame.end );
-            else obj.place.frame.resizeStart( f );
-        }
-
-        /+ objの終了フレームをfにリサイズ +/
-        void resizeEnd ( PlaceableObject obj, FrameAt f )
-        {
-            auto layer = obj.place.layer;
-            auto now_end = obj.place.frame.end;
-            auto expand_frames = f.value - now_end.value;
-            auto expand_length = new FrameLength( expand_frames );
-            auto col = this[now_end,expand_length,layer].remove!(x => x is obj);
-
-            if ( expand_frames > 0 && col.length )
-                resizeEnd( obj, col[0].place.frame.start );
-            else obj.place.frame.resizeEnd( f );
+            objects.remove!( x => x is obj );
         }
 
         /+ this += obj : オブジェクトを追加 +/
         auto opAddAssign ( PlaceableObject obj )
         {
             objs ~= obj;
+            if ( obj.place.frame.end.value >= length.value )
+                length.value = obj.place.frame.end.value;
             return this;
         }
 
@@ -97,6 +72,12 @@ class Timeline
         auto opIndex ( FrameAt f )
         {
             return objects.filter!( x => x.place.frame.isInRange(f) ).array;
+        }
+
+        /+ this[l] : レイヤlのオブジェクト配列を返す +/
+        auto opIndex ( LayerId l )
+        {
+            return objects.filter!( x => x.place.layer.value == l.value ).array;
         }
 
         /+ this[f] : フレーム期間fのオブジェクト配列を返す +/
@@ -115,9 +96,9 @@ class Timeline
          + 無い場合はNULL                                        +/
         auto opIndex ( FrameAt f, LayerId l )
         {
-            auto i = this[f].find!( x => x.place.layer.value == l.value ).array;
-            if ( i.length != 1 ) return null;
-            return i[0];
+            auto objs = this[f];
+            auto i = objs.countUntil!( x => x.place.layer.value == l.value );
+            return i >= 0 ? objs[i] : null;
         }
 
         /+ this[f1,len,l] : f1からlen期間中からレイヤlに配置されている +
