@@ -44,7 +44,7 @@ void resizeEnd ( PlaceableObject obj, FrameAt f )
 }
 
 
-/+ オブジェクトをリサイズ                    +
+/+ オブジェクト操作するクラス                +
  + 当たり判定処理はTimelineEditorで行います。+/
 class ObjectEditor
 {
