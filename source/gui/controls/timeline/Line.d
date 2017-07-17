@@ -38,7 +38,7 @@ struct Line
 
         this ( uint i, PlaceableObject[] objs, string n, float h = 1 )
         {
-            kind = Layer;
+            kind = LayerLine;
             store.objects = objs;
             name = n;
             index = i;
@@ -47,7 +47,7 @@ struct Line
 
         this ( uint i, Property prop, string n, float h = 1 )
         {
-            kind = Property;
+            kind = PropertyLine;
             store.prop = prop;
             name = n;
             index = i;
@@ -56,7 +56,7 @@ struct Line
 
         this ( uint i, Effect eff, string n, float h = 1 )
         {
-            kind = Effect;
+            kind = EffectLine;
             store.eff = eff;
             name = n;
             index = i;
@@ -65,19 +65,19 @@ struct Line
 
         @property objects ()
         {
-            if ( lineKind == Layer ) return store.objects;
+            if ( lineKind == LayerLine ) return store.objects;
             throw new Exception( "This line is not object layer." );
         }
 
         @property property ()
         {
-            if ( lineKind == Property ) return store.prop;
+            if ( lineKind == PropertyLine ) return store.prop;
             throw new Exception( "This line is not property line." );
         }
 
         @property effect ()
         {
-            if ( lineKind == Effect ) return store.eff;
+            if ( lineKind == EffectLine ) return store.eff;
             throw new Exception( "This line is not effect line." );
         }
 }
