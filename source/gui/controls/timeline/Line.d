@@ -6,19 +6,25 @@
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.Line;
 import cafe.project.timeline.PlaceableObject,
-       cafe.project.timeline.property.Property;
+       cafe.project.timeline.property.Property,
+       cafe.project.timeline.effect.Effect;
 
 /+ タイムラインのライン情報 +/
 struct Line
 {
+    enum Layer      = 0; // レイヤライン
+    enum Property   = 1; // プロパティライン
+    enum Effect     = 2; // エフェクトライン
+
     private:
         union Store
         {
             PlaceableObject[] objects;
             Property prop;
+            Effect eff;
         }
 
-        bool is_layer;  // true : Layer, false : property line
+        byte  kind;
         Store store;
 
         string name;
@@ -28,10 +34,11 @@ struct Line
         float height;   // 標準サイズの何倍か
 
         @property lineName () { return name; }
+        @property lineKind () { return kind; }
 
         this ( uint i, PlaceableObject[] objs, string n, float h = 1 )
         {
-            is_layer = true;
+            kind = Layer;
             store.objects = objs;
             name = n;
             index = i;
@@ -40,34 +47,37 @@ struct Line
 
         this ( uint i, Property prop, string n, float h = 1 )
         {
-            is_layer = false;
+            kind = Property;
             store.prop = prop;
             name = n;
             index = i;
             height = h;
         }
 
-        /+ オブジェクトレイヤかどうか +/
-        @property isLayer ()
+        this ( uint i, Effect eff, string n, float h = 1 )
         {
-            return is_layer;
-        }
-
-        /+ プロパティラインかどうか +/
-        @property isPropertyLine ()
-        {
-            return !is_layer;
+            kind = Effect;
+            store.eff = eff;
+            name = n;
+            index = i;
+            height = h;
         }
 
         @property objects ()
         {
-            if ( isLayer ) return store.objects;
+            if ( lineKind == Layer ) return store.objects;
             throw new Exception( "This line is not object layer." );
         }
 
         @property property ()
         {
-            if ( isPropertyLine ) return store.prop;
+            if ( lineKind == Property ) return store.prop;
             throw new Exception( "This line is not property line." );
+        }
+
+        @property effect ()
+        {
+            if ( lineKind == Effect ) return store.eff;
+            throw new Exception( "This line is not effect line." );
         }
 }
