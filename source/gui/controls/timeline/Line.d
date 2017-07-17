@@ -12,9 +12,9 @@ import cafe.project.timeline.PlaceableObject,
 /+ タイムラインのライン情報 +/
 struct Line
 {
-    enum Layer      = 0; // レイヤライン
-    enum Property   = 1; // プロパティライン
-    enum Effect     = 2; // エフェクトライン
+    enum LayerLine    = 0; // レイヤライン
+    enum PropertyLine = 1; // プロパティライン
+    enum EffectLine   = 2; // エフェクトライン
 
     private:
         union Store
