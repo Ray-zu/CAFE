@@ -13,7 +13,8 @@
     },
     "stringImportPaths": [
         "./views",
-        "./views/themes"
+        "./views/themes",
+        "./views/icons"
     ],
 
     "description": "Creator's Advanced Film Editor",
