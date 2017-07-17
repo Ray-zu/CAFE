@@ -26,12 +26,12 @@ abstract class Effect : PropertyKeepableObject
             return props;
         }
 
-        @property Effect copy ();
+        @property Effect copy ( FrameLength );
 
-        //TODO this ( Effect src )
-        //{
-        //    props = new PropertyList( src.propertyList,  );
-        //}
+        this ( Effect src, FrameLength f )
+        {
+            props = new PropertyList( src.propertyList, f );
+        }
 
         this ( FrameLength f )
         {
