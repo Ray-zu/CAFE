@@ -203,22 +203,30 @@ class TimelineCanvas : Widget
                     b.fillRect( r, PropertyRectColor );
             }
 
-            if ( l.isLayer ) l.objects.each!drawObject;
-            else {
-                // プロパティラインの描画
-                auto line  = l.property is graph.property;
-                if ( line ) {
-                    // グラフの描画
-                    auto abs_st = tl_editor.selectedObject.place.frame.start.value;
-                    auto st = frameToX( graph.startFrame + abs_st );
-                    auto ed = frameToX( graph.startFrame + graph.frameLength + abs_st );
-                    graph.drawArea = Rect( st, y, ed, y + height );
-                    graph.draw( b );
-                }
+            // ラインの種類に応じて描画
+            switch ( l.lineKind ) {
+                case Line.LayerLine:
+                    l.objects.each!drawObject;
+                    break;
 
-                l.property.middlePoints.each!(
-                        x => drawPropertyRect( x.frame.start.value, line ) );
-                drawPropertyRect( l.property.frame.value-1, line );
+                case Line.PropertyLine:
+                    // プロパティラインの描画
+                    auto line  = l.property is graph.property;
+                    if ( line ) {
+                        // グラフの描画
+                        auto abs_st = tl_editor.selectedObject.place.frame.start.value;
+                        auto st = frameToX( graph.startFrame + abs_st );
+                        auto ed = frameToX( graph.startFrame + graph.frameLength + abs_st );
+                        graph.drawArea = Rect( st, y, ed, y + height );
+                        graph.draw( b );
+                    }
+
+                    l.property.middlePoints.each!(
+                            x => drawPropertyRect( x.frame.start.value, line ) );
+                    drawPropertyRect( l.property.frame.value-1, line );
+                    break;
+
+                default:
             }
 
             // 上のラインの線と被るのでyに1足します。
