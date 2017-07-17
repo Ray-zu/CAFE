@@ -169,7 +169,7 @@ class TimelineEditor
                 op_mp_index = delegate () {
                     auto f  = new FrameAt( f - selectedObject.place.frame.start.value );
                     auto mp = operating_prop.middlePointAtFrame( new FrameAt(f) );
-                    return operating_prop.middlePoints.countUntil!( x => x is mp );
+                    return operating_prop.middlePoints.countUntil!( x => x is mp ).to!uint;
                 } ();
                 return true;
             }
@@ -215,7 +215,7 @@ class TimelineEditor
                             (SelectedPropertyLineHeightMag) :
                             (PropertyLineHeightMag) );
             } else
-                return Line( l, timeline[new LayerId(id)], "layer %d".format(id) );
+                return Line( l, timeline[new LayerId(id.to!uint)], "layer %d".format(id) );
         }
 
         /+ ----------------------------------------------- +
