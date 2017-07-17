@@ -20,6 +20,7 @@ abstract class PlaceableObject : PropertyKeepableObject
     private:
         ObjectPlacingInfo opi;
         PropertyList props;
+        EffectList effs;
 
     public:
         /+ オブジェクトの種類名 +/
@@ -34,9 +35,9 @@ abstract class PlaceableObject : PropertyKeepableObject
         {
             return props;
         }
-        override @property EffectList effectList ()
+        @property EffectList effectList ()
         {
-            return new EffectList;  // 空のリスト
+            return effs;
         }
 
         @property PlaceableObject copy ();
@@ -45,12 +46,14 @@ abstract class PlaceableObject : PropertyKeepableObject
         {
             opi = new ObjectPlacingInfo( src.place );
             props = new PropertyList( src.propertyList, place.frame.length );
+            effs = new EffectList( src.effectList, place.frame.length );
         }
 
         this ( ObjectPlacingInfo p )
         {
             opi = p;
             props = new PropertyList;
+            effs = new EffectList;
             initProperties( p.frame.length );
         }
 
@@ -58,6 +61,7 @@ abstract class PlaceableObject : PropertyKeepableObject
         {
             opi   = new ObjectPlacingInfo( j["place"], f );
             props = new PropertyList( j["properties"], f );
+            effs  = new EffectList( j["effects"], f );
         }
 
         override void initProperties ( FrameLength f )
@@ -95,33 +99,5 @@ abstract class PlaceableObject : PropertyKeepableObject
 
                 default: throw new Exception( "Undefined Object" );
             }
-        }
-}
-
-/+ オブジェクト自体にエフェクトをかけられる場合の共通部分  +
- + コピーコンストラクタでEffectListのコピーを忘れるの注意！+/
-template EffectKeepableObjectCommon ()
-{
-    import cafe.project.timeline.effect.EffectList;
-    import std.json;
-    private:
-        EffectList effs;
-
-        /+ コピーコンストラクタで使う +/
-        @property copyEffectFrom ( PlaceableObject src )
-        {
-            effs = new EffectList( src.effectList );
-        }
-
-        /+ JSONからEffectListを作成 +/
-        @property createEffectJSON ( JSONValue j, FrameLength f )
-        {
-            effs = new EffectList( j, f );
-        }
-
-    public:
-        override @property EffectList effectList ()
-        {
-            return effs;
         }
 }

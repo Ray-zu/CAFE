@@ -92,13 +92,6 @@ class TimelineWidget : VerticalLayout
             tl += new NullObject( new ObjectPlacingInfo(
                         new LayerId(0), new FramePeriod( tl.length,
                             new FrameAt(30), new FrameLength(20) ) ) );
-            tl.objects[0].propertyList["X"].setString( new FrameAt(5), "8000" );
-            tl.objects[0].propertyList["X"].setString( new FrameAt(10), "-8000" );
-            tl.objects[0].propertyList["X"].setString( new FrameAt(15), "4000" );
-            tl.objects[0].propertyList["X"].middlePoints[0].easing = EasingType.Linear;
-            tl.objects[0].propertyList["X"].middlePoints[1].easing = EasingType.Linear;
-            tl.objects[0].propertyList["X"].middlePoints[2].easing = EasingType.Linear;
-            tl.objects[0].propertyList["X"].middlePoints[3].easing = EasingType.Linear;
 
             tl_editor                  = new TimelineEditor(tl);
             tl_canvas.timeline         = tl_editor;
