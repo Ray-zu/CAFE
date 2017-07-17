@@ -11,7 +11,8 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.effect.EffectList,
        cafe.project.timeline.property.PropertyList,
        cafe.project.timeline.custom.NullObject;
-import std.json;
+import std.algorithm,
+       std.json;
 import dlangui;
 
 /+ タイムラインに配置可能なオブジェクトの共通部分 +/
@@ -23,9 +24,7 @@ abstract class PlaceableObject : PropertyKeepableObject
         EffectList effs;
 
     public:
-        /+ オブジェクトの種類名 +/
-        @property string type ();
-
+        @property string typeStr ();
         /+ オブジェクトの表示名 +/
         @property string name ();
 
@@ -76,7 +75,7 @@ abstract class PlaceableObject : PropertyKeepableObject
             j["properties"] = JSONValue(propertyList.json);
             j["place"]      = JSONValue(place.json);
             j["effects"]    = JSONValue(effectList.json);
-            j["type"]       = JSONValue(type);
+            j["type"]       = JSONValue(typeStr);
             return j;
         }
 
@@ -89,15 +88,37 @@ abstract class PlaceableObject : PropertyKeepableObject
         /+ レンダリング情報にオブジェクトの内容を適用 +/
         void apply ( RenderingInfo );
 
+
+        /+ オブジェクト登録処理 +/
+
+        struct RegisteredObject
+        {
+            string name;
+            PlaceableObject delegate ( JSONValue, FrameLength ) create;
+        }
+        static RegisteredObject[] registeredObjects;
+
+        /+ オブジェクトを登録 +/
+        template register ( T )
+        {
+            static this ()
+            {
+                RegisteredObject r;
+                r.name = T.type;
+                r.create = delegate ( JSONValue j, FrameLength f )
+                {
+                    return new T( j, f );
+                };
+                registeredObjects ~= r;
+            }
+        }
+
         /+ type文字列からオブジェクト作成 +/
         static final PlaceableObject create ( JSONValue j, FrameLength f )
         {
-            switch ( j["type"].str )
-            {
-                case "NullObject":
-                    return new NullObject( j, f );
-
-                default: throw new Exception( "Undefined Object" );
-            }
+            auto n = j["type"].str;
+            auto i = registeredObjects.countUntil!( x => x.name == n );
+            if ( i == -1 ) throw new Exception( "Undefined Object." );
+            return registeredObjects[i].create( j, f );
         }
 }

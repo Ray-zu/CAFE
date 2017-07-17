@@ -18,11 +18,14 @@ debug = 0;
 /+ デバッグ用の何もしないオブジェクト +/
 class NullObject : PlaceableObject
 {
+    mixin register!NullObject;
     public:
-        override @property string type ()
+        static @property type ()
         {
             return "NullObject";
         }
+        override @property string typeStr () { return type; }
+        // static の override ができない！
 
         override @property string name ()
         {
