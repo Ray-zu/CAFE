@@ -35,7 +35,7 @@ abstract class PlaceableObject : PropertyKeepableObject
         {
             return props;
         }
-        override @property EffectList effectList ()
+        @property EffectList effectList ()
         {
             return effs;
         }

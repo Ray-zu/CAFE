@@ -15,7 +15,6 @@ interface PropertyKeepableObject
 {
     public:
         @property PropertyList propertyList ();
-        @property EffectList   effectList ();
 
         void initProperties ( FrameLength );
 
