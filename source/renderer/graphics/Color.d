@@ -18,7 +18,7 @@ struct RGBA
         float r,g,b;
         float a;
 
-        this ( float r, float g, float b, float a = 0 )
+        this ( float r, float g, float b, float a = 255 )
         {
             this.r = r; this.g = g; this.b = b; this.a = a;
         }
