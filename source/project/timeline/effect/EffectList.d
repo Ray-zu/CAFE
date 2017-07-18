@@ -23,9 +23,9 @@ class EffectList
     public:
         @property effects () { return effs; }
 
-        this ( EffectList src )
+        this ( EffectList src, FrameLength f )
         {
-            src.effects.each!( x => effs ~= x.copy );
+            src.effects.each!( x => effs ~= x.copy(f) );
         }
 
         this ()
@@ -61,18 +61,9 @@ class EffectList
             return this;
         }
 
-        /+ this += v : エフェクトリスト結合演算子 +/
-        auto opAddAssign ( EffectList v )
-        {
-            enforce( v, "EffectList must be not null." );
-            effs = v.effects;
-            return this;
-        }
-
         debug (1) unittest {
             auto hoge = new EffectList;
             auto hoge2 = new EffectList( hoge.json, new FrameLength(50) );
             assert( hoge.effects.length == hoge2.effects.length );
-            hoge += new EffectList;
         }
 }

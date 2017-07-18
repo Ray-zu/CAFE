@@ -114,7 +114,8 @@ class TimelineEditor
         void moveObject ( PlaceableObject obj, int f, int l )
         {
             if ( isPropertyLine(l) )
-                moveObject( obj, f, selecting.place.layer.value + propertyLineLength + 1 );
+                moveObject( obj, f,
+                        (selecting.place.layer.value + propertyLineLength + 1).to!int );
             else {
                 auto layer   = layerId(l);
                 auto len     = obj.place.frame.length.value;
@@ -124,7 +125,7 @@ class TimelineEditor
                     moveObject( obj, f < 0 ? 0 : f, l < 0 ? 0 : l );
                 } else {
                     auto colls = timeline[
-                        new FrameAt(f), new FrameLength(len), new LayerId(layer) ]
+                        new FrameAt(f.to!uint), new FrameLength(len.to!uint), new LayerId(layer.to!uint) ]
                         .remove!( x => x is obj );
 
                     if ( colls.length ) {
@@ -169,7 +170,7 @@ class TimelineEditor
                 op_mp_index = delegate () {
                     auto f  = new FrameAt( f - selectedObject.place.frame.start.value );
                     auto mp = operating_prop.middlePointAtFrame( new FrameAt(f) );
-                    return operating_prop.middlePoints.countUntil!( x => x is mp );
+                    return operating_prop.middlePoints.countUntil!( x => x is mp ).to!uint;
                 } ();
                 return true;
             }
@@ -215,7 +216,7 @@ class TimelineEditor
                             (SelectedPropertyLineHeightMag) :
                             (PropertyLineHeightMag) );
             } else
-                return Line( l, timeline[new LayerId(id)], "layer %d".format(id) );
+                return Line( l, timeline[new LayerId(id.to!uint)], "layer %d".format(id) );
         }
 
         /+ ----------------------------------------------- +
@@ -231,8 +232,8 @@ class TimelineEditor
                 currentFrame = f;
             else {
                 auto result = isPropertyLine(l) ?
-                    onPropertyLineLeftDown( f, layerId(l) ):
-                    onObjectLineLeftDown  ( f, layerId(l) );
+                    onPropertyLineLeftDown( f.to!uint, layerId(l).to!uint ):
+                    onObjectLineLeftDown  ( f.to!uint, layerId(l).to!uint );
                 if ( !result ) currentFrame = f;
             }
 

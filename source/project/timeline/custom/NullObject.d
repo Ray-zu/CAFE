@@ -18,16 +18,18 @@ debug = 0;
 /+ デバッグ用の何もしないオブジェクト +/
 class NullObject : PlaceableObject
 {
-    mixin EffectKeepableObjectCommon;
+    mixin register!NullObject;
     public:
-        override @property string type ()
+        static @property type ()
         {
             return "NullObject";
         }
+        override @property string typeStr () { return type; }
+        // static の override ができない！
 
         override @property string name ()
         {
-            return propertyList.properties.values[0].middlePoints.length.to!string;
+            return "NullObject";
         }
 
         override @property PlaceableObject copy ()
@@ -38,25 +40,20 @@ class NullObject : PlaceableObject
         this ( NullObject src )
         {
             super( src );
-            copyEffectFrom( src );
         }
 
         this ( ObjectPlacingInfo f )
         {
             super( f );
-            effs = new EffectList;
         }
 
         this ( JSONValue j, FrameLength f )
         {
             super( j, f );
-            createEffectJSON( j["effects"], f );
         }
 
         override void initProperties ( FrameLength f )
         {
-            import cafe.project.timeline.property.Preset;
-            PropertyPresets.position( propertyList, f );
         }
 
         override void apply ( RenderingInfo rinfo )
