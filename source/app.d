@@ -6,7 +6,7 @@
  + ------------------------------------------------------------ +/
 module cafe.app;
 import cafe.project.Project,
-       cafe.gui.controls.timeline.TimelineWidget;
+       cafe.gui.controls.MainFrame;
 import dlangui;
 
 mixin APP_ENTRY_POINT;
@@ -36,7 +36,7 @@ class Cafe
 
             // テストコード
             auto window = Platform.instance.createWindow("Hello dlang!",null);
-            window.mainWidget = new TimelineWidget( "test" );
+            window.mainWidget = new MainFrame;
             window.windowOrContentResizeMode = WindowOrContentResizeMode.shrinkWidgets;
             window.show;
         }
