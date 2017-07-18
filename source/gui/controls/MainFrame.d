@@ -5,6 +5,7 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.MainFrame;
+import cafe.gui.Action;
 import std.conv,
        std.format;
 import dlangui;
@@ -28,9 +29,13 @@ class MainFrame : AppFrame
         override MainMenu createMainMenu ()
         {
             top_menu = new MenuItem;
-            auto file = new MenuItem( new Action( 1, "MENU_FILE" ) );
+            auto file = new MenuItem( new Action( 1, "TopMenu_File" ) );
             with ( file ) {
-                add( new Action( 0 ) );
+                add( Action_FileNew    );
+                add( Action_FileOpen   );
+                add( Action_FileSave   );
+                add( Action_FileSaveAs );
+                add( Action_FileClose  );
             }
             top_menu.add( file );
             return new MainMenu( top_menu );
