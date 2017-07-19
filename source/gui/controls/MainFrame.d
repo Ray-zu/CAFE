@@ -49,7 +49,7 @@ class MainFrame : AppFrame
                 addButtons( Action_ProjectSave   );
                 addButtons( Action_ProjectSaveAs );
             }
-            with ( bar = host.getOrAddToolbar( "Control" ) ) {
+            with ( bar = host.getOrAddToolbar( "Play" ) ) {
                 addButtons( Action_Play        );
                 addButtons( Action_Pause       );
                 addButtons( Action_Stop        );
