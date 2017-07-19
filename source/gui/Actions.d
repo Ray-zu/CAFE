@@ -9,16 +9,16 @@ import dlangui;
 
 enum EditorActions : int
 {
-    FileNew = 10000,
-    FileOpen,
-    FileSave,
-    FileSaveAs,
-    FileClose,
-    FileExit
+    ProjectNew = 10000,
+    ProjectOpen,
+    ProjectSave,
+    ProjectSaveAs,
+    ProjectClose,
+    ProjectExit
 }
 
-const Action_FileNew    = new Action( cast(int)EditorActions.FileNew   , "FileNew"    );
-const Action_FileOpen   = new Action( cast(int)EditorActions.FileOpen  , "FileOpen"   );
-const Action_FileSave   = new Action( cast(int)EditorActions.FileSave  , "FileSave"  , "save" );
-const Action_FileSaveAs = new Action( cast(int)EditorActions.FileSaveAs, "FileSaveAs", "save_again" );
-const Action_FileClose  = new Action( cast(int)EditorActions.FileClose , "FileClose"  );
+const Action_ProjectNew    = new Action( cast(int)EditorActions.ProjectNew   , "ProjectNew"    );
+const Action_ProjectOpen   = new Action( cast(int)EditorActions.ProjectOpen  , "ProjectOpen"   );
+const Action_ProjectSave   = new Action( cast(int)EditorActions.ProjectSave  , "ProjectSave"  , "save" );
+const Action_ProjectSaveAs = new Action( cast(int)EditorActions.ProjectSaveAs, "ProjectSaveAs", "save_again" );
+const Action_ProjectClose  = new Action( cast(int)EditorActions.ProjectClose , "ProjectClose"  );
