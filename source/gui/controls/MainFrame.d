@@ -29,15 +29,30 @@ class MainFrame : AppFrame
         override MainMenu createMainMenu ()
         {
             top_menu = new MenuItem;
-            auto file = new MenuItem( new Action( 1, "TopMenu_File" ) );
-            with ( file ) {
+
+            auto menu = new MenuItem( new Action( 1, "TopMenu_File" ) );
+            with ( menu ) {
                 add( Action_ProjectNew    );
                 add( Action_ProjectOpen   );
                 add( Action_ProjectSave   );
                 add( Action_ProjectSaveAs );
                 add( Action_ProjectClose  );
             }
-            top_menu.add( file );
+            top_menu.add( menu );
+
+            with ( menu = new MenuItem( new Action( 1, "TopMenu_Play" ) ) ) {
+                add( Action_Play  );
+                add( Action_Pause );
+                add( Action_Stop  );
+
+                add( Action_MoveBehind );
+                add( Action_MoveAHead  );
+
+                add( Action_ShiftBehind );
+                add( Action_ShiftAHead  );
+            }
+            top_menu.add( menu );
+
             return new MainMenu( top_menu );
         }
 
@@ -50,9 +65,9 @@ class MainFrame : AppFrame
                 addButtons( Action_ProjectSaveAs );
             }
             with ( bar = host.getOrAddToolbar( "Play" ) ) {
-                addButtons( Action_Play        );
-                addButtons( Action_Pause       );
-                addButtons( Action_Stop        );
+                addButtons( Action_Play  );
+                addButtons( Action_Pause );
+                addButtons( Action_Stop  );
 
                 addButtons( Action_MoveBehind );
                 addButtons( Action_MoveAHead  );
