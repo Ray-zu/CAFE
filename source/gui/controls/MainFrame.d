@@ -41,6 +41,17 @@ class MainFrame : AppFrame
             return new MainMenu( top_menu );
         }
 
+        override ToolBarHost createToolbars ()
+        {
+            auto host = new ToolBarHost;
+            auto bar  = host.getOrAddToolbar( "Standard" );
+            with ( bar ) {
+                addButtons( Action_ProjectSave   );
+                addButtons( Action_ProjectSaveAs );
+            }
+            return host;
+        }
+
     public:
         this ()
         {
