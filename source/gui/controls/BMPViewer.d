@@ -37,8 +37,7 @@ class BMPViewer : Widget
         override void onDraw ( DrawBuf b )
         {
             if ( !bitmap ) return;
-            auto dst_rect = Rect( 0, 0, width, height );
             auto src_rect = Rect( 0, 0, bitmap.width, bitmap.height );
-            b.drawRescaled( dst_rect, bitmap, src_rect );
+            b.drawRescaled( pos, bitmap, src_rect );
         }
 }
