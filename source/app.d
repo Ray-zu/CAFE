@@ -35,7 +35,7 @@ class Cafe
             Log.setLogLevel( LogLevel.Info );
 
             // テストコード
-            auto window = Platform.instance.createWindow("Hello dlang!",null);
+            auto window = Platform.instance.createWindow("Hello dlang!",null,WindowFlag.Resizable,800,500);
             window.mainWidget = new MainFrame;
             window.windowOrContentResizeMode = WindowOrContentResizeMode.shrinkWidgets;
             window.show;
