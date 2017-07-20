@@ -35,7 +35,7 @@ class MainFrame : AppFrame
             float preview_height = 0.4;
             int   config_width = 300;
         }
-        LayoutRatio layout_info;
+        LayoutInfo layout_info;
 
         MenuItem top_menu;
 
