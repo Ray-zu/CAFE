@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android" >
   <item
-    android:drawable="cafe_btn_disabled"
+    android:drawable="btn_disabled_dark"
     android:state_enabled="false"
     android:state_focused="true" />
   <item
