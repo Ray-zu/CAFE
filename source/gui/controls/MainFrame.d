@@ -5,7 +5,9 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.MainFrame;
-import cafe.gui.Action;
+import cafe.gui.Action,
+       cafe.gui.controls.BMPViewer,
+       cafe.gui.controls.timeline.TimelineWidget;
 import std.conv,
        std.format;
 import dlangui;
@@ -17,16 +19,28 @@ class MainFrame : AppFrame
     enum AppText = "%s %s".format( AppName, AppVer );
 
     enum Layout = q{
-        VerticalLayout {
-            HorizontalLayout {
-                BMPViewer { }
+        HorizontalLayout {
+            VerticalLayout {
+                HorizontalLayout {
+                    BMPViewer { id:preview }
+                }
+                TimelineWidget { id:timeline }
             }
-            TimelineWidget { id:timeline }
         }
     };
 
     private:
+        struct LayoutInfo
+        {
+            float preview_height = 0.4;
+            int   config_width = 300;
+        }
+        LayoutRatio layout_info;
+
         MenuItem top_menu;
+
+        BMPViewer      preview;
+        TimelineWidget timeline;
 
     protected:
         override void initialize ()
@@ -37,7 +51,10 @@ class MainFrame : AppFrame
 
         override Widget createBody ()
         {
-            return parseML( Layout );
+            auto w = parseML( Layout );
+            preview  = cast(BMPViewer)     w.childById( "preview" );
+            timeline = cast(TimelineWidget)w.childById( "timeline" );
+            return w;
         }
 
         override MainMenu createMainMenu ()
@@ -97,5 +114,11 @@ class MainFrame : AppFrame
         {
             super();
             statusLine.setStatusText( i18n.get( "Status_Boot" ) );
+        }
+
+        override void measure ( int w, int h )
+        {
+            preview.minHeight = (h * layout_info.preview_height).to!int;
+            super.measure( w, h );
         }
 }
