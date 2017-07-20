@@ -82,6 +82,6 @@ class MainFrame : AppFrame
         this ()
         {
             super();
-            statusLine.setStatusText( i18n.get( "Status_Success" ) );
+            statusLine.setStatusText( i18n.get( "Status_Boot" ) );
         }
 }
