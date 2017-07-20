@@ -16,6 +16,11 @@ class MainFrame : AppFrame
     enum AppVer  = "0.99 beta";
     enum AppText = "%s %s".format( AppName, AppVer );
 
+    enum Layout = q{
+        VerticalLayout {
+        }
+    };
+
     private:
         MenuItem top_menu;
 
@@ -24,6 +29,11 @@ class MainFrame : AppFrame
         {
             _appName = AppText;
             super.initialize();
+        }
+
+        override Widget createBody ()
+        {
+            return parseML( Layout );
         }
 
         override MainMenu createMainMenu ()
