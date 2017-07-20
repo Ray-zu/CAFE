@@ -7,7 +7,10 @@
 module cafe.gui.controls.BMPViewer;
 import cafe.gui.BitmapLight,
        cafe.renderer.graphics.Bitmap;
-import dlangui;
+import dlangui,
+       dlangui.widgets.metadata;
+
+mixin( registerWidgets!BMPViewer );
 
 /+ BMPを表示するウィジェット +/
 class BMPViewer : Widget
@@ -23,15 +26,16 @@ class BMPViewer : Widget
             invalidate;
         }
 
-        this ( string id, DrawBuf bmp = null )
+        this ( string id = "" )
         {
-            super( id );
-            bitmap = bmp;
+            this( id, null );
         }
 
         this ( string id, BMP bmp )
         {
-            this( id, new BitmapLight( bmp ) );
+            super( id );
+            bitmap = bmp ?
+                new BitmapLight( bmp ) : null;
         }
 
         override void onDraw ( DrawBuf b )
