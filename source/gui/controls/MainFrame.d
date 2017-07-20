@@ -18,6 +18,10 @@ class MainFrame : AppFrame
 
     enum Layout = q{
         VerticalLayout {
+            HorizontalLayout {
+                BMPViewer { }
+            }
+            TimelineWidget { id:timeline }
         }
     };
 
