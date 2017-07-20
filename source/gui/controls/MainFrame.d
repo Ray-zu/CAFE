@@ -7,6 +7,7 @@
 module cafe.gui.controls.MainFrame;
 import cafe.gui.Action,
        cafe.gui.controls.BMPViewer,
+       cafe.gui.controls.ConfigTabs,
        cafe.gui.controls.timeline.TimelineWidget;
 import std.conv,
        std.format;
@@ -26,14 +27,15 @@ class MainFrame : AppFrame
                 }
                 TimelineWidget { id:timeline }
             }
+            ConfigTabs { id:tabs }
         }
     };
 
     private:
         struct LayoutInfo
         {
-            float preview_height = 0.4;
-            int   config_width = 300;
+            float preview_height = 0.55;
+            int   config_width   = 400;
         }
         LayoutInfo layout_info;
 
@@ -41,6 +43,7 @@ class MainFrame : AppFrame
 
         BMPViewer      preview;
         TimelineWidget timeline;
+        ConfigTabs     tabs;
 
     protected:
         override void initialize ()
@@ -54,6 +57,7 @@ class MainFrame : AppFrame
             auto w = parseML( Layout );
             preview  = cast(BMPViewer)     w.childById( "preview" );
             timeline = cast(TimelineWidget)w.childById( "timeline" );
+            tabs     = cast(ConfigTabs)    w.childById( "tabs" );
             return w;
         }
 
@@ -119,6 +123,7 @@ class MainFrame : AppFrame
         override void measure ( int w, int h )
         {
             preview.minHeight = (h * layout_info.preview_height).to!int;
+            tabs.minWidth = layout_info.config_width;
             super.measure( w, h );
         }
 }
