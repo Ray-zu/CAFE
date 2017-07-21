@@ -20,6 +20,7 @@ class PreviewPlayer : VerticalLayout
     };
     enum PlayControler = q{
         HorizontalLayout {
+            id:controlers;
             layoutWidth:FILL_PARENT;
             HSpacer {}
             ImageButton { id:shift_behind; drawableId:shift_behind }
@@ -47,7 +48,9 @@ class PreviewPlayer : VerticalLayout
         this ( string id = "" )
         {
             super( id );
+            styleId = "PREVIEW_PLAYER";
             minWidth = short.max;
+
             addChild( parseML( Preview ) );
             addChild( parseML( PlayControler ) );
 
@@ -68,5 +71,12 @@ class PreviewPlayer : VerticalLayout
             stop        .action = Action_Stop       ;
             move_ahead  .action = Action_MoveAHead  ;
             shift_ahead .action = Action_ShiftAHead ;
+        }
+
+        override void measure ( int w, int h )
+        {
+            super.measure( w, h );
+            preview.minHeight =
+                measuredHeight - childById("controlers").measuredHeight;
         }
 }

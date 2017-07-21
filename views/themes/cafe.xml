@@ -298,6 +298,10 @@
 	textColor="#504840"
         padding="1pt,1pt,1pt,1pt">
     </style>
+
+    <style id="PREVIEW_PLAYER"
+        backgroundColor="#00181818">
+    </style>
     
 
 </theme>
