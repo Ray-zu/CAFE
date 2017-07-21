@@ -8,6 +8,7 @@ module cafe.gui.controls.MainFrame;
 import cafe.gui.Action,
        cafe.gui.controls.BMPViewer,
        cafe.gui.controls.ConfigTabs,
+       cafe.gui.controls.PreviewPlayer,
        cafe.gui.controls.timeline.TimelineWidget;
 import std.conv,
        std.format;
@@ -23,7 +24,7 @@ class MainFrame : AppFrame
         HorizontalLayout {
             VerticalLayout {
                 HorizontalLayout {
-                    BMPViewer { id:preview }
+                    PreviewPlayer { id:preview }
                     FragmentsExplorer { id:flagexp }
                 }
                 TimelineWidget { id:timeline }
@@ -42,7 +43,7 @@ class MainFrame : AppFrame
 
         MenuItem top_menu;
 
-        BMPViewer      preview;
+        PreviewPlayer  preview;
         TimelineWidget timeline;
         ConfigTabs     tabs;
 
@@ -56,7 +57,7 @@ class MainFrame : AppFrame
         override Widget createBody ()
         {
             auto w = parseML( Layout );
-            preview  = cast(BMPViewer)     w.childById( "preview" );
+            preview  = cast(PreviewPlayer) w.childById( "preview" );
             timeline = cast(TimelineWidget)w.childById( "timeline" );
             tabs     = cast(ConfigTabs)    w.childById( "tabs" );
             return w;
