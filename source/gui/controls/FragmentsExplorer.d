@@ -21,6 +21,7 @@ class FragmentsExplorer : TreeWidget
         this ( string id = "" )
         {
             super( id );
+            styleId = "FRAGS_EXPLORER";
             global = items.newChild( "GLOBAL", "Global Frags" );
             local  = items.newChild( "LOCAL" , "Loacl Frags"  );
         }

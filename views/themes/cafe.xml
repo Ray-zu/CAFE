@@ -302,6 +302,10 @@
     <style id="PREVIEW_PLAYER"
         backgroundColor="#00111111">
     </style>
+
+    <style id="FRAGS_EXPLORER"
+        backgroundColor="#00333333">
+    </style>
     
 
 </theme>
