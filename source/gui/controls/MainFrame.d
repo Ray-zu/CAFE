@@ -24,6 +24,7 @@ class MainFrame : AppFrame
             VerticalLayout {
                 HorizontalLayout {
                     BMPViewer { id:preview }
+                    FragmentsExplorer { id:flagexp }
                 }
                 TimelineWidget { id:timeline }
             }
