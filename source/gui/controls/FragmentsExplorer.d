@@ -60,7 +60,7 @@ class FragmentsExplorer : TreeWidget
             styleId = "FRAGS_EXPLORER";
 
             global = items.newChild( "GLOBAL", "Global Frags" );
-            local  = items.newChild( "LOCAL" , "Loacl Frags"  );
+            local  = items.newChild( "LOCAL" , "Local Frags"  );
             global.intParam = NodeType.Dir;
             local .intParam = NodeType.Dir;
         }
