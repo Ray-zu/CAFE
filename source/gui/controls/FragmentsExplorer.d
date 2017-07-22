@@ -36,6 +36,7 @@ class FragmentsExplorer : TreeWidget
                     return cur;
                 }();
                 root = onTreeItemPopupMenu( src, parent );
+                root.addSeparator;
                 with ( root = new MenuItem ) {
                     add( Action_RemoveFrag );
                 }
