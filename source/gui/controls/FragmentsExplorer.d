@@ -6,7 +6,11 @@
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.FragmentsExplorer;
 import cafe.gui.Action;
+import std.regex,
+       std.string;
 import dlangui,
+       dlangui.dialogs.dialog,
+       dlangui.dialogs.filedlg,
        dlangui.widgets.metadata;
 
 mixin( registerWidgets!FragmentsExplorer );
@@ -68,12 +72,37 @@ class FragmentsExplorer : TreeWidget
         override bool handleAction ( const Action a )
         {
             import cafe.gui.Action;
+
+            auto getNodeName ( string v )
+            {
+                // ファイルパスからファイル名を返す
+                return v.matchFirst( `^[\s\S]*(?:\\|\/)([^\/]+)$` )[1].to!dstring;
+            }
+
             switch ( a.id ) {
                 case EditorActions.AddFrag:
                     auto dir = items.selectedItem;
                     if ( dir.intParam != NodeType.Dir ) dir = dir.parent;
-                    dir.newChild( "hoge", "hogeeee" );
+
+                    auto dlg = new FileDialog( UIString.fromId("SelectFrag"),
+                            window, null, FileDialogFlag.Open );
+                    dlg.dialogResult = delegate ( Dialog d, const Action a )
+                    {
+                        if ( a.id == ACTION_OPEN.id ) {
+                            dir.newChild( dlg.filename, getNodeName(dlg.filename) );
+                            updateWidgets;
+                        }
+                    };
+                    dlg.show;
+                    return true;
+
+                case EditorActions.RemoveFrag:
+                    items.selectedItem.parent.removeChild( items.selectedItem.id );
                     updateWidgets;
+                    return true;
+
+                case EditorActions.AddFlagDir:
+                    throw new Exception( "Not Implemented" );
                     return true;
 
                 default:
