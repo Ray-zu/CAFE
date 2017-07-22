@@ -72,7 +72,8 @@ class FragmentsExplorer : TreeWidget
                 case EditorActions.AddFrag:
                     auto dir = items.selectedItem;
                     if ( dir.intParam != NodeType.Dir ) dir = dir.parent;
-                    // TODO
+                    addWidgets( dir.newChild( "hoge", "hogeeee" ) );
+                    updateWidgets;
                     return true;
 
                 default:
