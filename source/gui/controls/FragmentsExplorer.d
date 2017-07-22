@@ -23,9 +23,8 @@ class FragmentsExplorer : TreeWidget
         {
             MenuItem root = null;
             if ( sel is global || sel is local ) {
-                auto g = sel is global;
                 with ( root = new MenuItem ) {
-                    add( g ? Action_AddGlobalFrag : Action_AddLocalFrag );
+                    add( Action_AddFrag );
                 }
             } else {
                 auto parent = delegate ()
@@ -37,9 +36,10 @@ class FragmentsExplorer : TreeWidget
                 }();
                 root = onTreeItemPopupMenu( src, parent );
                 with ( root = new MenuItem ) {
-                    add( g ? Action_RemoveGlobalFrag : Action_RemoveLocalFrag );
+                    add( Action_RemoveFrag );
                 }
             }
+            selectItem( sel );
             return root;
         }
 

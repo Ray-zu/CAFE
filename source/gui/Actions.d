@@ -24,10 +24,8 @@ enum EditorActions : int
     ShiftBehind,
     ShiftAHead,
 
-    AddGlobalFrag,
-    AddLocalFrag,
-    RemoveGlobalFrag,
-    RemoveLocalFrag
+    AddFrag,
+    RemoveFrag
 }
 
 const Action_ProjectNew    = new Action( cast(int)EditorActions.ProjectNew   , "ProjectNew"    );
@@ -44,7 +42,5 @@ const Action_MoveAHead   = new Action( cast(int)EditorActions.MoveAHead  , "Move
 const Action_ShiftBehind = new Action( cast(int)EditorActions.ShiftBehind, "ShiftBehind", "shift_behind" );
 const Action_ShiftAHead  = new Action( cast(int)EditorActions.ShiftAHead , "ShiftAHead" , "shift_ahead"  );
 
-const Action_AddGlobalFrag    = new Action( cast(int)EditorActions.AddGlobalFrag   , "AddGlobalFrag"    );
-const Action_AddLocalFrag     = new Action( cast(int)EditorActions.AddLocalFrag    , "AddLocalFrag"     );
-const Action_RemoveGlobalFrag = new Action( cast(int)EditorActions.RemoveGlobalFrag, "RemoveGlobalFrag" );
-const Action_RemoveLocalFrag  = new Action( cast(int)EditorActions.RemoveLocalFrag , "RemoveLocalFrag"  );
+const Action_AddFrag    = new Action( cast(int)EditorActions.AddFrag   , "AddFrag"    );
+const Action_RemoveFrag = new Action( cast(int)EditorActions.RemoveFrag, "RemoveFrag" );
