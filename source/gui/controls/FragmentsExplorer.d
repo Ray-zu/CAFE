@@ -25,6 +25,7 @@ class FragmentsExplorer : TreeWidget
             if ( sel is global || sel is local ) {
                 with ( root = new MenuItem ) {
                     add( Action_AddFrag );
+                    add( Action_AddFragDir  );
                 }
             } else {
                 auto parent = delegate ()
