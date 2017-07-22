@@ -42,6 +42,7 @@ class FragmentsExplorer : TreeWidget
                 }
             }
             selectItem( sel );
+            root.menuItemAction = &handleAction;
             return root;
         }
 
@@ -52,5 +53,18 @@ class FragmentsExplorer : TreeWidget
             styleId = "FRAGS_EXPLORER";
             global = items.newChild( "GLOBAL", "Global Frags" );
             local  = items.newChild( "LOCAL" , "Loacl Frags"  );
+        }
+
+        override bool handleAction ( const Action a )
+        {
+            import cafe.gui.Action;
+            switch ( a.id ) {
+                case EditorActions.AddFrag:
+                    window.showMessageBox( "hey", "hey" );
+                    return true;
+
+                default:
+            }
+            return false;
         }
 }
