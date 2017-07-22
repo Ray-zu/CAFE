@@ -96,13 +96,12 @@ class FragmentsExplorer : TreeWidget
                     dlg.show;
                     return true;
 
+                case EditorActions.AddFragDir:
+                    throw new Exception( "Not Implemented" );
+
                 case EditorActions.RemoveFrag:
                     items.selectedItem.parent.removeChild( items.selectedItem.id );
                     updateWidgets;
-                    return true;
-
-                case EditorActions.AddFlagDir:
-                    throw new Exception( "Not Implemented" );
                     return true;
 
                 default:
