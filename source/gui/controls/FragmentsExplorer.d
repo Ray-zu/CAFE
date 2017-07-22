@@ -14,9 +14,23 @@ mixin( registerWidgets!FragmentsExplorer );
 /+ 素材一覧のリスト +/
 class FragmentsExplorer : TreeWidget
 {
+    enum NodeType
+    {
+        Dir  = 100,
+        Item
+    }
+
     private:
         TreeItem local;
         TreeItem global;
+
+        /+ iの上から二番目の親を返す +/
+        auto secondNode ( TreeItem i )
+        {
+            while ( i.level > 1 )
+                i = i.parent;
+            return i;
+        }
 
     protected:
         override MenuItem onTreeItemPopupMenu ( TreeItems src, TreeItem sel )
@@ -28,14 +42,7 @@ class FragmentsExplorer : TreeWidget
                     add( Action_AddFragDir  );
                 }
             } else {
-                auto parent = delegate ()
-                {
-                    auto cur = sel;
-                    while ( cur.level == 0 )
-                        cur = cur.parent;
-                    return cur;
-                }();
-                root = onTreeItemPopupMenu( src, parent );
+                root = onTreeItemPopupMenu( src, secondNode( sel ) );
                 root.addSeparator;
                 with ( root = new MenuItem ) {
                     add( Action_RemoveFrag );
@@ -51,8 +58,11 @@ class FragmentsExplorer : TreeWidget
         {
             super( id );
             styleId = "FRAGS_EXPLORER";
+
             global = items.newChild( "GLOBAL", "Global Frags" );
             local  = items.newChild( "LOCAL" , "Loacl Frags"  );
+            global.intParam = NodeType.Dir;
+            local .intParam = NodeType.Dir;
         }
 
         override bool handleAction ( const Action a )
@@ -60,7 +70,9 @@ class FragmentsExplorer : TreeWidget
             import cafe.gui.Action;
             switch ( a.id ) {
                 case EditorActions.AddFrag:
-                    window.showMessageBox( "hey", "hey" );
+                    auto dir = items.selectedItem;
+                    if ( dir.intParam != NodeType.Dir ) dir = dir.parent;
+                    // TODO
                     return true;
 
                 default:
