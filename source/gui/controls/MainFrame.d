@@ -9,6 +9,7 @@ import cafe.gui.Action,
        cafe.gui.controls.BMPViewer,
        cafe.gui.controls.ConfigTabs,
        cafe.gui.controls.PreviewPlayer,
+       cafe.gui.controls.FragmentsExplorer,
        cafe.gui.controls.timeline.TimelineWidget;
 import std.conv,
        std.format;
@@ -43,9 +44,10 @@ class MainFrame : AppFrame
 
         MenuItem top_menu;
 
-        PreviewPlayer  preview;
-        TimelineWidget timeline;
-        ConfigTabs     tabs;
+        PreviewPlayer     preview;
+        TimelineWidget    timeline;
+        ConfigTabs        tabs;
+        FragmentsExplorer fragexp;
 
     protected:
         override void initialize ()
@@ -57,9 +59,10 @@ class MainFrame : AppFrame
         override Widget createBody ()
         {
             auto w = parseML( Layout );
-            preview  = cast(PreviewPlayer) w.childById( "preview" );
-            timeline = cast(TimelineWidget)w.childById( "timeline" );
-            tabs     = cast(ConfigTabs)    w.childById( "tabs" );
+            preview  = cast(PreviewPlayer)    w.childById( "preview" );
+            timeline = cast(TimelineWidget)   w.childById( "timeline" );
+            tabs     = cast(ConfigTabs)       w.childById( "tabs" );
+            fragexp  = cast(FragmentsExplorer)w.childById( "flagexp" );
             return w;
         }
 
@@ -127,5 +130,20 @@ class MainFrame : AppFrame
             preview.minHeight = (h * layout_info.preview_height).to!int;
             tabs.minWidth = layout_info.config_width;
             super.measure( w, h );
+        }
+
+        override bool handleAction ( const Action a )
+        {
+            import cafe.gui.Action;
+            if ( a ) {
+                switch ( a.id ) {
+                    case EditorActions.AddFrag:
+                        return fragexp.handleAction( a );
+
+                    default:
+                        return super.handleAction( a );
+                }
+            }
+            return false;
         }
 }
