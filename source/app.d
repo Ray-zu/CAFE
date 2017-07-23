@@ -13,6 +13,7 @@ mixin APP_ENTRY_POINT;
 
 class Cafe
 {
+    static Cafe instance = null;
     private:
         Project cur_project;
 
@@ -54,6 +55,6 @@ class Cafe
 
 extern(C) int UIAppMain(string[] args)
 {
-    new Cafe( args );
+    Cafe.instance = new Cafe( args );
     return Platform.instance.enterMessageLoop();
 }
