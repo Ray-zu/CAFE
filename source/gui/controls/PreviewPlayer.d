@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.PreviewPlayer;
-import cafe.gui.Action,
+import cafe.app,
+       cafe.gui.Action,
        cafe.gui.controls.BMPViewer;
 import dlangui,
        dlangui.widgets.metadata;
@@ -71,6 +72,20 @@ class PreviewPlayer : VerticalLayout
             stop        .action = Action_Stop       ;
             move_ahead  .action = Action_MoveAHead  ;
             shift_ahead .action = Action_ShiftAHead ;
+        }
+
+        override bool handleAction ( const Action a )
+        {
+            import cafe.gui.Action;
+            switch ( a.id ) {
+                case EditorActions.PreviewRefresh:
+                    Cafe.instance.setStatus( "Rendering..." );
+                    // TODO preview.bitmap = Cafe.curProject.componentList.root.render();
+                    Cafe.instance.setStatus( "Rendered..." );
+                    return true;
+                default:
+            }
+            return false;
         }
 
         override void measure ( int w, int h )

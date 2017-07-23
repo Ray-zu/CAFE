@@ -137,6 +137,8 @@ class MainFrame : AppFrame
             import cafe.gui.Action;
             if ( a ) {
                 switch ( a.id ) {
+                    case EditorActions.PreviewRefresh:
+                        return preview.handleAction( a );
                     case EditorActions.AddFrag:
                         return fragexp.handleAction( a );
 

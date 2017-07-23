@@ -24,6 +24,8 @@ enum EditorActions : int
     ShiftBehind,
     ShiftAHead,
 
+    PreviewRefresh,
+
     AddFrag,
     AddFragDir,
     RemoveFrag
@@ -42,6 +44,8 @@ const Action_MoveBehind  = new Action( cast(int)EditorActions.MoveBehind , "Move
 const Action_MoveAHead   = new Action( cast(int)EditorActions.MoveAHead  , "MoveAHead"  , "move_ahead"   );
 const Action_ShiftBehind = new Action( cast(int)EditorActions.ShiftBehind, "ShiftBehind", "shift_behind" );
 const Action_ShiftAHead  = new Action( cast(int)EditorActions.ShiftAHead , "ShiftAHead" , "shift_ahead"  );
+
+const Action_PreviewRefresh = new Action( cast(int)EditorActions.PreviewRefresh, "PreviewRefresh" );
 
 const Action_AddFrag    = new Action( cast(int)EditorActions.AddFrag   , "AddFrag"    );
 const Action_AddFragDir = new Action( cast(int)EditorActions.AddFragDir, "AddFragDir" );
