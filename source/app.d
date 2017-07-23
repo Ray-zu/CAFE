@@ -16,6 +16,7 @@ class Cafe
     static Cafe instance = null;
     private:
         Project cur_project;
+        MainFrame main_frame;
 
         void loadLibraries ()
         {
@@ -35,14 +36,14 @@ class Cafe
             Log.setStdoutLogger;
             Log.setLogLevel( LogLevel.Info );
 
-            // テストコード
             auto window = Platform.instance.createWindow("Hello dlang!",null,WindowFlag.Resizable,800,500);
-            window.mainWidget = new MainFrame;
+            window.mainWidget = main_frame = new MainFrame;
             window.windowOrContentResizeMode = WindowOrContentResizeMode.shrinkWidgets;
             window.show;
         }
 
     public:
+        @property mainFrame  () { return main_frame; }
         @property curProject () { return cur_project; }
 
         this ( string[] args )
