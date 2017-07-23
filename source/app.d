@@ -52,6 +52,11 @@ class Cafe
             loadLibraries;
             setupGUI;
         }
+
+        @property void setStatus ( dstring v )
+        {
+            mainFrame.statusLine.setStatusText( v );
+        }
 }
 
 extern(C) int UIAppMain(string[] args)
