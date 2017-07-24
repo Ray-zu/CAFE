@@ -11,7 +11,7 @@ import cafe.app,
        cafe.gui.controls.ConfigTabs,
        cafe.gui.controls.PreviewPlayer,
        cafe.gui.controls.FragmentsExplorer,
-       cafe.gui.controls.timeline.TimelineWidget;
+       cafe.gui.controls.TimelineTabs;
 import std.conv,
        std.format;
 import dlangui;
@@ -29,7 +29,7 @@ class MainFrame : AppFrame
                     PreviewPlayer { id:preview }
                     FragmentsExplorer { id:flagexp }
                 }
-                TimelineWidget { id:timeline }
+                TimelineTabs { id:timeline }
             }
             ConfigTabs { id:tabs }
         }
@@ -46,7 +46,7 @@ class MainFrame : AppFrame
         MenuItem top_menu;
 
         PreviewPlayer     preview;
-        TimelineWidget    timeline;
+        TimelineTabs      timeline;
         ConfigTabs        tabs;
         FragmentsExplorer fragexp;
 
@@ -73,7 +73,7 @@ class MainFrame : AppFrame
         {
             auto w = parseML( Layout );
             preview  = cast(PreviewPlayer)    w.childById( "preview" );
-            timeline = cast(TimelineWidget)   w.childById( "timeline" );
+            timeline = cast(TimelineTabs)     w.childById( "timeline" );
             tabs     = cast(ConfigTabs)       w.childById( "tabs" );
             fragexp  = cast(FragmentsExplorer)w.childById( "flagexp" );
             return w;
@@ -141,6 +141,7 @@ class MainFrame : AppFrame
         override void measure ( int w, int h )
         {
             preview.minHeight = (h * layout_info.preview_height).to!int;
+            timeline.minHeight = h - preview.minHeight;
             tabs.minWidth = layout_info.config_width;
             super.measure( w, h );
         }
