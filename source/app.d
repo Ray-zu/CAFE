@@ -6,6 +6,7 @@
  + ------------------------------------------------------------ +/
 module cafe.app;
 import cafe.project.Project,
+       cafe.gui.Action,
        cafe.gui.controls.MainFrame;
 import dlangui;
 
@@ -44,11 +45,17 @@ class Cafe
 
     public:
         @property mainFrame  () { return main_frame; }
+
         @property curProject () { return cur_project; }
+        @property curProject ( Project p )
+        {
+            cur_project = p;
+            handleAction( Action_ProjectRefresh );
+        }
 
         this ( string[] args )
         {
-            cur_project = null;
+            curProject = null;
             loadLibraries;
             setupGUI;
         }
@@ -56,6 +63,11 @@ class Cafe
         @property void setStatus ( dstring v )
         {
             mainFrame.statusLine.setStatusText( v );
+        }
+
+        @property bool handleAction ( const Action a )
+        {
+            return mainFrame.handleAction( a );
         }
 }
 
