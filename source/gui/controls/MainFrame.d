@@ -11,6 +11,7 @@ import cafe.app,
        cafe.gui.controls.ConfigTabs,
        cafe.gui.controls.PreviewPlayer,
        cafe.gui.controls.FragmentsExplorer,
+       cafe.gui.controls.StartPanel,
        cafe.gui.controls.TimelineTabs;
 import std.conv,
        std.format;
@@ -54,10 +55,9 @@ class MainFrame : AppFrame
         auto projectRefresh ()
         {
             auto p = Cafe.instance.curProject;
-            Log.i( p is null );
             if ( p ) {
             } else {
-                window.showMessageBox( "Hello", "start page" );
+                new StartPanel( window );
             }
             return true;
         }
