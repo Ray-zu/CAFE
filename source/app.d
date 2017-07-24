@@ -16,8 +16,8 @@ class Cafe
 {
     static Cafe instance = null;
     private:
-        Project cur_project;
-        MainFrame main_frame;
+        Project cur_project  = null;
+        MainFrame main_frame = null;
 
         void loadLibraries ()
         {
@@ -55,7 +55,6 @@ class Cafe
 
         this ( string[] args )
         {
-            curProject = null;
             loadLibraries;
             setupGUI;
         }
@@ -74,5 +73,9 @@ class Cafe
 extern(C) int UIAppMain(string[] args)
 {
     Cafe.instance = new Cafe( args );
+
+    if ( args.length == 0 ) Cafe.instance.curProject = null;
+    // TODO 引数ファイルのプロジェクト読み込み
+
     return Platform.instance.enterMessageLoop();
 }

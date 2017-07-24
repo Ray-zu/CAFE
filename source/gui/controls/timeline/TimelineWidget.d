@@ -60,6 +60,8 @@ class TimelineWidget : VerticalLayout
         }
 
     public:
+        @property editor () { return tl_editor; }
+
         this ( string id = "" )
         {
             super( id );
@@ -84,16 +86,7 @@ class TimelineWidget : VerticalLayout
             hscroll   = cast(ScrollBar)childById( "hscroll" );
             vscroll   = cast(ScrollBar)childById( "vscroll" );
 
-            //テストコード
-            import cafe.project.ObjectPlacingInfo,
-                   cafe.project.timeline.Timeline,
-                   cafe.project.timeline.property.Easing;
-            auto tl = new Timeline( new FrameLength(50) );
-            tl += new NullObject( new ObjectPlacingInfo(
-                        new LayerId(0), new FramePeriod( tl.length,
-                            new FrameAt(30), new FrameLength(20) ) ) );
-
-            tl_editor                  = new TimelineEditor(tl);
+            tl_editor                  = new TimelineEditor( null );
             tl_canvas.timeline         = tl_editor;
             tl_canvas.verticalScroll   = vscroll;
             tl_canvas.horizontalScroll = hscroll;

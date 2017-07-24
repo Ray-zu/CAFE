@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.MainFrame;
-import cafe.gui.Action,
+import cafe.app,
+       cafe.gui.Action,
        cafe.gui.controls.BMPViewer,
        cafe.gui.controls.ConfigTabs,
        cafe.gui.controls.PreviewPlayer,
@@ -48,6 +49,18 @@ class MainFrame : AppFrame
         TimelineWidget    timeline;
         ConfigTabs        tabs;
         FragmentsExplorer fragexp;
+
+        /+ プロジェクトのインスタンスが変更された時に呼ばれる +/
+        auto projectRefresh ()
+        {
+            auto p = Cafe.instance.curProject;
+            Log.i( p is null );
+            if ( p ) {
+            } else {
+                window.showMessageBox( "Hello", "start page" );
+            }
+            return true;
+        }
 
     protected:
         override void initialize ()
@@ -137,6 +150,8 @@ class MainFrame : AppFrame
             import cafe.gui.Action;
             if ( a ) {
                 switch ( a.id ) {
+                    case EditorActions.ProjectRefresh:
+                        return projectRefresh;
                     case EditorActions.PreviewRefresh:
                         return preview.handleAction( a );
                     case EditorActions.AddFrag:
