@@ -55,10 +55,13 @@ class MainFrame : AppFrame
         auto projectRefresh ()
         {
             auto p = Cafe.instance.curProject;
+            timeline.project = p;
+
             if ( p ) {
             } else {
                 new StartPanel( window );
             }
+            handleAction( Action_PreviewRefresh );
             return true;
         }
 
