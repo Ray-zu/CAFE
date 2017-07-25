@@ -17,13 +17,20 @@ mixin( registerWidgets!TimelineTabs );
 /+ 複数のタイムラインを管理 +/
 class TimelineTabs : TabWidget
 {
+    enum EmptyLayout = q{
+        FrameLayout {
+            id:empty;
+            VSpacer {}
+        }
+    };
+
     private:
         Project pro = null;
 
         void addTab ( string name, Component com, bool closeable = true )
         {
             auto tlw = new TimelineWidget;
-            tlw.editor.timeline = com.timeline;
+            tlw.editor.timeline = com ? com.timeline : null;
             super.addTab( tlw, name.to!dstring, null, closeable );
         }
 
@@ -32,10 +39,11 @@ class TimelineTabs : TabWidget
         @property project ( Project p )
         {
             pro = p;
+            clearAllTabs;
             if ( project )
                 addTab( "root", project.componentList.root, false );
             else
-                clearAllTabs;
+                addTab( "no project", null, false );
         }
 
         this ( string id = "" )
