@@ -154,6 +154,9 @@ class MainFrame : AppFrame
             import cafe.gui.Action;
             if ( a ) {
                 switch ( a.id ) {
+                    case EditorActions.ProjectNew:
+                        new ProjectCreationPanel( window );
+                        return true;
                     case EditorActions.ProjectRefresh:
                         return projectRefresh;
                     case EditorActions.PreviewRefresh:

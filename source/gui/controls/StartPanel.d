@@ -7,7 +7,9 @@
 module cafe.gui.controls.StartPanel;
 import cafe.app,
        cafe.gui.Action,
-       cafe.gui.controls.MainFrame;
+       cafe.gui.controls.MainFrame,
+       cafe.project.Project;
+import std.conv;
 import dlangui,
        dlangui.dialogs.dialog;
 
@@ -53,12 +55,55 @@ class StartPanel : Dialog
             childById( "releaseNote" ).text = import( "releaseNote.txt" );
             childById( "create" ).click = delegate ( Widget w )
             {
-                return Cafe.instance.handleAction( Action_ProjectNew );
+                close( null );
+                Cafe.instance.handleAction( Action_ProjectNew );
+                return true;
             };
             childById( "close" ).click = delegate ( Widget w )
             {
                 close( null );
                 return true;
+            };
+        }
+}
+
+/+ プロジェクト新規作成ダイアログ +/
+class ProjectCreationPanel : Dialog
+{
+    enum DlgFlag = DialogFlag.Popup;
+    enum Layout = q{
+        TableLayout {
+            layoutWidth:FILL_PARENT;
+            colCount:2;
+            TextWidget { text:"Author" }
+            EditLine { id:author }
+            TextWidget { text:"Copyright" }
+            EditLine { id:copyright }
+        }
+    };
+    enum Caption = "New Project";
+
+    public:
+        this ( Window w = null )
+        {
+            super( UIString.fromRaw(Caption), w, DlgFlag );
+            show;
+        }
+
+        override void initialize ()
+        {
+            addChild( parseML( Layout ) );
+            addChild( createButtonsPanel(
+                        [ACTION_OK,ACTION_CANCEL], 0, 0 ) );
+
+            dialogResult = delegate ( Dialog d, const Action a )
+            {
+                if ( a.id == ACTION_OK.id ) {
+                    auto temp = new Project;
+                    temp.author    = childById("author").text.to!string;
+                    temp.copyright = childById("copyright").text.to!string;
+                    Cafe.instance.curProject = temp;
+                }
             };
         }
 }
