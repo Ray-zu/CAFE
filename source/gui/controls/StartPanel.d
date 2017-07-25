@@ -5,7 +5,9 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.StartPanel;
-import cafe.gui.controls.MainFrame;
+import cafe.app,
+       cafe.gui.Action,
+       cafe.gui.controls.MainFrame;
 import dlangui,
        dlangui.dialogs.dialog;
 
@@ -19,6 +21,19 @@ class StartPanel : Dialog
                 layoutWidth : FILL_PARENT;
                 HSpacer {}
                 TextWidget { id:header; fontSize:24 }
+                HSpacer {}
+            }
+            MultilineTextWidget { id:releaseNote }
+            HorizontalLayout {
+                layoutWidth : FILL_PARENT;
+                HSpacer {}
+                Button { id:create; text:ProjectNew; fontSize:16; minWidth:300 }
+                HSpacer {}
+            }
+            HorizontalLayout {
+                layoutWidth : FILL_PARENT;
+                HSpacer {}
+                Button { id:close; text:"Close"; fontSize:16; minWidth:300 }
                 HSpacer {}
             }
         }
@@ -35,5 +50,15 @@ class StartPanel : Dialog
         {
             addChild( parseML(Layout) );
             childById( "header" ).text = MainFrame.AppText;
+            childById( "releaseNote" ).text = import( "releaseNote.txt" );
+            childById( "create" ).click = delegate ( Widget w )
+            {
+                return Cafe.instance.handleAction( Action_ProjectNew );
+            };
+            childById( "close" ).click = delegate ( Widget w )
+            {
+                close( null );
+                return true;
+            };
         }
 }
