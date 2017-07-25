@@ -39,8 +39,8 @@ class MainFrame : AppFrame
     private:
         struct LayoutInfo
         {
-            float preview_height = 0.55;
-            int   config_width   = 400;
+            int preview_height = 500;
+            int config_width   = 400;
         }
         LayoutInfo layout_info;
 
@@ -143,9 +143,9 @@ class MainFrame : AppFrame
 
         override void measure ( int w, int h )
         {
-            preview.minHeight = (h * layout_info.preview_height).to!int;
-            timeline.minHeight = h - preview.minHeight;
-            tabs.minWidth = layout_info.config_width;
+            preview.minHeight  = layout_info.preview_height;
+            timeline.maxHeight = h - preview.minHeight;
+            tabs.minWidth      = layout_info.config_width;
             super.measure( w, h );
         }
 
