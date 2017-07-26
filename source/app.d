@@ -6,15 +6,18 @@
  + ------------------------------------------------------------ +/
 module cafe.app;
 import cafe.project.Project,
-       cafe.gui.controls.timeline.TimelineWidget;
+       cafe.gui.Action,
+       cafe.gui.controls.MainFrame;
 import dlangui;
 
 mixin APP_ENTRY_POINT;
 
 class Cafe
 {
+    static Cafe instance = null;
     private:
-        Project cur_project;
+        Project cur_project  = null;
+        MainFrame main_frame = null;
 
         void loadLibraries ()
         {
@@ -34,26 +37,45 @@ class Cafe
             Log.setStdoutLogger;
             Log.setLogLevel( LogLevel.Info );
 
-            // テストコード
-            auto window = Platform.instance.createWindow("Hello dlang!",null);
-            window.mainWidget = new TimelineWidget( "test" );
+            auto window = Platform.instance.createWindow("Hello dlang!",null,WindowFlag.Resizable,800,500);
+            window.mainWidget = main_frame = new MainFrame;
             window.windowOrContentResizeMode = WindowOrContentResizeMode.shrinkWidgets;
             window.show;
         }
 
     public:
+        @property mainFrame  () { return main_frame; }
+
         @property curProject () { return cur_project; }
+        @property curProject ( Project p )
+        {
+            cur_project = p;
+            handleAction( Action_ProjectRefresh );
+        }
 
         this ( string[] args )
         {
-            cur_project = null;
             loadLibraries;
             setupGUI;
+        }
+
+        @property void setStatus ( dstring v )
+        {
+            mainFrame.statusLine.setStatusText( v );
+        }
+
+        @property bool handleAction ( const Action a )
+        {
+            return mainFrame.handleAction( a );
         }
 }
 
 extern(C) int UIAppMain(string[] args)
 {
-    new Cafe( args );
+    Cafe.instance = new Cafe( args );
+
+    if ( args.length == 0 ) Cafe.instance.curProject = null;
+    // TODO 引数ファイルのプロジェクト読み込み
+
     return Platform.instance.enterMessageLoop();
 }

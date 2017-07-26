@@ -326,7 +326,7 @@ class TimelineCanvas : Widget
         override void onDraw ( DrawBuf b )
         {
             super.onDraw( b );
-            if ( !tl_editor ) return;
+            if ( !tl_editor || !tl_editor.timeline ) return;
             updateProperties;
 
             // グリッドの描画
@@ -365,6 +365,8 @@ class TimelineCanvas : Widget
 
         private auto onMouseEvent ( Widget w, MouseEvent e )
         {
+            if ( !tl_editor || !tl_editor.timeline ) return false;
+
             auto top = GridHeight + pos.top;
             auto left = headerWidth + pos.left;
 

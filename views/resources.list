@@ -1,4 +1,8 @@
 themes/cafe.xml
+themes/cafe_menu_item_background.xml
+themes/cafe_btn_hover.9.png
+themes/cafe_toolbar_host_background.9.png
+langs/en.ini
 icons/move_ahead.png
 icons/move_behind.png
 icons/pause.png
@@ -6,5 +10,5 @@ icons/save.png
 icons/save_again.png
 icons/shift_ahead.png
 icons/shift_behind.png
-icons/start.png
+icons/play.png
 icons/stop.png
