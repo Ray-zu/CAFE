@@ -17,7 +17,6 @@ class RenderingInfo
     private:
         /+ Read Only プロパティ +/
         uint    size_width, size_height;  // レンダラに渡す画像サイズ
-        uint    comp_fps;                 // フレームレート
 
     public:
         /+ プロパティと同じように扱うので同じような命名規則にする +/
@@ -30,9 +29,8 @@ class RenderingInfo
         /+ Read Only プロパティのゲッター +/
         @property width  () { return size_width; }
         @property height () { return size_height; }
-        @property fps    () { return comp_fps; }
 
-        this ( FrameAt f, uint w, uint h, uint fps )
+        this ( FrameAt f, uint w, uint h )
         {
             effectStage = new World;
             renderingStage = new World;
@@ -40,7 +38,6 @@ class RenderingInfo
             frame = f;
             size_width = w;
             size_height = h;
-            comp_fps = fps;
         }
 
         /+ エフェクトステージの内容を破棄 +/
