@@ -5,3 +5,10 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.media.encoder.Encoder;
+import cafe.renderer.graphics.Bitmap;
+
+interface Encoder
+{
+    public:
+        bool encode ( BMP, PCM );
+}
