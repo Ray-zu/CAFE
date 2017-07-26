@@ -14,6 +14,9 @@ debug = 0;
 /+ プロジェクト全体のデータ +/
 class Project
 {
+    enum DefaultSamplingRate = 44100;
+    enum DefaultFPS          = 30;
+
     private:
         ComponentList component_list;
 
@@ -21,6 +24,7 @@ class Project
         string author;
         string copyright;
         uint   samplingRate;
+        uint   fps;
 
         @property componentList () { return component_list; }
 
@@ -40,6 +44,7 @@ class Project
             author = j["author"].str;
             copyright = j["copyright"].str;
             samplingRate = j["samplingRate"].uinteger.to!uint;
+            fps = j["fps"].uinteger.to!uint;
         }
 
         /+ JSON出力 +/
@@ -50,6 +55,7 @@ class Project
             j["author"]       = JSONValue(author);
             j["copyright"]    = JSONValue(copyright);
             j["samplingRate"] = JSONValue(samplingRate);
+            j["fps"]          = JSONValue( fps );
             return j;
         }
 
