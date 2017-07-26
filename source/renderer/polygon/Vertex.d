@@ -4,11 +4,19 @@
  + ------------------------------------------------------------ +
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
-module cafe.renderer.polygon.PolygonEffect;
+module cafe.renderer.polygon.Vertex;
+import cafe.renderer.polygon.Vector;
 
-/+ ポリゴン単体にかけられるポストエフェクトのインターフェース +/
-interface PolygonEffect
+/+ 頂点データ +/
+struct Vertex
 {
     public:
-        // TODO
+        Vector3D pos;
+        Vector2D uv;
+
+        this ( Vector3D p, Vector2D u )
+        {
+            pos = p;
+            uv  = u;
+        }
 }

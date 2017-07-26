@@ -10,8 +10,6 @@ import cafe.project.Project,
        cafe.gui.controls.MainFrame;
 import dlangui;
 
-mixin APP_ENTRY_POINT;
-
 class Cafe
 {
     static Cafe instance = null;
@@ -70,6 +68,7 @@ class Cafe
         }
 }
 
+mixin APP_ENTRY_POINT;
 extern(C) int UIAppMain(string[] args)
 {
     Cafe.instance = new Cafe( args );

@@ -19,3 +19,17 @@ struct Vector3D
 
         // TODO : ベクトルの算術演算子オーバーロード
 }
+
+/+ 2次元ベクトル +/
+struct Vector2D
+{
+    public:
+        float x, y;
+
+        this ( float x, float y )
+        {
+            this.x = x; this.y = y;
+        }
+
+        // TODO : ベクトルの算術演算子オーバーロード
+}
