@@ -162,6 +162,9 @@ class MainFrame : AppFrame
                         return projectRefresh;
                     case EditorActions.PreviewRefresh:
                         return preview.handleAction( a );
+                    case EditorActions.ObjectRefresh:
+                        tabs.propertyEditor.updateWidgets;
+                        return true;
                     case EditorActions.AddFrag:
                         return fragexp.handleAction( a );
 
