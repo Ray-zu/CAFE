@@ -29,6 +29,12 @@ class StartPanel : Dialog
             HorizontalLayout {
                 layoutWidth : FILL_PARENT;
                 HSpacer {}
+                Button { id:test; text:"test project"; fontSize:16; minWidth:300 }
+                HSpacer {}
+            }
+            HorizontalLayout {
+                layoutWidth : FILL_PARENT;
+                HSpacer {}
                 Button { id:create; text:ProjectNew; fontSize:16; minWidth:300 }
                 HSpacer {}
             }
@@ -53,6 +59,20 @@ class StartPanel : Dialog
             addChild( parseML(Layout) );
             childById( "header" ).text = MainFrame.AppText;
             childById( "releaseNote" ).text = import( "releaseNote.txt" );
+            childById( "test" ).click = delegate ( Widget w )
+            {
+                // TODO test
+                close( null );
+                auto p = new Project;
+                auto tl = p.componentList.root.timeline;
+                tl.length.value = 100;
+                import cafe.project.ObjectPlacingInfo;
+                import cafe.project.timeline.custom.NullObject;
+                tl += new NullObject( new ObjectPlacingInfo(new LayerId(0),
+                        new FramePeriod( tl.length, new FrameAt(0), new FrameLength(50) )) );
+                Cafe.instance.curProject = p;
+                return true;
+            };
             childById( "create" ).click = delegate ( Widget w )
             {
                 close( null );
