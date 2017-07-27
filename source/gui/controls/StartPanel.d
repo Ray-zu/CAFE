@@ -73,6 +73,7 @@ class ProjectCreationPanel : Dialog
     enum DlgFlag = DialogFlag.Popup;
     enum Layout = q{
         VerticalLayout {
+            minWidth : 400;
             TextWidget { id:error; textColor:0xff0000 }
             TableLayout {
                 layoutWidth:FILL_PARENT;

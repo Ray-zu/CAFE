@@ -5,10 +5,13 @@ themes/cafe_toolbar_host_background.9.png
 langs/en.ini
 icons/move_ahead.png
 icons/move_behind.png
+icons/new.png
+icons/open.png
 icons/pause.png
 icons/save.png
 icons/save_again.png
 icons/shift_ahead.png
 icons/shift_behind.png
 icons/play.png
+icons/quit.png
 icons/stop.png

@@ -7,12 +7,15 @@
 module cafe.project.timeline.effect.custom.Position;
 import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.effect.Effect,
+       cafe.project.timeline.property.LimitedProperty,
        cafe.renderer.World;
 import std.json;
 
 /+ ポリゴンの位置をずらすエフェクト +/
 class Position : Effect
 {
+    enum MaxPosition = 10000;
+
     mixin register!Position;
 
     public:
@@ -45,7 +48,9 @@ class Position : Effect
 
         override void initProperties ( FrameLength f )
         {
-            // TODO プロパティ追加
+            propertyList["X"] = new LimitedProperty!float( f, 0, MaxPosition, -MaxPosition );
+            propertyList["Y"] = new LimitedProperty!float( f, 0, MaxPosition, -MaxPosition );
+            propertyList["Z"] = new LimitedProperty!float( f, 0, MaxPosition, -MaxPosition );
         }
 
         override World apply ( World w )
