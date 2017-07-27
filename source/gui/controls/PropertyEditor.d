@@ -108,7 +108,7 @@ private class PropertyPanel : VerticalLayout
             l.layoutWidth = FILL_PARENT;
             l.addChild( new HSpacer );
             auto input = cast(EditWidgetBase)l.addChild( p.allowMultiline ?
-                    new EditLine( name ) : new EditBox( name ) );
+                    new EditBox( name ) : new EditLine( name ) );
             l.addChild( new HSpacer );
 
             input.minWidth = 200;
