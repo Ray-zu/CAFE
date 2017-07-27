@@ -6,6 +6,7 @@
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.PropertyEditor;
 import cafe.project.ObjectPlacingInfo,
+       cafe.project.Project,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.property.Property,
        cafe.project.timeline.property.PropertyList;
@@ -20,32 +21,33 @@ mixin( registerWidgets!PropertyEditor );
 class PropertyEditor : VerticalLayout
 {
     private:
-        PlaceableObject obj;
+        Project pro;
+        PlaceableObject cached_obj;
 
     public:
-        @property object () { return obj; }
-        @property object ( PlaceableObject o )
+        @property project () { return pro; }
+        @property project ( Project p )
         {
-            obj = o;
+            pro = p;
             updateWidgets;
         }
 
         this ( string id = "" )
         {
             super( id );
-
-            // TODO test
-            import cafe.project.timeline.custom.NullObject;
-            object = new NullObject( new ObjectPlacingInfo( new LayerId(0),
-                        new FramePeriod( new FrameLength(100), new FrameAt(0), new FrameLength(50) ) ) );
         }
 
         void updateWidgets ()
         {
-            removeAllChildren;
-            if ( object ) {
-                addChild( new GroupPanelFrame( object.propertyList, object.name ) );
-                object.effectList.effects.each!
+            if ( !project ) return;
+
+            auto upflag = cached_obj !is project.selectingObject;
+            cached_obj = project.selectingObject;
+
+            if ( upflag && cached_obj ) {
+                removeAllChildren;
+                addChild( new GroupPanelFrame( cached_obj.propertyList, cached_obj.name ) );
+                cached_obj.effectList.effects.each!
                     ( x => addChild( new GroupPanelFrame( x.propertyList, x.name ) ) );
             }
             invalidate;

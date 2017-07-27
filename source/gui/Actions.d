@@ -26,6 +26,7 @@ enum EditorActions : int
 
     ProjectRefresh,
     PreviewRefresh,
+    ObjectRefresh,
 
     AddFrag,
     AddFragDir,
@@ -48,6 +49,7 @@ const Action_ShiftAHead  = new Action( cast(int)EditorActions.ShiftAHead , "Shif
 
 const Action_ProjectRefresh = new Action( cast(int)EditorActions.ProjectRefresh, "ProjectRefresh" );
 const Action_PreviewRefresh = new Action( cast(int)EditorActions.PreviewRefresh, "PreviewRefresh" );
+const Action_ObjectRefresh  = new Action( cast(int)EditorActions.ObjectRefresh , "ObjectRefresh"  );
 
 const Action_AddFrag    = new Action( cast(int)EditorActions.AddFrag   , "AddFrag"    );
 const Action_AddFragDir = new Action( cast(int)EditorActions.AddFragDir, "AddFragDir" );
