@@ -32,11 +32,11 @@ enum EditorActions : int
     RemoveFrag
 }
 
-const Action_ProjectNew    = new Action( cast(int)EditorActions.ProjectNew   , "ProjectNew"    );
-const Action_ProjectOpen   = new Action( cast(int)EditorActions.ProjectOpen  , "ProjectOpen"   );
+const Action_ProjectNew    = new Action( cast(int)EditorActions.ProjectNew   , "ProjectNew"   , "new" );
+const Action_ProjectOpen   = new Action( cast(int)EditorActions.ProjectOpen  , "ProjectOpen"  , "open" );
 const Action_ProjectSave   = new Action( cast(int)EditorActions.ProjectSave  , "ProjectSave"  , "save" );
 const Action_ProjectSaveAs = new Action( cast(int)EditorActions.ProjectSaveAs, "ProjectSaveAs", "save_again" );
-const Action_ProjectClose  = new Action( cast(int)EditorActions.ProjectClose , "ProjectClose"  );
+const Action_ProjectClose  = new Action( cast(int)EditorActions.ProjectClose , "ProjectClose" , "quit" );
 
 const Action_Play        = new Action( cast(int)EditorActions.Play       , "Play"       , "play"         );
 const Action_Pause       = new Action( cast(int)EditorActions.Pause      , "Pause"      , "pause"        );
