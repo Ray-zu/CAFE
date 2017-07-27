@@ -45,6 +45,10 @@ class NullObject : PlaceableObject
         this ( ObjectPlacingInfo f )
         {
             super( f );
+
+            // TODO test
+            import cafe.project.timeline.effect.custom.Position;
+            effectList += new Position( f.frame.length );
         }
 
         this ( JSONValue j, FrameLength f )
