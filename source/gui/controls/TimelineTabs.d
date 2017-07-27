@@ -34,6 +34,14 @@ class TimelineTabs : TabWidget
             super.addTab( tlw, name.to!dstring, null, closeable );
         }
 
+    protected:
+        override void onTabChanged ( string n, string p )
+        {
+            project.componentList.selecting =
+                n in project.componentList.components ?
+                project.componentList[n] : null;
+        }
+
     public:
         @property project () { return pro; }
         @property project ( Project p )
@@ -49,11 +57,6 @@ class TimelineTabs : TabWidget
         this ( string id = "" )
         {
             super( id );
-        }
-
-        auto selectingComponent ()
-        {
-            return project.componentList[selectedTabId];
         }
 
         void clearAllTabs ()

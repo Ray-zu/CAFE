@@ -56,6 +56,7 @@ class MainFrame : AppFrame
         {
             auto p = Cafe.instance.curProject;
             timeline.project = p;
+            tabs.propertyEditor.project = p;
 
             if ( p ) {
             } else {
@@ -139,11 +140,6 @@ class MainFrame : AppFrame
         {
             super();
             statusLine.setStatusText( i18n.get( "Status_Boot" ) );
-        }
-
-        auto selectingComponent ()
-        {
-            return timeline.selectingComponent;
         }
 
         override void measure ( int w, int h )

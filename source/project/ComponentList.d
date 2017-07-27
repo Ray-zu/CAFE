@@ -23,6 +23,9 @@ class ComponentList
         Component[ComponentID] comps;
 
     public:
+        /+ 編集情報 +/
+        Component selecting = null;
+
         @property components () { return comps; }
 
         this ( ComponentList src )
