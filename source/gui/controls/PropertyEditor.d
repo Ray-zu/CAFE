@@ -72,6 +72,9 @@ private class GroupPanelFrame : VerticalLayout
         this ( PropertyList l, string title )
         {
             super();
+            margins = Rect( 5, 5, 5, 5 );
+            padding = Rect( 5, 5, 5, 5 );
+
             addChild( parseML(HeaderLayout) );
             panel = cast(PropertyPanel)addChild( new PropertyPanel( l ) );
 
