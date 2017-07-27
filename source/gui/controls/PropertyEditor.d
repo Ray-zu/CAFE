@@ -24,11 +24,6 @@ class PropertyEditor : VerticalLayout
         Project pro;
         PlaceableObject cached_obj;
 
-        @property selecting ()
-        {
-            return project.componentList.selecting.timeline.selecting;
-        }
-
     public:
         @property project () { return pro; }
         @property project ( Project p )
@@ -44,8 +39,10 @@ class PropertyEditor : VerticalLayout
 
         void updateWidgets ()
         {
-            auto upflag = cached_obj !is selecting;
-            cached_obj = selecting;
+            if ( !project ) return;
+
+            auto upflag = cached_obj !is project.selectingObject;
+            cached_obj = project.selectingObject;
 
             if ( upflag && cached_obj ) {
                 removeAllChildren;
