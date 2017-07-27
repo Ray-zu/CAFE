@@ -54,6 +54,8 @@ class NullObject : PlaceableObject
 
         override void initProperties ( FrameLength f )
         {
+            import cafe.project.timeline.property.Property;
+            propertyList["hoge"] = new PropertyBase!string( f, "hogera" );
         }
 
         override void apply ( RenderingInfo rinfo )

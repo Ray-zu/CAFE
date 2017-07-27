@@ -33,7 +33,11 @@ class PropertyEditor : VerticalLayout
         this ( string id = "" )
         {
             super( id );
-            object = null;
+
+            // TODO test
+            import cafe.project.timeline.custom.NullObject;
+            object = new NullObject( new ObjectPlacingInfo( new LayerId(0),
+                        new FramePeriod( new FrameLength(100), new FrameAt(0), new FrameLength(50) ) ) );
         }
 
         void updateWidgets ()
@@ -54,9 +58,10 @@ private class GroupPanelFrame : VerticalLayout
     enum HeaderLayout = q{
         HorizontalLayout {
             layoutWidth:FILL_PARENT;
-            TextWidget { id:header; styleId:PROPERTY_EDITOR_GROUP_HEADER }
             HSpacer {}
-            ImageButton { id:shrink; drawableId:move_behind }
+            TextWidget { id:header; styleId:PROPERTY_EDITOR_GROUP_HEADER; fontSize:16 }
+            HSpacer {}
+            ImageWidget { id:shrink; drawableId:move_behind; }
         }
     };
 
@@ -68,9 +73,18 @@ private class GroupPanelFrame : VerticalLayout
         {
             super();
             addChild( parseML(HeaderLayout) );
-            childById( "header" ).text = title.to!dstring;
-
             panel = cast(PropertyPanel)addChild( new PropertyPanel( l ) );
+
+            childById( "header" ).text = title.to!dstring;
+            childById( "shrink" ).mouseEvent = delegate ( Widget w, MouseEvent e )
+            {
+                if ( e.action == MouseAction.ButtonDown && e.button & MouseButton.Left ) {
+                    panel.visibility = panel.visibility == Visibility.Visible ?
+                        Visibility.Gone : Visibility.Visible;
+                    invalidate;
+                    return true;
+                } else return false;
+            };
         }
 }
 
@@ -86,8 +100,15 @@ private class PropertyPanel : VerticalLayout
             auto frame = new FrameAt(0);
 
             addChild( new TextWidget( "", name.to!dstring ) );
-            auto input = cast(EditWidgetBase)addChild( p.allowMultiline ?
+
+            auto l = addChild( new HorizontalLayout );
+            l.layoutWidth = FILL_PARENT;
+            l.addChild( new HSpacer );
+            auto input = cast(EditWidgetBase)l.addChild( p.allowMultiline ?
                     new EditLine( name ) : new EditBox( name ) );
+            l.addChild( new HSpacer );
+
+            input.minWidth = 200;
             input.text = p.getString( frame ).to!dstring;
             input.contentChange = delegate ( EditableContent e )
             {
