@@ -45,6 +45,10 @@ class NullObject : PlaceableObject
         this ( ObjectPlacingInfo f )
         {
             super( f );
+
+            // TODO test
+            import cafe.project.timeline.effect.custom.Position;
+            effectList += new Position( f.frame.length );
         }
 
         this ( JSONValue j, FrameLength f )
@@ -54,6 +58,8 @@ class NullObject : PlaceableObject
 
         override void initProperties ( FrameLength f )
         {
+            import cafe.project.timeline.property.Property;
+            propertyList["hoge"] = new PropertyBase!string( f, "hogera" );
         }
 
         override void apply ( RenderingInfo rinfo )
