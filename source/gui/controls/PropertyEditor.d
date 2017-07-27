@@ -21,16 +21,30 @@ class PropertyEditor : VerticalLayout
 {
     private:
         PlaceableObject obj;
-        GroupPanelFrame[] panels;
 
     public:
-        @property curFrame ( FrameAt f ) { panels.each!( x => x.curFrame = f ); }
+        @property object () { return obj; }
+        @property object ( PlaceableObject o )
+        {
+            obj = o;
+            updateWidgets;
+        }
 
         this ( string id = "" )
         {
             super( id );
-            obj = null;
-            panels = [];
+            object = null;
+        }
+
+        void updateWidgets ()
+        {
+            removeAllChildren;
+            if ( object ) {
+                addChild( new GroupPanelFrame( object.propertyList, object.name ) );
+                object.effectList.effects.each!
+                    ( x => addChild( new GroupPanelFrame( x.propertyList, x.name ) ) );
+            }
+            invalidate;
         }
 }
 
@@ -50,15 +64,13 @@ private class GroupPanelFrame : VerticalLayout
         PropertyPanel panel;
 
     public:
-        @property curFrame ( FrameAt f ) { panel.frame = f; }
-
-        this ( PropertyList l, string title, FrameAt f )
+        this ( PropertyList l, string title )
         {
             super();
             addChild( parseML(HeaderLayout) );
             childById( "header" ).text = title.to!dstring;
 
-            panel = cast(PropertyPanel)addChild( new PropertyPanel( l, f ) );
+            panel = cast(PropertyPanel)addChild( new PropertyPanel( l ) );
         }
 }
 
@@ -70,6 +82,9 @@ private class PropertyPanel : VerticalLayout
 
         void addProperty ( Property p, string name )
         {
+            // TODO test
+            auto frame = new FrameAt(0);
+
             addChild( new TextWidget( "", name.to!dstring ) );
             auto input = cast(EditWidgetBase)addChild( p.allowMultiline ?
                     new EditLine( name ) : new EditBox( name ) );
@@ -81,13 +96,10 @@ private class PropertyPanel : VerticalLayout
         }
 
     public:
-        FrameAt frame;
-
-        this ( PropertyList p, FrameAt f )
+        this ( PropertyList p )
         {
             super();
             props = p;
-            frame = f;
             updateWidgets;
         }
 
