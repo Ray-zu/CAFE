@@ -141,6 +141,11 @@ class MainFrame : AppFrame
             statusLine.setStatusText( i18n.get( "Status_Boot" ) );
         }
 
+        auto selectingComponent ()
+        {
+            return timeline.selectingComponent;
+        }
+
         override void measure ( int w, int h )
         {
             preview.minHeight  = layout_info.preview_height;

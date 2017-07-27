@@ -51,6 +51,11 @@ class TimelineTabs : TabWidget
             super( id );
         }
 
+        auto selectingComponent ()
+        {
+            return project.componentList[selectedTabId];
+        }
+
         void clearAllTabs ()
         {
             TabItem t;
