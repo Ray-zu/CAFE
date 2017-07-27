@@ -13,7 +13,9 @@
     },
     "stringImportPaths": [
         "./views",
-        "./views/themes"
+        "./views/themes",
+        "./views/langs",
+        "./views/icons"
     ],
 
     "description": "Creator's Advanced Film Editor",

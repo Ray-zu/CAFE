@@ -18,11 +18,14 @@ debug = 0;
 /+ デバッグ用の何もしないオブジェクト +/
 class NullObject : PlaceableObject
 {
+    mixin register!NullObject;
     public:
-        override @property string type ()
+        static @property type ()
         {
             return "NullObject";
         }
+        override @property string typeStr () { return type; }
+        // static の override ができない！
 
         override @property string name ()
         {
@@ -42,6 +45,10 @@ class NullObject : PlaceableObject
         this ( ObjectPlacingInfo f )
         {
             super( f );
+
+            // TODO test
+            import cafe.project.timeline.effect.custom.Position;
+            effectList += new Position( f.frame.length );
         }
 
         this ( JSONValue j, FrameLength f )
@@ -51,6 +58,8 @@ class NullObject : PlaceableObject
 
         override void initProperties ( FrameLength f )
         {
+            import cafe.project.timeline.property.Property;
+            propertyList["hoge"] = new PropertyBase!string( f, "hogera" );
         }
 
         override void apply ( RenderingInfo rinfo )

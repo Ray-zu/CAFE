@@ -164,7 +164,7 @@
         backgroundImageId="main_menu_item_background_dark"
         />
     <style id="MENU_ITEM"
-        backgroundImageId="menu_item_background_dark"
+        backgroundImageId="cafe_menu_item_background"
         >
     </style>
     <style id="MENU_ICON"
@@ -241,7 +241,7 @@
         />
 
     <style id="TOOLBAR_HOST"
-        backgroundImageId="toolbar_host_background_dark"
+        backgroundImageId="cafe_toolbar_host_background"
         />
     <style id="TOOLTIP"
         backgroundImageId="tooltip_background_dark"
@@ -297,6 +297,14 @@
         align="Left|VCenter"
 	textColor="#504840"
         padding="1pt,1pt,1pt,1pt">
+    </style>
+
+    <style id="PREVIEW_PLAYER"
+        backgroundColor="#00111111">
+    </style>
+
+    <style id="FRAGS_EXPLORER"
+        backgroundColor="#00222222">
     </style>
     
 
