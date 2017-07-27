@@ -29,17 +29,20 @@ class TimelineTabs : TabWidget
 
         void addTab ( string name, Component com, bool closeable = true )
         {
-            auto tlw = new TimelineWidget;
+            auto tlw = new TimelineWidget( name );
             tlw.editor.timeline = com ? com.timeline : null;
             super.addTab( tlw, name.to!dstring, null, closeable );
+            selectTab = name;
         }
 
     protected:
         override void onTabChanged ( string n, string p )
         {
+            if ( !project ) return;
             project.componentList.selecting =
                 n in project.componentList.components ?
                 project.componentList[n] : null;
+            Log.i( n );
         }
 
     public:
@@ -49,7 +52,7 @@ class TimelineTabs : TabWidget
             pro = p;
             clearAllTabs;
             if ( project )
-                addTab( "root", project.componentList.root, false );
+                addTab( "ROOT", project.componentList.root, false );
             else
                 addTab( "no project", null, false );
         }
