@@ -21,7 +21,12 @@ class Timeline
         PlaceableObject[] objs;
         FrameLength frame_len;
 
+        /+ 編集情報 +/
+        FrameAt current_frame;
     public:
+        PlaceableObject selecting = null;
+        @property frame () { return current_frame; }
+
         @property objects () { return objs;      }
         @property length  () { return frame_len; }
 
@@ -29,12 +34,14 @@ class Timeline
         {
             src.objects.each!( x => objs ~= x.copy );
             frame_len = new FrameLength( src.length );
+            current_frame = new FrameAt( src.frame );
         }
 
         this ( FrameLength f = new FrameLength(1) )
         {
             objs = [];
             frame_len = f;
+            current_frame = new FrameAt(0);
         }
 
         this ( JSONValue j )
@@ -42,6 +49,7 @@ class Timeline
             frame_len = new FrameLength( j["length"].uinteger.to!uint );
             j["objects"].array.each!
                 ( x => objs ~= PlaceableObject.create( x, frame_len ) );
+            current_frame = new FrameAt( j["frame"].uinteger.to!uint );
         }
 
         /+ オブジェクトの配置されている最大のレイヤ数を返す +/
@@ -120,6 +128,7 @@ class Timeline
             objects.each!( x => objs ~= x.json );
             j["objects"] = JSONValue( objs );
 
+            j["frame"] = JSONValue( frame.value );
             return j;
         }
 
