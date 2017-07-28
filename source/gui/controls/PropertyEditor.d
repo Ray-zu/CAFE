@@ -71,8 +71,9 @@ private class GroupPanelFrame : VerticalLayout
     enum HeaderLayout = q{
         HorizontalLayout {
             layoutWidth:FILL_PARENT;
+            styleId:PROPERTY_EDITOR_GROUP_HEADER; 
             HSpacer {}
-            TextWidget { id:header; styleId:PROPERTY_EDITOR_GROUP_HEADER; fontSize:16 }
+            TextWidget { id:header; fontSize:16 }
             HSpacer {}
             ImageWidget { id:shrink; drawableId:move_behind; }
         }

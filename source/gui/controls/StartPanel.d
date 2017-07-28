@@ -70,6 +70,7 @@ class StartPanel : Dialog
                 import cafe.project.timeline.custom.NullObject;
                 tl += new NullObject( new ObjectPlacingInfo(new LayerId(0),
                         new FramePeriod( tl.length, new FrameAt(0), new FrameLength(50) )) );
+                p.componentList.root.timeline.selecting = tl.objects[0];
                 Cafe.instance.curProject = p;
                 return true;
             };

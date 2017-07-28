@@ -63,6 +63,7 @@ class MainFrame : AppFrame
                 new StartPanel( window );
             }
             handleAction( Action_PreviewRefresh );
+            handleAction( Action_ObjectRefresh  );
             return true;
         }
 
