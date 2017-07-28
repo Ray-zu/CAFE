@@ -30,7 +30,7 @@ class TimelineTabs : TabWidget
         void addTab ( string name, Component com, bool closeable = true )
         {
             auto tlw = new TimelineWidget( name );
-            tlw.editor.timeline = com ? com.timeline : null;
+            // TODO tlw.editor.timeline = com ? com.timeline : null;
             super.addTab( tlw, name.to!dstring, null, closeable );
             selectTab = name;
         }
