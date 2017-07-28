@@ -22,7 +22,9 @@ class PropertyEditor : VerticalLayout
 {
     private:
         Project pro;
-        PlaceableObject cached_obj;
+
+        PlaceableObject cached_obj = null;
+        uint cached_frame = 0;
 
     public:
         @property project () { return pro; }
@@ -44,13 +46,22 @@ class PropertyEditor : VerticalLayout
             auto upflag = cached_obj !is project.selectingObject;
             cached_obj = project.selectingObject;
 
-            if ( upflag && cached_obj ) {
-                removeAllChildren;
-                addChild( new GroupPanelFrame( cached_obj.propertyList, cached_obj.name ) );
-                cached_obj.effectList.effects.each!
-                    ( x => addChild( new GroupPanelFrame( x.propertyList, x.name ) ) );
+            if ( cached_obj ) {
+                auto f = project.componentList.selecting.timeline.frame.value -
+                    cached_obj.place.frame.start.value;
+                f = max( cached_obj.place.frame.end.value-1, min( 0, f ) );
+                upflag = upflag || f == cached_frame;
+                cached_frame = f;
+
+                if ( upflag ) {
+                    auto fat = new FrameAt( f );
+                    removeAllChildren;
+                    addChild( new GroupPanelFrame( cached_obj.propertyList, cached_obj.name, fat ) );
+                    cached_obj.effectList.effects.each!
+                        ( x => addChild( new GroupPanelFrame( x.propertyList, x.name, fat ) ) );
+                    invalidate;
+                }
             }
-            invalidate;
         }
 }
 
@@ -71,14 +82,14 @@ private class GroupPanelFrame : VerticalLayout
         PropertyPanel panel;
 
     public:
-        this ( PropertyList l, string title )
+        this ( PropertyList l, string title, FrameAt f )
         {
             super();
             margins = Rect( 5, 5, 5, 5 );
             padding = Rect( 5, 5, 5, 5 );
 
             addChild( parseML(HeaderLayout) );
-            panel = cast(PropertyPanel)addChild( new PropertyPanel( l ) );
+            panel = cast(PropertyPanel)addChild( new PropertyPanel( l, f ) );
 
             childById( "header" ).text = title.to!dstring;
             childById( "shrink" ).mouseEvent = delegate ( Widget w, MouseEvent e )
@@ -98,12 +109,10 @@ private class PropertyPanel : VerticalLayout
 {
     private:
         PropertyList props;
+        FrameAt frame;
 
         void addProperty ( Property p, string name )
         {
-            // TODO test
-            auto frame = new FrameAt(0);
-
             addChild( new TextWidget( "", name.to!dstring ) );
 
             auto l = addChild( new HorizontalLayout );
@@ -122,10 +131,11 @@ private class PropertyPanel : VerticalLayout
         }
 
     public:
-        this ( PropertyList p )
+        this ( PropertyList p, FrameAt f )
         {
             super();
             props = p;
+            frame = f;
             updateWidgets;
         }
 
