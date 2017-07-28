@@ -42,7 +42,6 @@ class TimelineTabs : TabWidget
             project.componentList.selecting =
                 n in project.componentList.components ?
                 project.componentList[n] : null;
-            Log.i( n );
         }
 
     public:
