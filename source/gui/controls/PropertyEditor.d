@@ -60,9 +60,9 @@ class PropertyEditor : VerticalLayout
                     addChild( new GroupPanelFrame( cached_obj.propertyList, cached_obj.name, fat ) );
                     cached_obj.effectList.effects.each!
                         ( x => addChild( new GroupPanelFrame( x.propertyList, x.name, fat ) ) );
-                    invalidate;
                 }
-            }
+            } else removeAllChildren;
+            invalidate;
         }
 }
 
