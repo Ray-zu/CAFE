@@ -36,13 +36,11 @@ class TimelineEditor
         }
 
         Timeline tl;
-        uint     cur_frame;
 
         Operation op_type;
         int       op_offset_frame;
         int       op_offset_layer;
 
-        PlaceableObject selecting;
         PlaceableObject operating;
 
         Property selecting_prop;
@@ -60,7 +58,6 @@ class TimelineEditor
             operating_prop = null;
             op_mp_index = 0;
         }
-
 
         /+ プロパティラインの数 +/
         auto propertyLineLength ()
@@ -165,10 +162,10 @@ class TimelineEditor
         /+ タイムラインのプロパティラインがクリックされた時に呼ばれる +/
         auto onPropertyLineLeftDown ( uint f, uint l )
         {
-            if ( selectedObject.place.frame.isInRange( new FrameAt(f) ) ) {
-                operating_prop = selectedObject.propertyList.properties.values[l];
+            if ( selecting.place.frame.isInRange( new FrameAt(f) ) ) {
+                operating_prop = selecting.propertyList.properties.values[l];
                 op_mp_index = delegate () {
-                    auto f  = new FrameAt( f - selectedObject.place.frame.start.value );
+                    auto f  = new FrameAt( f - selecting.place.frame.start.value );
                     auto mp = operating_prop.middlePointAtFrame( new FrameAt(f) );
                     return operating_prop.middlePoints.countUntil!( x => x is mp ).to!uint;
                 } ();
@@ -185,13 +182,27 @@ class TimelineEditor
                 clearOperationState;
             this.tl = tl;
         }
-        @property currentFrame () { return cur_frame; }
+
+        @property currentFrame ()
+        {
+            return timeline ? timeline.frame.value : 0;
+        }
         @property currentFrame ( uint f )
         {
-            cur_frame = min( f, timeline.length.value-1 );
+            if ( timeline )
+                timeline.frame.value = min( f, timeline.length.value-1 );
         }
 
-        @property selectedObject () { return selecting; }
+        @property selecting ()
+        {
+            return timeline ? timeline.selecting : null;
+        }
+        @property selecting ( PlaceableObject o )
+        {
+            if ( timeline )
+                timeline.selecting = o;
+        }
+
         @property operatedObject () { return operating; }
 
         @property operatedProperty () { return operating_prop; }
@@ -269,7 +280,7 @@ class TimelineEditor
                     default:
                 }
             } else if ( operating_prop ) {
-                auto relative_f = f.to!int - selectedObject.place.frame.start.value;
+                auto relative_f = f.to!int - selecting.place.frame.start.value;
                 switch ( op_type ) {
                     case Operation.Move:
                         operating_prop.moveMP( relative_f, op_mp_index.to!int );

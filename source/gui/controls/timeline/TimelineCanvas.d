@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.TimelineCanvas;
-import cafe.gui.controls.timeline.TimelineEditor,
+import cafe.gui.Action,
+       cafe.gui.controls.timeline.TimelineEditor,
        cafe.gui.controls.timeline.Line,
        cafe.gui.controls.timeline.PropertyGraph,
        cafe.gui.utils.Font,
@@ -57,7 +58,7 @@ class TimelineCanvas : Widget
         PropertyGraph graph;
 
         uint header_width;
-        uint  base_line_height;
+        uint base_line_height;
 
         /+ 一番上のラインが上部に隠れているサイズ +/
         auto topHiddenPx ()
@@ -110,7 +111,7 @@ class TimelineCanvas : Widget
         /+ Timelineとプロパティを同期 +/
         void updateProperties ()
         {
-            auto sel = tl_editor.selectedObject;
+            auto sel = tl_editor.selecting;
 
             auto max_layer = tl_editor.timeline.
                 layerLength.value + LayerRemnant;
@@ -191,7 +192,7 @@ class TimelineCanvas : Widget
             /+ プロパティレクトの描画 +/
             void drawPropertyRect ( uint f, bool line )
             {
-                f += tl_editor.selectedObject.place.frame.start.value;
+                f += tl_editor.selecting.place.frame.start.value;
                 enum prs = PropertyRectSize/2;
                 auto rx = frameToX(f);
                 auto ry = y + height/2;
@@ -214,7 +215,7 @@ class TimelineCanvas : Widget
                     auto line  = l.property is graph.property;
                     if ( line ) {
                         // グラフの描画
-                        auto abs_st = tl_editor.selectedObject.place.frame.start.value;
+                        auto abs_st = tl_editor.selecting.place.frame.start.value;
                         auto st = frameToX( graph.startFrame + abs_st );
                         auto ed = frameToX( graph.startFrame + graph.frameLength + abs_st );
                         graph.drawArea = Rect( st, y, ed, y + height );
@@ -369,6 +370,8 @@ class TimelineCanvas : Widget
             object.destroy( body_buf );
 
             drawBars( b );
+
+            window.mainWidget.handleAction( Action_ObjectRefresh );
         }
 
         private auto onMouseEvent ( Widget w, MouseEvent e )
