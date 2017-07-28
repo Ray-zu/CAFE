@@ -37,6 +37,7 @@ class PropertyEditor : VerticalLayout
         this ( string id = "" )
         {
             super( id );
+            styleId = "PROPERTY_EDITOR";
         }
 
         void updateWidgets ()
@@ -71,7 +72,7 @@ private class GroupPanelFrame : VerticalLayout
     enum HeaderLayout = q{
         HorizontalLayout {
             layoutWidth:FILL_PARENT;
-            styleId:PROPERTY_EDITOR_GROUP_HEADER; 
+            styleId:PROPERTY_EDITOR_GROUP_HEADER;
             HSpacer {}
             TextWidget { id:header; fontSize:16 }
             HSpacer {}
@@ -124,6 +125,7 @@ private class PropertyPanel : VerticalLayout
             l.addChild( new HSpacer );
 
             input.minWidth = 200;
+            input.styleId  = "PROPERTY_EDITOR_INPUT";
             input.text = p.getString( frame ).to!dstring;
             input.contentChange = delegate ( EditableContent e )
             {
