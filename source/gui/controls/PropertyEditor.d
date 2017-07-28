@@ -124,8 +124,14 @@ private class PropertyPanel : VerticalLayout
                     new EditBox( name ) : new EditLine( name ) );
             l.addChild( new HSpacer );
 
-            input.minWidth = 200;
             input.styleId  = "PROPERTY_EDITOR_INPUT";
+            input.minWidth = 200;
+            if ( p.allowMultiline )
+                input.minHeight = 100;
+            else {
+                input.padding = Rect( 2,2,2,2 );
+            }
+
             input.text = p.getString( frame ).to!dstring;
             input.contentChange = delegate ( EditableContent e )
             {
