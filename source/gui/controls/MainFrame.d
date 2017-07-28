@@ -56,12 +56,14 @@ class MainFrame : AppFrame
         {
             auto p = Cafe.instance.curProject;
             timeline.project = p;
+            tabs.propertyEditor.project = p;
 
             if ( p ) {
             } else {
                 new StartPanel( window );
             }
             handleAction( Action_PreviewRefresh );
+            handleAction( Action_ObjectRefresh  );
             return true;
         }
 
@@ -161,6 +163,9 @@ class MainFrame : AppFrame
                         return projectRefresh;
                     case EditorActions.PreviewRefresh:
                         return preview.handleAction( a );
+                    case EditorActions.ObjectRefresh:
+                        tabs.propertyEditor.updateWidgets;
+                        return true;
                     case EditorActions.AddFrag:
                         return fragexp.handleAction( a );
 

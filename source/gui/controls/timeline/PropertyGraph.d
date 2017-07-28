@@ -109,7 +109,6 @@ class PropertyGraph
         {
             auto f = xToFrame(x);
             auto v = yToValue(y);
-            Log.d( f.to!string );
             prop.setFloat( new FrameAt(f), v );
             return true;
         }

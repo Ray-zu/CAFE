@@ -306,6 +306,18 @@
     <style id="FRAGS_EXPLORER"
         backgroundColor="#00222222">
     </style>
+
+    <style id="PROPERTY_EDITOR"
+        backgroundColor="#00222222">
+    </style>
+
+    <style id="PROPERTY_EDITOR_GROUP_HEADER"
+        backgroundColor="#00333333">
+    </style>
+
+    <style id="PROPERTY_EDITOR_INPUT"
+        backgroundColor="#00444444">
+    </style>
     
 
 </theme>
