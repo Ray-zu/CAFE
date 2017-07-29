@@ -36,16 +36,19 @@ class TimelineGrid : CanvasWidget
             if ( !cache.timeline ) return;
 
             auto x     = pos.left.to!float;
-            auto frame = cache.timeline.leftFrame*1.0;
+            auto frame = cache.timeline.leftFrame.to!float;
+            auto count = (frame/cache.framePerGrid).to!int;
 
             while ( x < pos.right ) {
                 auto h = 15;
-                frame += cache.framePerGrid;
-                if ( frame.to!int%5 == 0 ) h = 20;
+                if ( count.to!int%5 == 0 ) h = 20;
 
                 b.drawLine( Point( x.to!int, pos.bottom - h ),
                         Point( x.to!int, pos.bottom ), textColor );
+
                 x += cache.gridInterval;
+                frame += cache.framePerGrid;
+                count++;
             }
         }
 }
