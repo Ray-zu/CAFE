@@ -38,10 +38,12 @@ class TimelineWidget : VerticalLayout
         ScrollBar vscroll;
         TimelineGrid grid;
 
-        auto scrolled ( AbstractSlider, ScrollEvent e )
+        auto hscrolled ( AbstractSlider, ScrollEvent e )
         {
-            cache.timeline.hscroll = hscroll.position;
-            cache.timeline.vscroll = vscroll.position;
+            if ( !cache.timeline ) return false;
+
+            cache.timeline.leftFrame  = hscroll.position;
+            cache.timeline.rightFrame = cache.timeline.leftFrame + hscroll.pageSize;
             cache.updateGridCache( grid.pos );
             grid.invalidate;
             return true;
@@ -63,8 +65,7 @@ class TimelineWidget : VerticalLayout
             vscroll = cast(ScrollBar)childById( "vscroll" );
             grid = cast(TimelineGrid)childById( "grid" );
 
-            hscroll.scrollEvent = &scrolled;
-            vscroll.scrollEvent = &scrolled;
+            hscroll.scrollEvent = &hscrolled;
 
             grid.setCache( cache );
         }
