@@ -25,6 +25,10 @@ class Timeline
         FrameAt current_frame;
     public:
         PlaceableObject selecting = null;
+        uint hscroll = 0;
+        uint vscroll = 0;
+        uint leftFrame  = 0;
+        uint rightFrame = 0;
         @property frame () { return current_frame; }
 
         @property objects () { return objs;      }
@@ -50,6 +54,10 @@ class Timeline
             j["objects"].array.each!
                 ( x => objs ~= PlaceableObject.create( x, frame_len ) );
             current_frame = new FrameAt( j["frame"].uinteger.to!uint );
+            hscroll = j["hscroll"].uinteger.to!uint;
+            vscroll = j["vscroll"].uinteger.to!uint;
+            leftFrame  = j["leftFrame" ].uinteger.to!uint;
+            rightFrame = j["rightFrame"].uinteger.to!uint;
         }
 
         /+ オブジェクトの配置されている最大のレイヤ数を返す +/
@@ -129,6 +137,10 @@ class Timeline
             j["objects"] = JSONValue( objs );
 
             j["frame"] = JSONValue( frame.value );
+            j["hscroll"] = JSONValue( hscroll );
+            j["vscroll"] = JSONValue( vscroll );
+            j["leftFrame" ] = JSONValue( leftFrame  );
+            j["rightFrame"] = JSONValue( rightFrame );
             return j;
         }
 

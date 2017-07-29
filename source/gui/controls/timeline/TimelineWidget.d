@@ -5,10 +5,10 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.TimelineWidget;
-import dlangui,
-       dlangui.widgets.metadata;
-
-mixin( registerWidgets!TimelineWidget );
+import cafe.project.Project,
+       cafe.project.timeline.Timeline,
+       cafe.gui.controls.timeline.Cache;
+import dlangui;
 
 /+ タイムラインウィジェット +/
 class TimelineWidget : VerticalLayout
@@ -28,21 +28,36 @@ class TimelineWidget : VerticalLayout
     };
 
     private:
+        Cache cache;
+
         ScrollBar hscroll;
         ScrollBar vscroll;
 
+        auto scrolled ( AbstractSlider, ScrollEvent e )
+        {
+            cache.timeline.hscroll = hscroll.position;
+            cache.timeline.vscroll = vscroll.position;
+            invalidate;
+            return true;
+        }
+
     public:
-        this ( string id = "" )
+        this ( string id, Project p, Timeline t )
         {
             super( id );
             layoutWidth  = FILL_PARENT;
             layoutHeight = FILL_PARENT;
+
+            cache = new Cache( p, t );
 
             addChild( parseML( HScrollLayout ) );
             addChild( parseML( MainLayout ) );
 
             hscroll   = cast(ScrollBar)childById( "hscroll" );
             vscroll   = cast(ScrollBar)childById( "vscroll" );
+
+            hscroll.scrollEvent = &scrolled;
+            vscroll.scrollEvent = &scrolled;
         }
 
         override void measure ( int w, int h )
