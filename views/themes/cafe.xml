@@ -318,6 +318,10 @@
     <style id="PROPERTY_EDITOR_INPUT"
         backgroundColor="#00444444">
     </style>
-    
+
+    <style id="TIMELINE_GRID"
+        backgroundColor="#00444444"
+        textColor="#00999999">
+    </style>
 
 </theme>

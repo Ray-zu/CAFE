@@ -21,6 +21,7 @@ class TimelineGrid : CanvasWidget
         this ( string id = "" )
         {
             super( id );
+            styleId = "TIMELINE_GRID";
         }
 
         auto setCache ( Cache c )
