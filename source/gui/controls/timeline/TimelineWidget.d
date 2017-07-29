@@ -7,7 +7,8 @@
 module cafe.gui.controls.timeline.TimelineWidget;
 import cafe.project.Project,
        cafe.project.timeline.Timeline,
-       cafe.gui.controls.timeline.Cache;
+       cafe.gui.controls.timeline.Cache,
+       cafe.gui.controls.timeline.Grid;
 import dlangui;
 
 /+ タイムラインウィジェット +/
@@ -22,7 +23,10 @@ class TimelineWidget : VerticalLayout
     enum MainLayout = q{
         HorizontalLayout {
             layoutWidth:FILL_PARENT;
-            HSpacer { id:canvas }
+            VerticalLayout {
+                TimelineGrid { id:grid }
+                HSpacer { id:canvas }
+            }
             ScrollBar { id:vscroll; orientation:Vertical }
         }
     };
@@ -32,12 +36,14 @@ class TimelineWidget : VerticalLayout
 
         ScrollBar hscroll;
         ScrollBar vscroll;
+        TimelineGrid grid;
 
         auto scrolled ( AbstractSlider, ScrollEvent e )
         {
             cache.timeline.hscroll = hscroll.position;
             cache.timeline.vscroll = vscroll.position;
-            invalidate;
+            cache.updateGridCache( grid.pos );
+            grid.invalidate;
             return true;
         }
 
@@ -53,16 +59,23 @@ class TimelineWidget : VerticalLayout
             addChild( parseML( HScrollLayout ) );
             addChild( parseML( MainLayout ) );
 
-            hscroll   = cast(ScrollBar)childById( "hscroll" );
-            vscroll   = cast(ScrollBar)childById( "vscroll" );
+            hscroll = cast(ScrollBar)childById( "hscroll" );
+            vscroll = cast(ScrollBar)childById( "vscroll" );
+            grid = cast(TimelineGrid)childById( "grid" );
 
             hscroll.scrollEvent = &scrolled;
             vscroll.scrollEvent = &scrolled;
+
+            grid.setCache( cache );
         }
 
         override void measure ( int w, int h )
         {
+            grid.minHeight = 50;
+            grid.minWidth  = w;
             childById("canvas").minHeight = h;
+
             super.measure( w, h );
+            cache.updateGridCache( grid.pos );
         }
 }

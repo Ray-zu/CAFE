@@ -28,7 +28,7 @@ class Timeline
         uint hscroll = 0;
         uint vscroll = 0;
         uint leftFrame  = 0;
-        uint rightFrame = 0;
+        uint rightFrame = 100;
         @property frame () { return current_frame; }
 
         @property objects () { return objs;      }

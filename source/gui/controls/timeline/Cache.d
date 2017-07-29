@@ -36,6 +36,8 @@ class Cache
         /+ グリッド関連のキャッシュを更新 +/
         void updateGridCache ( Rect r )
         {
+            if ( !timeline ) return;
+
             auto left  = timeline.leftFrame;
             auto right = timeline.rightFrame;
 
