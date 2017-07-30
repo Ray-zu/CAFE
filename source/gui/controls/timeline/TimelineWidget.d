@@ -78,6 +78,8 @@ class TimelineWidget : VerticalLayout
             hscrolled;
             grid  .setCache( cache );
             canvas.setCache( cache );
+
+            cache.updateLinesCache;
         }
 
         override void invalidate ()

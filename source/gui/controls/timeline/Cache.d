@@ -39,6 +39,7 @@ class Cache
         {
             pro = p;
             tl  = t;
+            lines_cache = [];
         }
 
         /+ グリッド関連のキャッシュを更新 +/
