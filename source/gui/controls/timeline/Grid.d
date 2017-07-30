@@ -6,6 +6,7 @@
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.Grid;
 import cafe.gui.Action,
+       cafe.gui.utils.Font,
        cafe.gui.controls.timeline.Cache;
 import dlangui,
        dlangui.widgets.metadata;
@@ -52,8 +53,9 @@ class TimelineGrid : CanvasWidget
                 auto x = (vframe*ppf).to!int + pos.left;
 
                 auto h = 15;
-                if ( (f/unit)%5 == 0 ){
+                if ( (f/unit)%5 == 0 ) {
                     h = 20;
+                    font.drawCenteredText(b, x, pos.top+10, f.to!string, textColor );
                 }
                 b.drawLine( Point( x, pos.bottom - h ),
                         Point( x, pos.bottom ), textColor );
