@@ -34,22 +34,25 @@ class TimelineGrid : CanvasWidget
         override void onDraw ( DrawBuf b )
         {
             super.onDraw( b );
-            if ( !cache.timeline ) return;
+            if ( !cache.timeline || pos.width < 0 ) return;
 
-            auto x     = pos.left.to!float;
-            auto frame = cache.timeline.leftFrame.to!float;
-            auto count = (frame/cache.framePerGrid).to!int;
+            auto left  = cache.timeline.leftFrame;
+            auto right = cache.timeline.rightFrame;
+            auto unit  = cache.framePerGrid;
+            auto ppf   = cache.pxPerFrame;
 
-            while ( x < pos.right ) {
+            foreach ( f; left .. right ) {
+                if ( f%unit != 0 ) continue;
+
+                auto vframe = f - left;
+                auto x = (vframe*ppf).to!int + pos.left;
+
                 auto h = 15;
-                if ( count.to!int%5 == 0 ) h = 20;
-
-                b.drawLine( Point( x.to!int, pos.bottom - h ),
-                        Point( x.to!int, pos.bottom ), textColor );
-
-                x += cache.gridInterval;
-                frame += cache.framePerGrid;
-                count++;
+                if ( (f/unit)%5 == 0 ){
+                    h = 20;
+                }
+                b.drawLine( Point( x, pos.bottom - h ),
+                       Point( x, pos.bottom ), textColor );
             }
         }
 }

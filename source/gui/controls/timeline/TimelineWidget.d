@@ -43,14 +43,13 @@ class TimelineWidget : VerticalLayout
         ScrollBar vscroll;
         TimelineGrid grid;
 
-        auto hscrolled ( AbstractSlider, ScrollEvent e )
+        auto hscrolled ( AbstractSlider = null, ScrollEvent e = null )
         {
             if ( !cache.timeline ) return false;
 
             cache.timeline.leftFrame  = hscroll.position;
             cache.timeline.rightFrame = cache.timeline.leftFrame + hscroll.pageSize;
-            cache.updateGridCache( grid.pos );
-            grid.invalidate;
+            invalidate;
             return true;
         }
 
@@ -72,7 +71,15 @@ class TimelineWidget : VerticalLayout
 
             hscroll.scrollEvent = &hscrolled;
 
+            hscrolled;
             grid.setCache( cache );
+        }
+
+        override void invalidate ()
+        {
+            super.invalidate;
+            cache.updateGridCache( grid.pos );
+            grid.invalidate;
         }
 
         override void measure ( int w, int h )
