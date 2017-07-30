@@ -17,12 +17,15 @@ class TimelineGrid : CanvasWidget
 {
     private:
         Cache cache = null;
+        bool  dragging = false;
 
     public:
         this ( string id = "" )
         {
             super( id );
             styleId = "TIMELINE_GRID";
+            trackHover = true;
+            clickable  = true;
         }
 
         auto setCache ( Cache c )
@@ -59,32 +62,37 @@ class TimelineGrid : CanvasWidget
 
         override bool onMouseEvent ( MouseEvent e )
         {
-            auto drag ()
+            auto left ()
             {
-                auto rx = e.x - pos.left;
-                auto f  = (rx/cache.pxPerFrame).to!uint;
+                switch ( e.action ) with ( MouseAction ) {
+                    case ButtonDown:
+                        dragging = true;
+                        break;
+                    case ButtonUp:
+                        dragging = false;
+                        break;
+                    case Cancel:
+                        dragging = false;
+                        break;
+                    default:
+                }
+            }
+            switch ( e.button ) with ( MouseButton ) {
+                case Left: left;
+                    break;
+                default:
+            }
+
+            if ( dragging ) {
+                auto rx  = e.x - pos.left;
+                auto len = cache.timeline.length.value;
+                auto vf  = (rx/cache.pxPerFrame).to!int;
+
+                auto f   = max( 0, min( vf + cache.timeline.leftFrame, len ) ).to!uint;
                 if ( cache.timeline.frame.value != f )
                     window.mainWidget.handleAction( Action_ChangeFrame );
                 cache.timeline.frame.value = f;
-                return true;
             }
-
-            switch ( e.action ) with( MouseAction )
-            {
-                case ButtonDown:
-                    trackHover = true;
-                    goto case;
-
-                case Move:
-                    if ( trackHover )
-                        return drag || e.action == ButtonDown;
-                    break;
-
-                case ButtonUp:
-                    trackHover = false;
-                    return true;
-                default:
-            }
-            return false;
+            return super.onMouseEvent( e );
         }
 }
