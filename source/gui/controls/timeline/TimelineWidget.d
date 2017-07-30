@@ -9,14 +9,13 @@ import cafe.project.Project,
        cafe.project.timeline.Timeline,
        cafe.gui.controls.timeline.Cache,
        cafe.gui.controls.timeline.Grid,
+       cafe.gui.controls.timeline.Line,
        cafe.gui.controls.timeline.LineCollection;
 import dlangui;
 
 /+ タイムラインウィジェット +/
 class TimelineWidget : VerticalLayout
 {
-    enum LineHeaderWidth = 150;
-
     enum HScrollLayout = q{
         ScrollBar {
             id:hscroll;
@@ -88,9 +87,9 @@ class TimelineWidget : VerticalLayout
 
         override void measure ( int w, int h )
         {
-            childById("grid_spacer").minWidth = LineHeaderWidth;
+            childById("grid_spacer").minWidth = Line.HeaderWidth;
             grid.minHeight = 50;
-            grid.minWidth  = w - LineHeaderWidth;
+            grid.minWidth  = w - Line.HeaderWidth;
             lines.minHeight = h;
 
             super.measure( w, h );
