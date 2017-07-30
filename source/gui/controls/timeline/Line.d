@@ -5,9 +5,11 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.Line;
+import cafe.project.timeline.PlaceableObject;
+import std.format;
 import dlangui;
 
-class Line
+abstract class Line
 {
     enum HeaderStyle = "TIMELINE_LINE_HEADER";
     private:
@@ -26,5 +28,26 @@ class Line
             auto style = currentTheme.get( HeaderStyle );
             if ( style.backgroundDrawable )
                 style.backgroundDrawable.drawTo( b, r );
+        }
+
+        void drawContent ( DrawBuf, Rect );
+}
+
+class LayerLine : Line
+{
+    enum TitleFormat = "Layer %d";
+
+    private:
+        PlaceableObject[] objs;
+
+    public:
+        this ( uint l, PlaceableObject[] o )
+        {
+            super( TitleFormat.format(l) );
+            objs = o;
+        }
+
+        override void drawContent ( DrawBuf, Rect )
+        {
         }
 }
