@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.Line;
-import cafe.project.timeline.PlaceableObject;
+import cafe.gui.utils.Font,
+       cafe.project.timeline.PlaceableObject;
 import std.format;
 import dlangui;
 
@@ -30,6 +31,10 @@ abstract class Line
             auto style = currentTheme.get( HeaderStyle );
             if ( style.backgroundDrawable )
                 style.backgroundDrawable.drawTo( b, r );
+
+            auto x = r.left + (r.right -r.left)/2;
+            auto y = r.top  + (r.bottom-r.top )/2;
+            style.font.drawCenteredText( b, x, y, name, style.textColor );
         }
 
         void drawContent ( DrawBuf, Rect );
