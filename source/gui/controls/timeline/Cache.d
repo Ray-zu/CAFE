@@ -6,7 +6,9 @@
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.Cache;
 import cafe.project.Project,
-       cafe.project.timeline.Timeline;
+       cafe.project.ObjectPlacingInfo,
+       cafe.project.timeline.Timeline,
+       cafe.gui.controls.timeline.Line;
 import std.algorithm,
        std.conv;
 import dlangui;
@@ -22,12 +24,16 @@ class Cache
         float px_per_frame;
         uint  frame_per_grid;
 
+        Line[] lines_cache;
+
     public:
         @property project  () { return pro; }
         @property timeline () { return tl; }
 
         @property pxPerFrame   () { return px_per_frame; }
         @property framePerGrid () { return frame_per_grid; }
+
+        @property lines () { return lines_cache; }
 
         this ( Project p, Timeline t )
         {
@@ -57,6 +63,18 @@ class Cache
                     r++;
                 return r;
             }();
+        }
+
+        /+ ライン情報更新 +/
+        void updateLinesCache ()
+        {
+            lines_cache = [];
+            if ( !timeline ) return;
+
+            foreach ( i; 0 .. timeline.layerLength ) {
+                auto o = timeline[ new LayerId(i) ];
+                lines_cache ~= new LayerLine( i, o );
+            }
         }
 
         /+ グリッド相対座標Xからフレーム数へ +/
