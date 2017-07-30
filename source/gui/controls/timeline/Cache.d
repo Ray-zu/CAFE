@@ -33,6 +33,7 @@ class Cache
         @property pxPerFrame   () { return px_per_frame; }
         @property framePerGrid () { return frame_per_grid; }
 
+        uint headerWidth = 150;
         @property lines () { return lines_cache; }
 
         this ( Project p, Timeline t )

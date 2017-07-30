@@ -16,8 +16,6 @@ mixin( registerWidgets!LinesCanvas );
 /+ タイムラインの描画 +/
 class LinesCanvas : CanvasWidget
 {
-    enum HeaderWidth = 150;
-
     private:
         Cache cache;
 
@@ -67,7 +65,7 @@ class LinesCanvas : CanvasWidget
                 auto h = (l.heightMag * baseLineHeight).to!int;
 
                 auto header_r = Rect( pos.left, pos.top+y+1,
-                        pos.left + HeaderWidth, pos.top + y + h );
+                        pos.left + cache.headerWidth, pos.top + y + h );
                 l.drawHeader( b, header_r );
 
                 y += h;

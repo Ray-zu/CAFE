@@ -15,8 +15,6 @@ import dlangui;
 /+ タイムラインウィジェット +/
 class TimelineWidget : VerticalLayout
 {
-    enum LineHeaderWidth = 150;
-
     enum HScrollLayout = q{
         ScrollBar {
             id:hscroll;
@@ -91,12 +89,13 @@ class TimelineWidget : VerticalLayout
 
         override void measure ( int w, int h )
         {
-            childById("grid_spacer").minWidth = LineHeaderWidth;
+            childById("grid_spacer").minWidth = 150;
             grid.minHeight = 50;
-            grid.minWidth  = w - LineHeaderWidth;
+            grid.minWidth  = w - 150;
             canvas.minHeight = h;
 
             super.measure( w, h );
             cache.updateGridCache( grid.pos );
+            cache.headerWidth = childById("grid_spacer").width;
         }
 }
