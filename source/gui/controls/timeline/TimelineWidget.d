@@ -46,9 +46,15 @@ class TimelineWidget : VerticalLayout
         auto hscrolled ( AbstractSlider = null, ScrollEvent e = null )
         {
             if ( !cache.timeline ) return false;
-
             cache.timeline.leftFrame  = hscroll.position;
             cache.timeline.rightFrame = cache.timeline.leftFrame + hscroll.pageSize;
+            invalidate;
+            return true;
+        }
+        auto vscrolled ( AbstractSlider = null, ScrollEvent e = null )
+        {
+            if ( !cache.timeline ) return false;
+            cache.timeline.topLineIndex  = vscroll.position/100.0;
             invalidate;
             return true;
         }
@@ -72,8 +78,9 @@ class TimelineWidget : VerticalLayout
             canvas  = cast(LinesCanvas )childById( "canvas" );
 
             hscroll.scrollEvent = &hscrolled;
+            vscroll.scrollEvent = &vscrolled;
 
-            hscrolled;
+            hscrolled; vscrolled;
             grid  .setCache( cache );
             canvas.setCache( cache );
 
