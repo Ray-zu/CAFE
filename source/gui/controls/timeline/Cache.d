@@ -7,6 +7,8 @@
 module cafe.gui.controls.timeline.Cache;
 import cafe.project.Project,
        cafe.project.timeline.Timeline;
+import std.algorithm,
+       std.conv;
 import dlangui;
 
 /+ タイムライン描画時のデータ受け渡しクラス +/
@@ -55,5 +57,14 @@ class Cache
                     r++;
                 return r;
             }();
+        }
+
+        /+ グリッド相対座標Xからフレーム数へ +/
+        uint xToFrame ( int x )
+        {
+            auto len  = timeline.length.value;
+            auto left = timeline.leftFrame.to!int;
+            auto vf   = (x/pxPerFrame).to!int;
+            return max( 0, min( vf + left, len ) ).to!uint;
         }
 }

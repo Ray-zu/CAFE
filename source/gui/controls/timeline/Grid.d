@@ -84,11 +84,7 @@ class TimelineGrid : CanvasWidget
             }
 
             if ( dragging ) {
-                auto rx  = e.x - pos.left;
-                auto len = cache.timeline.length.value;
-                auto vf  = (rx/cache.pxPerFrame).to!int;
-
-                auto f   = max( 0, min( vf + cache.timeline.leftFrame, len ) ).to!uint;
+                auto f = cache.xToFrame( e.x - pos.left );
                 if ( cache.timeline.frame.value != f )
                     window.mainWidget.handleAction( Action_ChangeFrame );
                 cache.timeline.frame.value = f;
