@@ -328,4 +328,7 @@
         textColor="#00999999">
     </style>
 
+    <style id="TIMELINE_LINES_CANVAS">
+    </style>
+
 </theme>

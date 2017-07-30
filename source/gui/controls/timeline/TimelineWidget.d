@@ -8,7 +8,8 @@ module cafe.gui.controls.timeline.TimelineWidget;
 import cafe.project.Project,
        cafe.project.timeline.Timeline,
        cafe.gui.controls.timeline.Cache,
-       cafe.gui.controls.timeline.Grid;
+       cafe.gui.controls.timeline.Grid,
+       cafe.gui.controls.timeline.LinesCanvas;
 import dlangui;
 
 /+ タイムラインウィジェット +/
@@ -30,7 +31,7 @@ class TimelineWidget : VerticalLayout
                     HSpacer { id:grid_spacer }
                     TimelineGrid { id:grid }
                 }
-                HSpacer { id:canvas }
+                LinesCanvas { id:canvas }
             }
             ScrollBar { id:vscroll; orientation:Vertical }
         }
@@ -39,9 +40,10 @@ class TimelineWidget : VerticalLayout
     private:
         Cache cache;
 
-        ScrollBar hscroll;
-        ScrollBar vscroll;
+        ScrollBar    hscroll;
+        ScrollBar    vscroll;
         TimelineGrid grid;
+        LinesCanvas  canvas;
 
         auto hscrolled ( AbstractSlider = null, ScrollEvent e = null )
         {
@@ -66,14 +68,16 @@ class TimelineWidget : VerticalLayout
             addChild( parseML( HScrollLayout ) );
             addChild( parseML( MainLayout ) );
 
-            hscroll = cast(ScrollBar)childById( "hscroll" );
-            vscroll = cast(ScrollBar)childById( "vscroll" );
-            grid = cast(TimelineGrid)childById( "grid" );
+            hscroll = cast(ScrollBar   )childById( "hscroll" );
+            vscroll = cast(ScrollBar   )childById( "vscroll" );
+            grid    = cast(TimelineGrid)childById( "grid" );
+            canvas  = cast(LinesCanvas )childById( "canvas" );
 
             hscroll.scrollEvent = &hscrolled;
 
             hscrolled;
-            grid.setCache( cache );
+            grid  .setCache( cache );
+            canvas.setCache( cache );
         }
 
         override void invalidate ()
@@ -88,8 +92,7 @@ class TimelineWidget : VerticalLayout
             childById("grid_spacer").minWidth = LineHeaderWidth;
             grid.minHeight = 50;
             grid.minWidth  = w - LineHeaderWidth;
-
-            childById("canvas").minHeight = h;
+            canvas.minHeight = h;
 
             super.measure( w, h );
             cache.updateGridCache( grid.pos );
