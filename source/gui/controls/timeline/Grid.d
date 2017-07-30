@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.Grid;
-import cafe.gui.controls.timeline.Cache;
+import cafe.gui.Action,
+       cafe.gui.controls.timeline.Cache;
 import dlangui,
        dlangui.widgets.metadata;
 
@@ -52,7 +53,38 @@ class TimelineGrid : CanvasWidget
                     h = 20;
                 }
                 b.drawLine( Point( x, pos.bottom - h ),
-                       Point( x, pos.bottom ), textColor );
+                        Point( x, pos.bottom ), textColor );
             }
+        }
+
+        override bool onMouseEvent ( MouseEvent e )
+        {
+            auto drag ()
+            {
+                auto rx = e.x - pos.left;
+                auto f  = (rx/cache.pxPerFrame).to!uint;
+                if ( cache.timeline.frame.value != f )
+                    window.mainWidget.handleAction( Action_ChangeFrame );
+                cache.timeline.frame.value = f;
+                return true;
+            }
+
+            switch ( e.action ) with( MouseAction )
+            {
+                case ButtonDown:
+                    trackHover = true;
+                    goto case;
+
+                case Move:
+                    if ( trackHover )
+                        return drag || e.action == ButtonDown;
+                    break;
+
+                case ButtonUp:
+                    trackHover = false;
+                    return true;
+                default:
+            }
+            return false;
         }
 }

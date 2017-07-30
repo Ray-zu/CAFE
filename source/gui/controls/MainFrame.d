@@ -155,18 +155,20 @@ class MainFrame : AppFrame
         {
             import cafe.gui.Action;
             if ( a ) {
-                switch ( a.id ) {
-                    case EditorActions.ProjectNew:
+                switch ( a.id ) with( EditorActions ) {
+                    case ProjectNew:
                         new ProjectCreationPanel( window );
                         return true;
-                    case EditorActions.ProjectRefresh:
+                    case ProjectRefresh:
                         return projectRefresh;
-                    case EditorActions.PreviewRefresh:
+                    case PreviewRefresh:
                         return preview.handleAction( a );
-                    case EditorActions.ObjectRefresh:
+                    case ObjectRefresh:
                         tabs.propertyEditor.updateWidgets;
                         return true;
-                    case EditorActions.AddFrag:
+                    case ChangeFrame:
+                        return handleAction( Action_ObjectRefresh );
+                    case AddFrag:
                         return fragexp.handleAction( a );
 
                     default:
