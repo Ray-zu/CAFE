@@ -17,7 +17,16 @@ class LinesCanvas : CanvasWidget
     private:
         Cache cache;
 
+        uint base_line_height = 20;
+
     public:
+        @property baseLineHeight () { return base_line_height; }
+        @property baseLineHeight ( uint blh )
+        {
+            base_line_height = blh;
+            invalidate;
+        }
+
         this ( string id = "" )
         {
             super( id );
