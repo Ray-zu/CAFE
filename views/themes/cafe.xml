@@ -319,6 +319,10 @@
         backgroundColor="#00444444">
     </style>
 
+    <style id="TIMELINE"
+        backgroundColor="#00222222">
+    </style>
+
     <style id="TIMELINE_GRID"
         backgroundColor="#00444444"
         textColor="#00999999">

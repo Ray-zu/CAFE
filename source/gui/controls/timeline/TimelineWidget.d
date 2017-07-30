@@ -57,6 +57,7 @@ class TimelineWidget : VerticalLayout
         this ( string id, Project p, Timeline t )
         {
             super( id );
+            styleId = "TIMELINE";
             layoutWidth  = FILL_PARENT;
             layoutHeight = FILL_PARENT;
 
