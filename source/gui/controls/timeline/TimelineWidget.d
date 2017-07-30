@@ -8,14 +8,14 @@ module cafe.gui.controls.timeline.TimelineWidget;
 import cafe.project.Project,
        cafe.project.timeline.Timeline,
        cafe.gui.controls.timeline.Cache,
-       cafe.gui.controls.timeline.Grid,
-       cafe.gui.controls.timeline.Line,
-       cafe.gui.controls.timeline.LineCollection;
+       cafe.gui.controls.timeline.Grid;
 import dlangui;
 
 /+ タイムラインウィジェット +/
 class TimelineWidget : VerticalLayout
 {
+    enum LineHeaderWidth = 150;
+
     enum HScrollLayout = q{
         ScrollBar {
             id:hscroll;
@@ -30,7 +30,7 @@ class TimelineWidget : VerticalLayout
                     HSpacer { id:grid_spacer }
                     TimelineGrid { id:grid }
                 }
-                LineCollection { id:lines }
+                HSpacer { id:canvas }
             }
             ScrollBar { id:vscroll; orientation:Vertical }
         }
@@ -41,8 +41,7 @@ class TimelineWidget : VerticalLayout
 
         ScrollBar hscroll;
         ScrollBar vscroll;
-        TimelineGrid   grid;
-        LineCollection lines;
+        TimelineGrid grid;
 
         auto hscrolled ( AbstractSlider = null, ScrollEvent e = null )
         {
@@ -69,8 +68,7 @@ class TimelineWidget : VerticalLayout
 
             hscroll = cast(ScrollBar)childById( "hscroll" );
             vscroll = cast(ScrollBar)childById( "vscroll" );
-            grid  = cast(TimelineGrid)childById( "grid" );
-            lines = cast(LineCollection)childById( "lines" );
+            grid = cast(TimelineGrid)childById( "grid" );
 
             hscroll.scrollEvent = &hscrolled;
 
@@ -87,10 +85,11 @@ class TimelineWidget : VerticalLayout
 
         override void measure ( int w, int h )
         {
-            childById("grid_spacer").minWidth = Line.HeaderWidth;
+            childById("grid_spacer").minWidth = LineHeaderWidth;
             grid.minHeight = 50;
-            grid.minWidth  = w - Line.HeaderWidth;
-            lines.minHeight = h;
+            grid.minWidth  = w - LineHeaderWidth;
+
+            childById("canvas").minHeight = h;
 
             super.measure( w, h );
             cache.updateGridCache( grid.pos );
