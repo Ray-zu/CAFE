@@ -8,7 +8,8 @@ module cafe.gui.controls.timeline.TimelineWidget;
 import cafe.project.Project,
        cafe.project.timeline.Timeline,
        cafe.gui.controls.timeline.Cache,
-       cafe.gui.controls.timeline.Grid;
+       cafe.gui.controls.timeline.Grid,
+       cafe.gui.controls.timeline.LineCollection;
 import dlangui;
 
 /+ タイムラインウィジェット +/
@@ -30,7 +31,7 @@ class TimelineWidget : VerticalLayout
                     HSpacer { id:grid_spacer }
                     TimelineGrid { id:grid }
                 }
-                HSpacer { id:canvas }
+                LineCollection { id:lines }
             }
             ScrollBar { id:vscroll; orientation:Vertical }
         }
@@ -41,7 +42,8 @@ class TimelineWidget : VerticalLayout
 
         ScrollBar hscroll;
         ScrollBar vscroll;
-        TimelineGrid grid;
+        TimelineGrid   grid;
+        LineCollection lines;
 
         auto hscrolled ( AbstractSlider = null, ScrollEvent e = null )
         {
@@ -68,7 +70,8 @@ class TimelineWidget : VerticalLayout
 
             hscroll = cast(ScrollBar)childById( "hscroll" );
             vscroll = cast(ScrollBar)childById( "vscroll" );
-            grid = cast(TimelineGrid)childById( "grid" );
+            grid  = cast(TimelineGrid)childById( "grid" );
+            lines = cast(LineCollection)childById( "lines" );
 
             hscroll.scrollEvent = &hscrolled;
 
@@ -88,8 +91,7 @@ class TimelineWidget : VerticalLayout
             childById("grid_spacer").minWidth = LineHeaderWidth;
             grid.minHeight = 50;
             grid.minWidth  = w - LineHeaderWidth;
-
-            childById("canvas").minHeight = h;
+            lines.minHeight = h;
 
             super.measure( w, h );
             cache.updateGridCache( grid.pos );
