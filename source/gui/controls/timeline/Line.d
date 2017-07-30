@@ -18,6 +18,8 @@ abstract class Line
     public:
         @property name () { return line_name; }
 
+        @property heightMag () { return 1.0; }
+
         this ( string n )
         {
             line_name = n;
