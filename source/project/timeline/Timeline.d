@@ -62,9 +62,9 @@ class Timeline
         @property layerLength ()
         {
             auto r = objects.length ?
-                objects.maxElement!"a.place.layer.value".place.layer.value:
+                objects.maxElement!"a.place.layer.value".place.layer.value+1:
                 0;
-            return new LayerId( r );
+            return r;
         }
 
         /+ objを削除 +/
