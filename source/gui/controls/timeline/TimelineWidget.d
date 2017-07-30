@@ -15,6 +15,8 @@ import dlangui;
 /+ タイムラインウィジェット +/
 class TimelineWidget : VerticalLayout
 {
+    enum VScrollMag = 10.0;
+
     enum HScrollLayout = q{
         ScrollBar {
             id:hscroll;
@@ -54,7 +56,9 @@ class TimelineWidget : VerticalLayout
         auto vscrolled ( AbstractSlider = null, ScrollEvent e = null )
         {
             if ( !cache.timeline ) return false;
-            cache.timeline.topLineIndex  = vscroll.position/100.0;
+            vscroll.setRange( 0, (cache.lines.length*VScrollMag).to!int );
+            vscroll.pageSize = VScrollMag.to!int;
+            cache.timeline.topLineIndex  = vscroll.position/VScrollMag;
             invalidate;
             return true;
         }
@@ -77,14 +81,16 @@ class TimelineWidget : VerticalLayout
             grid    = cast(TimelineGrid)childById( "grid" );
             canvas  = cast(LinesCanvas )childById( "canvas" );
 
+            hscroll.position = 0;
+            vscroll.position = 0;
             hscroll.scrollEvent = &hscrolled;
             vscroll.scrollEvent = &vscrolled;
 
-            hscrolled; vscrolled;
             grid  .setCache( cache );
             canvas.setCache( cache );
 
             cache.updateLinesCache;
+            hscrolled; vscrolled;
         }
 
         override void invalidate ()
