@@ -6,7 +6,8 @@
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.LinesCanvas;
 import cafe.gui.controls.timeline.Cache;
-import std.conv,
+import std.algorithm,
+       std.conv,
        std.math;
 import dlangui,
        dlangui.widgets.metadata;
@@ -55,6 +56,16 @@ class LinesCanvas : CanvasWidget
             super.onDraw( b );
             if ( !cache.timeline ) return;
 
+            /+ Rectのウィジェットからはみ出てる部分を削る +/
+            auto shrinkRect ( Rect r )
+            {
+                return Rect(
+                        max( r.left, pos.left ),
+                        max( r.top, pos.top+1 ),
+                        min( r.right, pos.right ),
+                        min( r.bottom, pos.bottom ) );
+            }
+
             b.drawLine( Point(pos.left,pos.top),
                     Point(pos.right,pos.top), textColor );
 
@@ -66,9 +77,11 @@ class LinesCanvas : CanvasWidget
 
                 auto header_r = Rect( pos.left, pos.top+y+1,
                         pos.left + cache.headerWidth, pos.top + y + h );
+                b.clipRect = shrinkRect( header_r );
                 l.drawHeader( b, header_r );
 
                 y += h;
+                b.resetClipping;
                 b.drawLine( Point(pos.left,pos.top+y),
                         Point(pos.right,pos.top+y), textColor );
             }
