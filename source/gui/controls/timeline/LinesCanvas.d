@@ -6,6 +6,8 @@
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.LinesCanvas;
 import cafe.gui.controls.timeline.Cache;
+import std.conv,
+       std.math;
 import dlangui,
        dlangui.widgets.metadata;
 
@@ -14,10 +16,20 @@ mixin( registerWidgets!LinesCanvas );
 /+ タイムラインの描画 +/
 class LinesCanvas : CanvasWidget
 {
+    enum HeaderWidth = 150;
+
     private:
         Cache cache;
 
-        uint base_line_height = 20;
+        uint base_line_height = 30;
+
+        @property topHiddenPx ()
+        {
+            auto top = cache.timeline.topLineIndex;
+            auto index    = top.trunc.to!int;
+            auto fraction = top - index;
+            return (cache.lines[index].heightMag*baseLineHeight*fraction).to!int;
+        }
 
     public:
         @property baseLineHeight () { return base_line_height; }
@@ -38,5 +50,29 @@ class LinesCanvas : CanvasWidget
             if ( cache )
                 throw new Exception( "Can't redefine cache." );
             cache = c;
+        }
+
+        override void onDraw ( DrawBuf b )
+        {
+            super.onDraw( b );
+            if ( !cache.timeline ) return;
+
+            b.drawLine( Point(pos.left,pos.top),
+                    Point(pos.right,pos.top), textColor );
+
+            auto top = cache.timeline.topLineIndex.to!int;
+            auto y   = -topHiddenPx;
+            foreach ( l; cache.lines[top .. $] ) {
+                if ( y >= pos.height ) break;
+                auto h = (l.heightMag * baseLineHeight).to!int;
+
+                auto header_r = Rect( pos.left, pos.top+y+1,
+                        pos.left + HeaderWidth, pos.top + y + h );
+                l.drawHeader( b, header_r );
+
+                y += h;
+                b.drawLine( Point(pos.left,pos.top+y),
+                        Point(pos.right,pos.top+y), textColor );
+            }
         }
 }
