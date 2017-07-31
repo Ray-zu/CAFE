@@ -89,6 +89,11 @@ abstract class PlaceableObject : PropertyKeepableObject
             auto style = currentTheme.get( styleId );
             if ( style.backgroundDrawable )
                 style.backgroundDrawable.drawTo( b, r );
+
+            import cafe.gui.utils.Font;
+            auto x = r.left + style.padding.left;
+            auto y = r.top + (r.bottom-r.top)/2;
+            style.font.drawLeftCenteredText( b, x,y, name, style.textColor );
         }
 
         /+ レンダリング情報にオブジェクトの内容を適用 +/
