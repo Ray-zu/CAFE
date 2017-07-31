@@ -85,6 +85,7 @@ class LayerLine : Line
             auto ed = cache.timeline.rightFrame;
             auto ppf = cache.pxPerFrame;
             auto pad = style.padding;
+            auto sel = cache.timeline.selecting;
 
             foreach ( o; objs ) {
                 auto ost = o.place.frame.start.value;
@@ -98,7 +99,8 @@ class LayerLine : Line
                             r.left + (r_oed*ppf).to!int, r.bottom - pad.bottom );
                     b.clipRect = obj_r.shrinkRect( b.clipRect );
                     o.draw( b, obj_r );
-                    b.drawFrame( obj_r, style.textColor, Rect(1,1,1,1) );
+                    b.drawFrame( obj_r, style.textColor,
+                            o is sel ? Rect(2,2,2,2) : Rect(1,1,1,1) );
                 }
             }
         }
