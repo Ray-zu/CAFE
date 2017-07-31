@@ -356,7 +356,7 @@
 
     <style id="TIMELINE_UNCATEGORIZED_OBJECT"
         backgroundColor="#00444466"
-        padding="1,1,1,1">
+        padding="5,5,5,5">
     </style>
 
     <style id="TIMELINE_UNCATEGORIZED_EFFECT"
