@@ -341,6 +341,10 @@
         padding="3,3,3,3">
     </style>
 
+    <style id="TIMELINE_PROPERTY_LINE"
+        backgroundColor="#00333333">
+    </style>
+
     <style id="TIMELINE_UNCATEGORIZED_OBJECT"
         backgroundColor="#00444477"
         padding="3,3,3,3">

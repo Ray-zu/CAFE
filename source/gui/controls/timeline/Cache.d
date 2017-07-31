@@ -73,9 +73,17 @@ class Cache
             lines_cache = [];
             if ( !timeline ) return;
 
+            void addPropertyLine ()
+            {
+                auto o = timeline.selecting;
+                foreach ( k,v; o.propertyList.properties )
+                    lines_cache ~= new PropertyLine( this, k, v );
+            }
+            auto select_layer = timeline.selecting.place.layer.value;
             foreach ( i; 0 .. timeline.layerLength + 10 ) {
                 auto o = timeline[ new LayerId(i) ];
                 lines_cache ~= new LayerLine( this, i, o );
+                if ( select_layer == i ) addPropertyLine;
             }
         }
 

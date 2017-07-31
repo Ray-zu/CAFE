@@ -7,7 +7,8 @@
 module cafe.gui.controls.timeline.Line;
 import cafe.gui.utils.Font,
        cafe.gui.controls.timeline.Cache,
-       cafe.project.timeline.PlaceableObject;
+       cafe.project.timeline.PlaceableObject,
+       cafe.project.timeline.property.Property;
 import std.algorithm,
        std.conv,
        std.format;
@@ -24,7 +25,7 @@ abstract class Line
     public:
         @property name () { return line_name; }
 
-        @property heightMag () { return 1.0; }
+        @property float heightMag () { return 1.0; }
 
         this ( Cache c, string n )
         {
@@ -95,5 +96,31 @@ class LayerLine : Line
                     b.drawFrame( obj_r, style.textColor, Rect(1,1,1,1) );
                 }
             }
+        }
+}
+
+class PropertyLine : Line
+{
+    enum ContentStyle = "TIMELINE_PROPERTY_LINE";
+    private:
+        Property property;
+
+    public:
+        override @property float heightMag ()
+        {
+            return 0.8;
+        }
+
+        this ( Cache c, string n, Property p )
+        {
+            super( c, n );
+            property = p;
+        }
+
+        override void drawContent ( DrawBuf b, Rect r )
+        {
+            auto style = currentTheme.get( ContentStyle );
+            if ( style.backgroundDrawable )
+                style.backgroundDrawable.drawTo( b, r );
         }
 }
