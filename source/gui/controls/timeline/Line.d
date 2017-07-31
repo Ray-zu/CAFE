@@ -48,6 +48,16 @@ abstract class Line
         }
 
         void drawContent ( DrawBuf, Rect );
+
+        bool onHeaderMouseEvent ( MouseEvent )
+        {
+            return false;
+        }
+
+        bool onContentMouseEvent ( uint, MouseEvent )
+        {
+            return false;
+        }
 }
 
 class LayerLine : Line

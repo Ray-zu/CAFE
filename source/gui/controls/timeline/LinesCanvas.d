@@ -21,6 +21,9 @@ class LinesCanvas : CanvasWidget
     private:
         Cache cache;
 
+        /+ ラインコンテンツをドラッグ中かどうか +/
+        bool dragging = false;
+
         uint base_line_height = 30;
 
         @property topHiddenPx ()
@@ -43,6 +46,8 @@ class LinesCanvas : CanvasWidget
         {
             super( id );
             styleId = "TIMELINE_LINES_CANVAS";
+            trackHover = true;
+            clickable = true;
         }
 
         auto setCache ( Cache c )
@@ -82,5 +87,42 @@ class LinesCanvas : CanvasWidget
             }
             b.drawLine( Point(pos.left,pos.top+y),
                     Point(pos.right,pos.top+y), textColor );
+        }
+
+        override bool onMouseEvent ( MouseEvent e )
+        {
+            auto line_id = delegate ()
+            {
+                auto ry = e.y - pos.top - topHiddenPx;
+                auto i  = cache.timeline.topLineIndex.trunc.to!uint;
+                auto h  = 0;
+                while ( h < ry && i < cache.lines.length )
+                    h += (cache.lines[i++].heightMag * baseLineHeight).to!int;
+                return h < ry ? -1 : i;
+            }();
+
+            auto st  = cache.timeline.leftFrame;
+            auto ppf = cache.pxPerFrame;
+
+            auto trans_ev = true;
+            if ( line_id >= 0 ) {
+                trans_ev = false;
+                if ( e.x - pos.left < cache.headerWidth && !dragging )
+                    cache.lines[line_id].onHeaderMouseEvent( e );
+
+                else {
+                    auto f = ((e.x-pos.left) / ppf).to!uint + st;
+                    trans_ev = !cache.lines[line_id].onContentMouseEvent( f, e );
+                    if ( e.button == MouseButton.Left ) {
+                        if ( e.action == MouseAction.ButtonDown ) dragging = true;
+                        if ( e.action == MouseAction.ButtonUp   ) dragging = false;
+                    }
+                }
+            }
+            if ( trans_ev )
+                parent.childById( "grid" ).onMouseEvent( e );
+
+            super.onMouseEvent( e );
+            return true;
         }
 }
