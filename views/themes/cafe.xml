@@ -338,21 +338,29 @@
 
     <style id="TIMELINE_LAYER_LINE"
         backgroundColor="#00333333"
+        textColor="#00888888"
         padding="3,3,3,3">
     </style>
 
     <style id="TIMELINE_PROPERTY_LINE"
-        backgroundColor="#00333333">
+        backgroundColor="#00333333"
+        textColor="#00888888">
         <drawable id="tl_propline_mp" value="cafe_tl_propline_mp" />
     </style>
 
     <style id="TIMELINE_EFFECT_LINE"
-        backgroundColor="#00333333">
+        backgroundColor="#00333333"
+        textColor="#00888888"
+        padding="3,3,3,3">
     </style>
 
     <style id="TIMELINE_UNCATEGORIZED_OBJECT"
-        backgroundColor="#00444477"
-        padding="3,3,3,3">
+        backgroundColor="#00444466"
+        padding="1,1,1,1">
+    </style>
+
+    <style id="TIMELINE_UNCATEGORIZED_EFFECT"
+        backgroundColor="#00447744">
     </style>
 
 </theme>

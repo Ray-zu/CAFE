@@ -155,6 +155,7 @@ class EffectLine : Line
         this ( Cache c, Effect e )
         {
             super( c, e.name );
+            effect = e;
         }
 
         override void drawContent ( DrawBuf b, Rect r )
@@ -162,5 +163,25 @@ class EffectLine : Line
             auto style = currentTheme.get( ContentStyle );
             if ( style.backgroundDrawable )
                 style.backgroundDrawable.drawTo( b, r );
+
+            auto st  = cache.timeline.leftFrame;
+            auto ed  = cache.timeline.rightFrame;
+            auto est = cache.timeline.selecting.place.frame.start.value;
+            auto eed = cache.timeline.selecting.place.frame.end.value;
+            auto ppf = cache.pxPerFrame;
+            auto pad = style.padding;
+
+            if ( eed > st && est < ed ) {
+                auto r_est = est.to!int - st.to!int;
+                auto r_eed = eed.to!int - st.to!int;
+
+                auto r_ef = Rect( r.left + (r_est*ppf).to!int, r.top + pad.top,
+                       r.left + (r_eed*ppf).to!int, r.bottom - pad.bottom );
+                b.clipRect = r_ef.shrinkRect( b.clipRect );
+                effect.draw( b, r_ef );
+                b.drawFrame( r_ef, style.textColor, Rect(1,1,1,1) );
+
+                b.resetClipping;
+            }
         }
 }
