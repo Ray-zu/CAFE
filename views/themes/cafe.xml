@@ -337,7 +337,12 @@
     </style>
 
     <style id="TIMELINE_LAYER_LINE"
-        backgroundColor="#00333333">
+        backgroundColor="#00333333"
+        padding="3,3,3,3">
+    </style>
+
+    <style id="TIMELINE_UNCATEGORIZED_OBJECT"
+        backgroundColor="#00444477">
     </style>
 
 </theme>
