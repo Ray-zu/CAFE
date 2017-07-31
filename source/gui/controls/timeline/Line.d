@@ -103,7 +103,7 @@ class PropertyLine : Line
 {
     enum ContentStyle = "TIMELINE_PROPERTY_LINE";
     enum MPDrawable = "tl_propline_mp";
-    enum MPSize = 16;
+    enum MPSize = 12;
 
     private:
         Property property;
@@ -111,7 +111,7 @@ class PropertyLine : Line
     public:
         override @property float heightMag ()
         {
-            return 0.8;
+            return 0.7;
         }
 
         this ( Cache c, string n, Property p )
