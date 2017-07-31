@@ -85,7 +85,8 @@ class Cache
                 addProperties( o.propertyList );
                 foreach ( e; o.effectList.effects ) {
                     lines_cache ~= new EffectLine( this, e );
-                    addProperties( e.propertyList );
+                    if ( e.propertiesOpened )
+                        addProperties( e.propertyList );
                 }
             }
             auto select_layer = timeline.selecting.place.layer.value;
