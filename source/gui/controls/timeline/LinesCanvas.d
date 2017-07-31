@@ -57,29 +57,30 @@ class LinesCanvas : CanvasWidget
             super.onDraw( b );
             if ( !cache.timeline ) return;
 
-            b.drawLine( Point(pos.left,pos.top),
-                    Point(pos.right,pos.top), textColor );
-
             auto top = cache.timeline.topLineIndex.to!int;
             auto y   = -topHiddenPx;
             foreach ( l; cache.lines[top .. $] ) {
                 if ( y >= pos.height ) break;
                 auto h = (l.heightMag * baseLineHeight).to!int;
+                auto b_space = l.needBorder ? 1 : 0;
 
-                auto header_r = Rect( pos.left, pos.top+y+1,
+                auto header_r = Rect( pos.left, pos.top + y + b_space,
                         pos.left + cache.headerWidth, pos.top + y + h );
                 b.clipRect = header_r.shrinkRect( pos );
                 l.drawHeader( b, header_r );
 
-                auto content_r = Rect( pos.left+cache.headerWidth, pos.top+y+1,
-                       pos.right, pos.top + y + h );
+                auto content_r = Rect( pos.left+cache.headerWidth,
+                        pos.top + y + b_space, pos.right, pos.top + y + h );
                 b.clipRect = content_r.shrinkRect( pos );
                 l.drawContent( b, content_r );
 
-                y += h;
                 b.resetClipping;
-                b.drawLine( Point(pos.left,pos.top+y),
+                if ( y >= 0 && b_space )
+                    b.drawLine( Point(pos.left,pos.top+y),
                         Point(pos.right,pos.top+y), textColor );
+                y += h;
             }
+            b.drawLine( Point(pos.left,pos.top+y),
+                    Point(pos.right,pos.top+y), textColor );
         }
 }

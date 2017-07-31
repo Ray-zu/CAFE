@@ -27,7 +27,8 @@ abstract class Line
     public:
         @property name () { return line_name; }
 
-        @property float heightMag () { return 1.0; }
+        @property float heightMag    () { return 1.0; }
+        @property bool  needBorder () { return true; }
 
         this ( Cache c, string n )
         {
@@ -107,6 +108,8 @@ class PropertyLine : Line
         {
             return 0.7;
         }
+
+        override @property bool needBorder () { return false; }
 
         this ( Cache c, string n, Property p )
         {
