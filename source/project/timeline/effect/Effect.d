@@ -23,6 +23,8 @@ abstract class Effect : PropertyKeepableObject
         PropertyList props;
 
     public:
+        bool propertiesOpened;
+
         @property string name ();
 
         @property styleId ()
@@ -40,17 +42,20 @@ abstract class Effect : PropertyKeepableObject
         this ( Effect src, FrameLength f )
         {
             props = new PropertyList( src.propertyList, f );
+            propertiesOpened = src.propertiesOpened;
         }
 
         this ( FrameLength f )
         {
             props = new PropertyList;
             initProperties(f);
+            propertiesOpened = false;
         }
 
         this ( JSONValue j, FrameLength f )
         {
             props = new PropertyList( j["properties"], f );
+            propertiesOpened = j["propertiesOpened"].type == JSON_TYPE.TRUE;
         }
 
         override void initProperties ( FrameLength )
@@ -63,6 +68,7 @@ abstract class Effect : PropertyKeepableObject
             auto j = JSONValue( null );
             j["name"]       = JSONValue(name);
             j["properties"] = JSONValue(propertyList.json);
+            j["propertiesOpened"] = JSONValue( propertiesOpened );
             return j;
         }
 
