@@ -342,7 +342,8 @@
     </style>
 
     <style id="TIMELINE_UNCATEGORIZED_OBJECT"
-        backgroundColor="#00444477">
+        backgroundColor="#00444477"
+        padding="3,3,3,3">
     </style>
 
 </theme>
