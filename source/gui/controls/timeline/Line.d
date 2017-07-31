@@ -102,6 +102,9 @@ class LayerLine : Line
 class PropertyLine : Line
 {
     enum ContentStyle = "TIMELINE_PROPERTY_LINE";
+    enum MPDrawable = "tl_propline_mp";
+    enum MPSize = 16;
+
     private:
         Property property;
 
@@ -122,5 +125,22 @@ class PropertyLine : Line
             auto style = currentTheme.get( ContentStyle );
             if ( style.backgroundDrawable )
                 style.backgroundDrawable.drawTo( b, r );
+
+            auto st     = cache.timeline.leftFrame;
+            auto ppf    = cache.pxPerFrame;
+            auto parent = cache.timeline.selecting.place.frame.start.value.to!int;
+
+            auto drawMiddlePoint ( uint f )
+            {
+                enum sz = MPSize/2;
+                auto rf = f.to!int + parent - st.to!int;
+                auto x  = r.left + (rf * ppf).to!int;
+                auto y  = r.top + (r.bottom-r.top)/2;
+                auto dr = Rect( x-sz, y-sz, x+sz, y+sz );
+                style.customDrawable( MPDrawable ).drawTo( b, dr );
+            }
+            property.middlePoints.each!
+                ( x => drawMiddlePoint( x.frame.start.value ) );
+            drawMiddlePoint( property.frame.value );
         }
 }

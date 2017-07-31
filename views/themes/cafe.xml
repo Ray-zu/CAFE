@@ -343,6 +343,7 @@
 
     <style id="TIMELINE_PROPERTY_LINE"
         backgroundColor="#00333333">
+        <drawable id="tl_propline_mp" value="cafe_tl_propline_mp" />
     </style>
 
     <style id="TIMELINE_UNCATEGORIZED_OBJECT"
