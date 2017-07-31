@@ -80,6 +80,11 @@ class LinesCanvas : CanvasWidget
                 b.clipRect = shrinkRect( header_r );
                 l.drawHeader( b, header_r );
 
+                auto content_r = Rect( pos.left+cache.headerWidth, pos.top+y+1,
+                       pos.right, pos.top + y + h );
+                b.clipRect = shrinkRect( content_r );
+                l.drawContent( b, content_r );
+
                 y += h;
                 b.resetClipping;
                 b.drawLine( Point(pos.left,pos.top+y),

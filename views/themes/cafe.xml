@@ -336,4 +336,8 @@
         backgroundColor="#00444444">
     </style>
 
+    <style id="TIMELINE_LAYER_LINE"
+        backgroundColor="#00333333">
+    </style>
+
 </theme>

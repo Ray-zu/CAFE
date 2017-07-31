@@ -43,6 +43,7 @@ abstract class Line
 class LayerLine : Line
 {
     enum TitleFormat = "Layer %d";
+    enum ContentStyle = "TIMELINE_LAYER_LINE";
 
     private:
         PlaceableObject[] objs;
@@ -54,7 +55,10 @@ class LayerLine : Line
             objs = o;
         }
 
-        override void drawContent ( DrawBuf, Rect )
+        override void drawContent ( DrawBuf b, Rect r )
         {
+            auto style = currentTheme.get( ContentStyle );
+            if ( style.backgroundDrawable )
+                style.backgroundDrawable.drawTo( b, r );
         }
 }
