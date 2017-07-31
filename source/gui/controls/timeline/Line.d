@@ -164,6 +164,7 @@ class EffectLine : Line
         {
             return 0.7;
         }
+        override @property bool needBorder () { return false; }
 
         this ( Cache c, Effect e )
         {
