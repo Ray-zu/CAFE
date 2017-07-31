@@ -6,6 +6,7 @@
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.Line;
 import cafe.gui.utils.Font,
+       cafe.gui.utils.Rect,
        cafe.gui.controls.timeline.Cache,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.property.Property,
@@ -69,14 +70,6 @@ class LayerLine : Line
             if ( style.backgroundDrawable )
                 style.backgroundDrawable.drawTo( b, r );
 
-            auto shrinkRect ( Rect rc )
-            {
-                return Rect(
-                        max( r.left  , rc.left   ),
-                        max( r.top   , rc.top    ),
-                        min( r.right , rc.right  ),
-                        min( r.bottom, rc.bottom ) );
-            }
             auto st = cache.timeline.leftFrame;
             auto ed = cache.timeline.rightFrame;
             auto ppf = cache.pxPerFrame;
@@ -92,7 +85,7 @@ class LayerLine : Line
 
                     auto obj_r = Rect( r.left + (r_ost*ppf).to!int, r.top + pad.top,
                             r.left + (r_oed*ppf).to!int, r.bottom - pad.bottom );
-                    b.clipRect = shrinkRect(obj_r);
+                    b.clipRect = obj_r.shrinkRect( b.clipRect );
                     o.draw( b, obj_r );
                     b.drawFrame( obj_r, style.textColor, Rect(1,1,1,1) );
                 }
