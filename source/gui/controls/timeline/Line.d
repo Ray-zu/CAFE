@@ -6,6 +6,7 @@
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.Line;
 import cafe.gui.utils.Font,
+       cafe.gui.controls.timeline.Cache,
        cafe.project.timeline.PlaceableObject;
 import std.format;
 import dlangui;
@@ -13,7 +14,8 @@ import dlangui;
 abstract class Line
 {
     enum HeaderStyle = "TIMELINE_LINE_HEADER";
-    private:
+    protected:
+        Cache cache;
         string line_name;
 
     public:
@@ -21,8 +23,9 @@ abstract class Line
 
         @property heightMag () { return 1.0; }
 
-        this ( string n )
+        this ( Cache c, string n )
         {
+            cache = c;
             line_name = n;
         }
 
@@ -49,9 +52,9 @@ class LayerLine : Line
         PlaceableObject[] objs;
 
     public:
-        this ( uint l, PlaceableObject[] o )
+        this ( Cache c, uint l, PlaceableObject[] o )
         {
-            super( TitleFormat.format(l) );
+            super( c, TitleFormat.format(l) );
             objs = o;
         }
 

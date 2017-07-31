@@ -75,7 +75,7 @@ class Cache
 
             foreach ( i; 0 .. timeline.layerLength + 10 ) {
                 auto o = timeline[ new LayerId(i) ];
-                lines_cache ~= new LayerLine( i, o );
+                lines_cache ~= new LayerLine( this, i, o );
             }
         }
 
