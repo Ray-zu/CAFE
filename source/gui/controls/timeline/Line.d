@@ -8,7 +8,8 @@ module cafe.gui.controls.timeline.Line;
 import cafe.gui.utils.Font,
        cafe.gui.controls.timeline.Cache,
        cafe.project.timeline.PlaceableObject,
-       cafe.project.timeline.property.Property;
+       cafe.project.timeline.property.Property,
+       cafe.project.timeline.effect.Effect;
 import std.algorithm,
        std.conv,
        std.format;
@@ -142,5 +143,26 @@ class PropertyLine : Line
             property.middlePoints.each!
                 ( x => drawMiddlePoint( x.frame.start.value ) );
             drawMiddlePoint( property.frame.value );
+        }
+}
+
+class EffectLine : Line
+{
+    enum ContentStyle = "TIMELINE_EFFECT_LINE";
+
+    private:
+        Effect effect;
+
+    public:
+        this ( Cache c, Effect e )
+        {
+            super( c, e.name );
+        }
+
+        override void drawContent ( DrawBuf b, Rect r )
+        {
+            auto style = currentTheme.get( ContentStyle );
+            if ( style.backgroundDrawable )
+                style.backgroundDrawable.drawTo( b, r );
         }
 }

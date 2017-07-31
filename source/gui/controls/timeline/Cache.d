@@ -8,6 +8,7 @@ module cafe.gui.controls.timeline.Cache;
 import cafe.project.Project,
        cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.Timeline,
+       cafe.project.timeline.property.PropertyList,
        cafe.gui.controls.timeline.Line;
 import std.algorithm,
        std.conv;
@@ -73,17 +74,25 @@ class Cache
             lines_cache = [];
             if ( !timeline ) return;
 
-            void addPropertyLine ()
+            void addProperties ( PropertyList p )
+            {
+                foreach ( k,v; p.properties )
+                    lines_cache ~= new PropertyLine( this, k, v );
+            }
+            void addOtherLine ()
             {
                 auto o = timeline.selecting;
-                foreach ( k,v; o.propertyList.properties )
-                    lines_cache ~= new PropertyLine( this, k, v );
+                addProperties( o.propertyList );
+                foreach ( e; o.effectList.effects ) {
+                    lines_cache ~= new EffectLine( this, e );
+                    addProperties( e.propertyList );
+                }
             }
             auto select_layer = timeline.selecting.place.layer.value;
             foreach ( i; 0 .. timeline.layerLength + 10 ) {
                 auto o = timeline[ new LayerId(i) ];
                 lines_cache ~= new LayerLine( this, i, o );
-                if ( select_layer == i ) addPropertyLine;
+                if ( select_layer == i ) addOtherLine;
             }
         }
 

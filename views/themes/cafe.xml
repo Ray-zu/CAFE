@@ -346,6 +346,10 @@
         <drawable id="tl_propline_mp" value="cafe_tl_propline_mp" />
     </style>
 
+    <style id="TIMELINE_EFFECT_LINE"
+        backgroundColor="#00333333">
+    </style>
+
     <style id="TIMELINE_UNCATEGORIZED_OBJECT"
         backgroundColor="#00444477"
         padding="3,3,3,3">
