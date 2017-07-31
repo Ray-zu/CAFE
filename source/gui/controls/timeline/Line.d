@@ -197,4 +197,18 @@ class EffectLine : Line
                 b.resetClipping;
             }
         }
+
+        override bool onContentMouseEvent ( uint f, MouseEvent e )
+        {
+            if ( e.button == MouseButton.Left && e.action == MouseAction.ButtonUp ) {
+                auto est = cache.timeline.selecting.place.frame.start.value;
+                auto eed = cache.timeline.selecting.place.frame.end.value;
+                if ( f >= est && f < eed ) {
+                    effect.propertiesOpened = !effect.propertiesOpened;
+                    cache.updateLinesCache;
+                    return true;
+                }
+            }
+            return false;
+        }
 }

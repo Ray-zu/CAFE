@@ -93,12 +93,12 @@ class LinesCanvas : CanvasWidget
         {
             auto line_id = delegate ()
             {
-                auto ry = e.y - pos.top - topHiddenPx;
-                auto i  = cache.timeline.topLineIndex.trunc.to!uint;
+                auto ry = e.y - pos.top;// - topHiddenPx;
+                auto i  = cache.timeline.topLineIndex.to!int;
                 auto h  = 0;
                 while ( h < ry && i < cache.lines.length )
                     h += (cache.lines[i++].heightMag * baseLineHeight).to!int;
-                return h < ry ? -1 : i;
+                return h < ry ? -1 : i-1;
             }();
 
             auto st  = cache.timeline.leftFrame;
@@ -109,15 +109,17 @@ class LinesCanvas : CanvasWidget
                 trans_ev = false;
                 if ( e.x - pos.left < cache.headerWidth && !dragging )
                     cache.lines[line_id].onHeaderMouseEvent( e );
-
                 else {
                     auto f = ((e.x-pos.left) / ppf).to!uint + st;
                     trans_ev = !cache.lines[line_id].onContentMouseEvent( f, e );
                     if ( e.button == MouseButton.Left ) {
                         if ( e.action == MouseAction.ButtonDown ) dragging = true;
-                        if ( e.action == MouseAction.ButtonUp   ) dragging = false;
                     }
                 }
+            }
+            if ( e.button == MouseButton.Left && e.action == MouseAction.ButtonUp ) {
+                trans_ev = true;
+                dragging = false;
             }
             if ( trans_ev )
                 parent.childById( "grid" ).onMouseEvent( e );
