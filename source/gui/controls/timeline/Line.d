@@ -154,6 +154,11 @@ class EffectLine : Line
         Effect effect;
 
     public:
+        override @property float heightMag ()
+        {
+            return 0.7;
+        }
+
         this ( Cache c, Effect e )
         {
             super( c, e.name );
