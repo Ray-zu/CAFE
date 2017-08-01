@@ -51,12 +51,12 @@ abstract class Line
 
         void drawContent ( DrawBuf, Rect );
 
-        bool onHeaderMouseEvent ( MouseEvent )
+        bool onHeaderLeftClicked ()
         {
             return false;
         }
 
-        bool onContentMouseEvent ( uint, MouseEvent )
+        bool onContentLeftClicked ( uint )
         {
             return false;
         }
@@ -207,17 +207,17 @@ class EffectLine : Line
             }
         }
 
-        override bool onContentMouseEvent ( uint f, MouseEvent e )
+        override bool onHeaderLeftClicked ()
         {
-            if ( e.button == MouseButton.Left && e.action == MouseAction.ButtonUp ) {
-                auto est = cache.timeline.selecting.place.frame.start.value;
-                auto eed = cache.timeline.selecting.place.frame.end.value;
-                if ( f >= est && f < eed ) {
-                    effect.propertiesOpened = !effect.propertiesOpened;
-                    cache.updateLinesCache;
-                    return true;
-                }
-            }
-            return false;
+            effect.propertiesOpened = !effect.propertiesOpened;
+            cache.updateLinesCache;
+            return true;
+        }
+
+        override bool onContentLeftClicked ( uint f )
+        {
+            auto est = cache.timeline.selecting.place.frame.start.value;
+            auto eed = cache.timeline.selecting.place.frame.end.value;
+            return (f >= est && f < eed) ? onHeaderLeftClicked : false;
         }
 }

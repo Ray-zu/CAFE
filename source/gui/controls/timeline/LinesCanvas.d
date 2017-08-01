@@ -21,7 +21,6 @@ class LinesCanvas : CanvasWidget
     private:
         Cache cache;
 
-        /+ ラインコンテンツをドラッグ中かどうか +/
         bool dragging = false;
 
         uint base_line_height = 30;
@@ -100,29 +99,31 @@ class LinesCanvas : CanvasWidget
                     h += (cache.lines[i++].heightMag * baseLineHeight).to!int;
                 return h < ry ? -1 : i-1;
             }();
+            auto st   = cache.timeline.leftFrame;
+            auto ppf  = cache.pxPerFrame;
+            auto left = e.button == MouseButton.Left;
 
-            auto st  = cache.timeline.leftFrame;
-            auto ppf = cache.pxPerFrame;
-
-            auto trans_ev = true;
-            if ( line_id >= 0 ) {
-                trans_ev = false;
-                if ( e.x - pos.left < cache.headerWidth && !dragging )
-                    cache.lines[line_id].onHeaderMouseEvent( e );
+            if ( left && e.action == MouseAction.ButtonDown ) {
+                // 左クリック押し始め
+                auto header = (e.x-pos.left) < cache.headerWidth && !dragging;
+                auto line   = cache.lines[line_id];
+                if ( header )
+                    line.onHeaderLeftClicked;
                 else {
-                    auto f = ((e.x-pos.left) / ppf).to!uint + st;
-                    trans_ev = !cache.lines[line_id].onContentMouseEvent( f, e );
-                    if ( e.button == MouseButton.Left ) {
-                        if ( e.action == MouseAction.ButtonDown ) dragging = true;
-                    }
+                    auto f = st + ((e.x-pos.left)/ppf).to!int;
+                    if ( !line.onContentLeftClicked( f ) )
+                        parent.childById( "grid" ).onMouseEvent( e );
+                    dragging = true;
                 }
-            }
-            if ( e.button == MouseButton.Left && e.action == MouseAction.ButtonUp ) {
-                trans_ev = true;
+
+            } else if ( left && e.action == MouseAction.ButtonUp ) {
+                // 左クリック押し終わり
                 dragging = false;
+                cache.operatingObject = null;
+
+            } else if ( e.action == MouseAction.Move ) {
+                // カーソル動いた
             }
-            if ( trans_ev )
-                parent.childById( "grid" ).onMouseEvent( e );
 
             super.onMouseEvent( e );
             return true;

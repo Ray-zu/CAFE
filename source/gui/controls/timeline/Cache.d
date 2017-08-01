@@ -8,7 +8,7 @@ module cafe.gui.controls.timeline.Cache;
 import cafe.project.Project,
        cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.Timeline,
-       cafe.project.timeline.effect.Effect,
+       cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.property.PropertyList,
        cafe.gui.controls.timeline.Line;
 import std.algorithm,
@@ -38,7 +38,7 @@ class Cache
         uint headerWidth = 150;
         @property lines () { return lines_cache; }
 
-        Effect operatingEffect = null;
+        PlaceableObject operatingObject = null;
 
         this ( Project p, Timeline t )
         {
