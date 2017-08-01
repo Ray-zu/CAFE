@@ -48,14 +48,14 @@ class PropertyEditor : VerticalLayout
             cached_obj = project.selectingObject;
 
             if ( cached_obj ) {
-                auto f = project.componentList.selecting.timeline.frame.value -
-                    cached_obj.place.frame.start.value;
-                f = max( cached_obj.place.frame.end.value-1, min( 0, f ) );
+                auto f = project.componentList.selecting.timeline.frame.value.to!int -
+                    cached_obj.place.frame.start.value.to!int;
+                f = min( cached_obj.place.frame.end.value.to!int-1, max( 0, f ) );
                 upflag = upflag || f == cached_frame;
                 cached_frame = f;
 
                 if ( upflag ) {
-                    auto fat = new FrameAt( f );
+                    auto fat = new FrameAt( f.to!uint );
                     removeAllChildren;
                     addChild( new GroupPanelFrame( cached_obj.propertyList, cached_obj.name, fat ) );
                     cached_obj.effectList.effects.each!
