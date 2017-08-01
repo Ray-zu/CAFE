@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.LinesCanvas;
-import cafe.gui.utils.Rect,
+import cafe.gui.Action,
+       cafe.gui.utils.Rect,
        cafe.gui.controls.timeline.Cache;
 import std.algorithm,
        std.conv,
@@ -130,6 +131,7 @@ class LinesCanvas : CanvasWidget
 
             }
             if ( trans_ev ) parent.childById( "grid" ).onMouseEvent( e );
+            window.mainWidget.handleAction( Action_ObjectRefresh );
 
             super.onMouseEvent( e );
             return true;

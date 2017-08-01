@@ -89,6 +89,7 @@ class Cache
             void addOtherLine ()
             {
                 auto o = timeline.selecting;
+                if ( !o ) return;
                 addProperties( o.propertyList );
                 foreach ( e; o.effectList.effects ) {
                     lines_cache ~= new EffectLine( this, e );

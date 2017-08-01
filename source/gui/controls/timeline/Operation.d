@@ -94,6 +94,7 @@ class Operation
                 if ( operatingObject ) {
                     cache.timeline.selecting = cache.timeline
                         .selecting is operatingObject ? null : operatingObject;
+                    cache.updateLinesCache;
                 }
             }
             clear;
