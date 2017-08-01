@@ -30,6 +30,8 @@ abstract class Line
         @property float heightMag    () { return 1.0; }
         @property bool  needBorder () { return true; }
 
+        @property int layerIndex () { return -1; }
+
         this ( Cache c, string n )
         {
             cache = c;
@@ -66,12 +68,16 @@ class LayerLine : Line
     enum ContentStyle = "TIMELINE_LAYER_LINE";
 
     private:
+        int lindex;
         PlaceableObject[] objs;
 
     public:
+        override @property int layerIndex () { return lindex; }
+
         this ( Cache c, uint l, PlaceableObject[] o )
         {
             super( c, TitleFormat.format(l) );
+            lindex = l;
             objs = o;
         }
 
