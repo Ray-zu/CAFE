@@ -121,7 +121,7 @@ class LinesCanvas : CanvasWidget
                 // 左クリック押し終わり
                 trans_ev = !cache.operation.isOperating;
                 dragging = false;
-                cache.operation.clear;
+                cache.operation.release( f );
 
             } else if ( e.action == MouseAction.Move ) {
                 // カーソル動いた

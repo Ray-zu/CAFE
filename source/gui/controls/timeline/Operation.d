@@ -87,4 +87,15 @@ class Operation
                 if ( operatingProperty ) moveProp( f, l );
             }
         }
+
+        auto release ( uint f )
+        {
+            if ( state == State.Clicking ) {
+                if ( operatingObject ) {
+                    cache.timeline.selecting = cache.timeline
+                        .selecting is operatingObject ? null : operatingObject;
+                }
+            }
+            clear;
+        }
 }

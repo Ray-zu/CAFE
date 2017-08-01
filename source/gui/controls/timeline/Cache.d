@@ -96,7 +96,8 @@ class Cache
                         addProperties( e.propertyList );
                 }
             }
-            auto select_layer = timeline.selecting.place.layer.value;
+            auto select_layer = timeline.selecting ?
+                timeline.selecting.place.layer.value.to!int : -1;
             foreach ( i; 0 .. timeline.layerLength + 10 ) {
                 auto o = timeline[ new LayerId(i) ];
                 lines_cache ~= new LayerLine( this, i, o );
