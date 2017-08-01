@@ -211,6 +211,7 @@ class EffectLine : Line
         {
             effect.propertiesOpened = !effect.propertiesOpened;
             cache.updateLinesCache;
+            cache.operation.processed;
             return true;
         }
 

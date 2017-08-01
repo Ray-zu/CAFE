@@ -10,7 +10,8 @@ import cafe.project.Project,
        cafe.project.timeline.Timeline,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.property.PropertyList,
-       cafe.gui.controls.timeline.Line;
+       cafe.gui.controls.timeline.Line,
+       cafe.gui.controls.timeline.Operation;
 import std.algorithm,
        std.conv;
 import dlangui;
@@ -28,6 +29,8 @@ class Cache
 
         Line[] lines_cache;
 
+        Operation op;
+
     public:
         @property project  () { return pro; }
         @property timeline () { return tl; }
@@ -38,13 +41,14 @@ class Cache
         uint headerWidth = 150;
         @property lines () { return lines_cache; }
 
-        PlaceableObject operatingObject = null;
+        @property operation () { return op; }
 
         this ( Project p, Timeline t )
         {
             pro = p;
             tl  = t;
             lines_cache = [];
+            op = new Operation( t );
         }
 
         /+ グリッド関連のキャッシュを更新 +/

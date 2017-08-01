@@ -103,27 +103,32 @@ class LinesCanvas : CanvasWidget
             auto ppf  = cache.pxPerFrame;
             auto left = e.button == MouseButton.Left;
 
+            auto trans_ev = dragging;
             if ( left && e.action == MouseAction.ButtonDown ) {
                 // 左クリック押し始め
-                auto header = (e.x-pos.left) < cache.headerWidth && !dragging;
+                auto header = (e.x-pos.left) < cache.headerWidth;
                 auto line   = cache.lines[line_id];
                 if ( header )
                     line.onHeaderLeftClicked;
                 else {
                     auto f = st + ((e.x-pos.left)/ppf).to!int;
-                    if ( !line.onContentLeftClicked( f ) )
-                        parent.childById( "grid" ).onMouseEvent( e );
-                    dragging = true;
+                    line.onContentLeftClicked( f );
                 }
+                trans_ev = !cache.operation.isOperating;
+                dragging = true;
 
             } else if ( left && e.action == MouseAction.ButtonUp ) {
                 // 左クリック押し終わり
+                trans_ev = !cache.operation.isOperating;
                 dragging = false;
-                cache.operatingObject = null;
+                cache.operation.clear;
 
             } else if ( e.action == MouseAction.Move ) {
                 // カーソル動いた
+                trans_ev = !cache.operation.isOperating && dragging;
+
             }
+            if ( trans_ev ) parent.childById( "grid" ).onMouseEvent( e );
 
             super.onMouseEvent( e );
             return true;
