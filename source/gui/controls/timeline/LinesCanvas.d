@@ -103,7 +103,7 @@ class LinesCanvas : CanvasWidget
             auto st   = cache.timeline.leftFrame;
             auto ppf  = cache.pxPerFrame;
             auto left = e.button == MouseButton.Left;
-            auto f    = st + ((e.x-pos.left)/ppf).to!int;
+            auto f    = st + ((e.x-pos.left-cache.headerWidth)/ppf).to!int;
 
             auto trans_ev = dragging;
             if ( left && e.action == MouseAction.ButtonDown ) {
