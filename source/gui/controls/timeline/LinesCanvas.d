@@ -117,7 +117,7 @@ class LinesCanvas : CanvasWidget
                 trans_ev = !cache.operation.isOperating;
                 dragging = true;
 
-            } else if ( left && e.action == MouseAction.ButtonUp ) {
+            } else if ( (left && e.action == MouseAction.ButtonUp) || e.action == MouseAction.Cancel ) {
                 // 左クリック押し終わり
                 trans_ev = !cache.operation.isOperating;
                 dragging = false;

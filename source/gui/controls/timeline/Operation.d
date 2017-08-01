@@ -6,9 +6,11 @@
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.Operation;
 import cafe.project.Project,
+       cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.Timeline,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.property.Property,
+       cafe.gui.controls.timeline.Cache,
        cafe.gui.controls.timeline.Line;
 import dlangui;
 
@@ -22,34 +24,62 @@ class Operation
     }
 
     private:
-        Timeline timeline;
-        State    state;
+        Cache cache;
+        State state;
 
         PlaceableObject operating_object   = null;
         Property        operating_property = null;
-        bool            operated           = false;
+
+        void moveObj ( uint f, uint l )
+        {
+            auto line = cache.lines[l];
+            auto obj  = operating_object;
+
+            if ( line.layerIndex == -1 )
+                moveObj( f, l+1 );
+            else {
+                obj.place.frame.move( new FrameAt( f ) );
+                obj.place.layer.value = l;
+            }
+        }
+
+        auto moveProp ( uint f, uint l )
+        {
+            auto line = cache.lines[l];
+            auto prop = operating_property;
+            // TODO
+        }
 
     public:
         @property isOperating ()
         {
-            return operating_object || operating_property || operated;
+            return state != State.None;
         }
 
-        this ( Timeline tl )
+        this ( Cache c )
         {
-            timeline = tl;
+            cache = c;
             state = State.None;
         }
 
         auto clear ()
         {
+            state              = State.None;
             operating_object   = null;
             operating_property = null;
-            operated           = false;
         }
 
-        auto processed ()
+        auto clicking ()
         {
-            operated = true;
+            state = State.Clicking;
+        }
+
+        auto move ( uint f, uint l )
+        {
+            if ( state == State.Clicking ) state = State.Dragging;
+            if ( state == State.Dragging ) {
+                if ( operating_object   ) moveObj ( f, l );
+                if ( operating_property ) moveProp( f, l );
+            }
         }
 }

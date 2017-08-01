@@ -48,7 +48,7 @@ class Cache
             pro = p;
             tl  = t;
             lines_cache = [];
-            op = new Operation( t );
+            op = new Operation( this );
         }
 
         /+ グリッド関連のキャッシュを更新 +/
