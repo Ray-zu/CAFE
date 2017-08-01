@@ -8,6 +8,7 @@ module cafe.gui.controls.timeline.Line;
 import cafe.gui.utils.Font,
        cafe.gui.utils.Rect,
        cafe.gui.controls.timeline.Cache,
+       cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.property.Property,
        cafe.project.timeline.effect.Effect;
@@ -109,6 +110,19 @@ class LayerLine : Line
                             o is sel ? Rect(2,2,2,2) : Rect(1,1,1,1) );
                 }
             }
+        }
+
+        override bool onContentLeftClicked ( uint f )
+        {
+            auto index = objs.countUntil!
+                ( x => x.place.frame.isInRange( new FrameAt(f) ) );
+            auto obj = (index >= 0 ? objs[index] : null);
+            if ( obj ) {
+                cache.operation.operatingObject = obj;
+                cache.operation.frameOffset = f - obj.place.frame.start.value;
+                cache.operation.clicking;
+                return true;
+            } else return false;
         }
 }
 

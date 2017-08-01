@@ -27,30 +27,34 @@ class Operation
         Cache cache;
         State state;
 
-        PlaceableObject operating_object   = null;
-        Property        operating_property = null;
-
         void moveObj ( uint f, uint l )
         {
             auto line = cache.lines[l];
-            auto obj  = operating_object;
+            auto obj  = operatingObject;
+            auto rf   = f.to!int - frameOffset;
 
             if ( line.layerIndex == -1 )
                 moveObj( f, l+1 );
             else {
-                obj.place.frame.move( new FrameAt( f ) );
+                obj.place.frame.move( new FrameAt( rf ) );
                 obj.place.layer.value = l;
+                cache.updateLinesCache;
             }
         }
 
         auto moveProp ( uint f, uint l )
         {
             auto line = cache.lines[l];
-            auto prop = operating_property;
+            auto prop = operatingProperty;
             // TODO
         }
 
     public:
+        PlaceableObject operatingObject   = null;
+        Property        operatingProperty = null;
+
+        int frameOffset = 0;
+
         @property isOperating ()
         {
             return state != State.None;
@@ -64,9 +68,10 @@ class Operation
 
         auto clear ()
         {
-            state              = State.None;
-            operating_object   = null;
-            operating_property = null;
+            state             = State.None;
+            operatingObject   = null;
+            operatingProperty = null;
+            frameOffset = 0;
         }
 
         auto clicking ()
@@ -78,8 +83,8 @@ class Operation
         {
             if ( state == State.Clicking ) state = State.Dragging;
             if ( state == State.Dragging ) {
-                if ( operating_object   ) moveObj ( f, l );
-                if ( operating_property ) moveProp( f, l );
+                if ( operatingObject   ) moveObj ( f, l );
+                if ( operatingProperty ) moveProp( f, l );
             }
         }
 }

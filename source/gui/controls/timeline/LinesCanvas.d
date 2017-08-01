@@ -92,16 +92,17 @@ class LinesCanvas : CanvasWidget
         {
             auto line_id = delegate ()
             {
-                auto ry = e.y - pos.top;// - topHiddenPx;
+                auto ry = e.y - pos.top - topHiddenPx;
                 auto i  = cache.timeline.topLineIndex.to!int;
                 auto h  = 0;
                 while ( h < ry && i < cache.lines.length )
                     h += (cache.lines[i++].heightMag * baseLineHeight).to!int;
-                return h < ry ? -1 : i-1;
+                return max( 0, min( cache.lines.length, h < ry ? -1 : i-1 ) );
             }();
             auto st   = cache.timeline.leftFrame;
             auto ppf  = cache.pxPerFrame;
             auto left = e.button == MouseButton.Left;
+            auto f    = st + ((e.x-pos.left)/ppf).to!int;
 
             auto trans_ev = dragging;
             if ( left && e.action == MouseAction.ButtonDown ) {
@@ -111,7 +112,6 @@ class LinesCanvas : CanvasWidget
                 if ( header )
                     line.onHeaderLeftClicked;
                 else {
-                    auto f = st + ((e.x-pos.left)/ppf).to!int;
                     line.onContentLeftClicked( f );
                 }
                 trans_ev = !cache.operation.isOperating;
@@ -125,6 +125,7 @@ class LinesCanvas : CanvasWidget
 
             } else if ( e.action == MouseAction.Move ) {
                 // カーソル動いた
+                cache.operation.move( f, line_id );
                 trans_ev = !cache.operation.isOperating && dragging;
 
             }
