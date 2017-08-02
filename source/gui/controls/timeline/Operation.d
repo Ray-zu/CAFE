@@ -19,8 +19,11 @@ class Operation
 {
     enum State {
         None,
+
         Clicking,
-        Dragging
+        Dragging,
+
+        Processed
     }
 
     private:
@@ -55,7 +58,18 @@ class Operation
 
         int frameOffset = 0;
 
-        @property isOperating ()
+        /+ 編集操作中かどうか +/
+        @property isProcessing ()
+        {
+            return state != State.None && state != State.Processed;
+        }
+        /+ 既にイベント処理が終わっているかどうか +/
+        @property isProcessed ()
+        {
+            return state == State.Processed;
+        }
+        /+ イベントがハンドルされたかどうか +/
+        @property isHandled ()
         {
             return state != State.None;
         }
@@ -74,9 +88,14 @@ class Operation
             frameOffset = 0;
         }
 
+        auto processed ()
+        {
+            if ( !isHandled ) state = State.Processed;
+        }
+
         auto clicking ()
         {
-            state = State.Clicking;
+            if ( !isHandled ) state = State.Clicking;
         }
 
         auto move ( uint f, uint l )

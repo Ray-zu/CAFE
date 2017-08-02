@@ -91,6 +91,7 @@ class LinesCanvas : CanvasWidget
 
         override bool onMouseEvent ( MouseEvent e )
         {
+            /+ 関連データ取得 +/
             auto line_id = delegate ()
             {
                 auto ry = e.y - pos.top - topHiddenPx;
@@ -105,7 +106,9 @@ class LinesCanvas : CanvasWidget
             auto left = e.button == MouseButton.Left;
             auto f    = st + ((e.x-pos.left-cache.headerWidth)/ppf).to!int;
 
-            auto trans_ev = dragging;
+            auto trans_ev   = dragging;
+            auto redraw_obj = false;
+
             if ( left && e.action == MouseAction.ButtonDown ) {
                 // 左クリック押し始め
                 auto header = (e.x-pos.left) < cache.headerWidth;
@@ -115,23 +118,27 @@ class LinesCanvas : CanvasWidget
                 else {
                     line.onContentLeftClicked( f );
                 }
-                trans_ev = !cache.operation.isOperating;
-                dragging = true;
+                dragging   = true;
+                trans_ev   = !cache.operation.isHandled;
+                redraw_obj = cache.operation.isProcessing;
 
             } else if ( (left && e.action == MouseAction.ButtonUp) || e.action == MouseAction.Cancel ) {
                 // 左クリック押し終わり
-                trans_ev = !cache.operation.isOperating;
-                dragging = false;
+                dragging   = false;
+                trans_ev   = !cache.operation.isHandled;
+                redraw_obj = cache.operation.isProcessing;
                 cache.operation.release( f );
 
             } else if ( e.action == MouseAction.Move ) {
                 // カーソル動いた
                 cache.operation.move( f, line_id );
-                trans_ev = !cache.operation.isOperating && dragging;
+                trans_ev   = !cache.operation.isHandled && dragging;
+                redraw_obj = cache.operation.isProcessing;
 
             }
             if ( trans_ev ) parent.childById( "grid" ).onMouseEvent( e );
-            window.mainWidget.handleAction( Action_ObjectRefresh );
+
+            if ( redraw_obj ) window.mainWidget.handleAction( Action_ObjectRefresh );
 
             super.onMouseEvent( e );
             return true;
