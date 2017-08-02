@@ -111,8 +111,14 @@ class Operation
         {
             if ( state == State.Clicking ) {
                 if ( operatingObject ) {
+                    // オブジェクトを左クリック
                     cache.timeline.selecting = cache.timeline
                         .selecting is operatingObject ? null : operatingObject;
+                    cache.updateLinesCache;
+
+                } else if ( operatingProperty ) {
+                    // プロパティを左クリック
+                    operatingProperty.graphOpened = !operatingProperty.graphOpened;
                     cache.updateLinesCache;
                 }
             }

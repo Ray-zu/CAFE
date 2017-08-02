@@ -133,28 +133,11 @@ class PropertyLine : Line
     enum MPSize = 12;
 
     private:
+        Style    style;
         Property property;
 
-    public:
-        override @property float heightMag ()
+        void drawNormal ( DrawBuf b, Rect r )
         {
-            return 0.7;
-        }
-
-        override @property bool needBorder () { return false; }
-
-        this ( Cache c, string n, Property p )
-        {
-            super( c, n );
-            property = p;
-        }
-
-        override void drawContent ( DrawBuf b, Rect r )
-        {
-            auto style = currentTheme.get( ContentStyle );
-            if ( style.backgroundDrawable )
-                style.backgroundDrawable.drawTo( b, r );
-
             auto st     = cache.timeline.leftFrame;
             auto ppf    = cache.pxPerFrame;
             auto parent = cache.timeline.selecting.place.frame.start.value.to!int;
@@ -171,6 +154,40 @@ class PropertyLine : Line
             property.middlePoints.each!
                 ( x => drawMiddlePoint( x.frame.start.value ) );
             drawMiddlePoint( property.frame.value );
+        }
+
+        void drawGraph ( DrawBuf b, Rect r )
+        {
+        }
+
+    public:
+        override @property float heightMag ()
+        {
+            return property.graphOpened ? 3 : 0.7;
+        }
+
+        override @property bool needBorder () { return false; }
+
+        this ( Cache c, string n, Property p )
+        {
+            super( c, n );
+            property = p;
+        }
+
+        override void drawContent ( DrawBuf b, Rect r )
+        {
+            style = currentTheme.get( ContentStyle );
+            if ( style.backgroundDrawable )
+                style.backgroundDrawable.drawTo( b, r );
+
+            property.graphOpened ? drawGraph( b, r ) : drawNormal( b, r );
+        }
+
+        override bool onHeaderLeftClicked ()
+        {
+            cache.operation.operatingProperty = property;
+            cache.operation.clicking;
+            return true;
         }
 }
 
