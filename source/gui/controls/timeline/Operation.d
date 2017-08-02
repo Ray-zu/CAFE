@@ -39,12 +39,13 @@ class Operation
             auto line = cache.lines[l];
             auto obj  = operatingObject;
             auto rf   = f.to!int - frameOffset;
+            rf = max( 0, min( rf, cache.timeline.length.value-1 ) );
 
             if ( line.layerIndex == -1 )
                 moveObj( f, l+1 );
             else {
                 obj.place.frame.move( new FrameAt( rf ) );
-                obj.place.layer.value = l;
+                obj.place.layer.value = line.layerIndex;
                 cache.updateLinesCache;
             }
         }

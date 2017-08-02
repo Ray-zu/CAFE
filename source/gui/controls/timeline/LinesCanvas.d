@@ -114,10 +114,11 @@ class LinesCanvas : CanvasWidget
                     h += (cache.lines[i++].heightMag * baseLineHeight).to!int;
                 return max( 0, min( cache.lines.length, h < ry ? -1 : i-1 ) );
             }();
-            auto st   = cache.timeline.leftFrame;
+            auto st   = cache.timeline.leftFrame.to!int;
             auto ppf  = cache.pxPerFrame;
             auto left = e.button == MouseButton.Left;
-            auto f    = st + ((e.x-pos.left-cache.headerWidth)/ppf).to!int;
+            auto f    = st + ((e.x-pos.left-cache.headerWidth.to!int)/ppf).to!int;
+            f = max( 0, min( f, cache.timeline.length.value-1 ) );
 
             auto trans_ev   = dragging;
             auto redraw_obj = false;
