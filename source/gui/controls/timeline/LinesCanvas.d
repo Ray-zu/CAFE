@@ -97,7 +97,8 @@ class LinesCanvas : CanvasWidget
 
             if ( cf >= st && cf < ed ) {
                 auto x = pos.left + cache.headerWidth + ((cf-st)*ppf).to!int;
-                b.drawLine( Point(x,pos.top), Point(x,pos.bottom), 0xffffff );
+                auto col = style.customColor( "timeline_line_canvas_current_frame" );
+                b.drawLine( Point(x,pos.top), Point(x,pos.bottom), col );
             }
         }
 

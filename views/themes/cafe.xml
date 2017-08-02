@@ -330,6 +330,7 @@
 
     <style id="TIMELINE_LINES_CANVAS"
         textColor="#00888888">
+        <color id="timeline_line_canvas_current_frame" value="#00999999" />
     </style>
 
     <style id="TIMELINE_LINE_HEADER"
