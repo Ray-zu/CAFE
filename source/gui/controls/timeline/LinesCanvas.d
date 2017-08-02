@@ -62,6 +62,7 @@ class LinesCanvas : CanvasWidget
             super.onDraw( b );
             if ( !cache.timeline ) return;
 
+            /+ ライン描画 +/
             auto top = cache.timeline.topLineIndex.to!int;
             auto y   = -topHiddenPx;
             foreach ( l; cache.lines[top .. $] ) {
@@ -87,6 +88,18 @@ class LinesCanvas : CanvasWidget
             }
             b.drawLine( Point(pos.left,pos.top+y),
                     Point(pos.right,pos.top+y), textColor );
+
+            /+ カレントフレーム表示 +/
+            auto st  = cache.timeline.leftFrame;
+            auto ed  = cache.timeline.rightFrame;
+            auto ppf = cache.pxPerFrame;
+            auto cf  = cache.timeline.frame.value;
+
+            if ( cf >= st && cf < ed ) {
+                auto x = pos.left + cache.headerWidth + ((cf-st)*ppf).to!int;
+                Log.i( cf-st );
+                b.drawLine( Point(x,pos.top), Point(x,pos.bottom), 0xffffff );
+            }
         }
 
         override bool onMouseEvent ( MouseEvent e )
