@@ -120,7 +120,14 @@ class LayerLine : Line
             if ( obj ) {
                 cache.operation.operatingObject = obj;
                 cache.operation.frameOffset = f - obj.place.frame.start.value;
-                cache.operation.clicking;
+
+                auto state = cache.operation.State.Clicking;
+                if ( f == obj.place.frame.start.value )
+                    state = cache.operation.State.ResizingStart;
+                if ( f == obj.place.frame.end.value-1 )
+                    state = cache.operation.State.ResizingEnd;
+
+                cache.operation.clicking( state );
                 return true;
             } else return false;
         }

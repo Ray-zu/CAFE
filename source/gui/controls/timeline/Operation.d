@@ -23,6 +23,9 @@ class Operation
         Clicking,
         Dragging,
 
+        ResizingStart,
+        ResizingEnd,
+
         Processed
     }
 
@@ -93,9 +96,9 @@ class Operation
             if ( !isHandled ) state = State.Processed;
         }
 
-        auto clicking ()
+        auto clicking ( State s = State.Clicking )
         {
-            if ( !isHandled ) state = State.Clicking;
+            if ( !isHandled ) state = s;
         }
 
         auto move ( uint f, uint l )
@@ -104,6 +107,9 @@ class Operation
             if ( state == State.Dragging ) {
                 if ( operatingObject   ) moveObj ( f, l );
                 if ( operatingProperty ) moveProp( f, l );
+            }
+            if ( state == State.ResizingStart ) {
+                if ( operatingObject ) {}
             }
         }
 
