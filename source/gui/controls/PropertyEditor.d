@@ -51,7 +51,7 @@ class PropertyEditor : VerticalLayout
                 auto f = project.componentList.selecting.timeline.frame.value.to!int -
                     cached_obj.place.frame.start.value.to!int;
                 f = min( cached_obj.place.frame.length.value.to!int-1, max( 0, f ) );
-                upflag = upflag || f == cached_frame;
+                upflag = upflag || f != cached_frame;
                 cached_frame = f;
 
                 if ( upflag ) {
