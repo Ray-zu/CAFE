@@ -97,7 +97,6 @@ class LinesCanvas : CanvasWidget
 
             if ( cf >= st && cf < ed ) {
                 auto x = pos.left + cache.headerWidth + ((cf-st)*ppf).to!int;
-                Log.i( cf-st );
                 b.drawLine( Point(x,pos.top), Point(x,pos.bottom), 0xffffff );
             }
         }
