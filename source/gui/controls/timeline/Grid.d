@@ -86,10 +86,11 @@ class TimelineGrid : CanvasWidget
             }
 
             if ( dragging ) {
+                auto temp = cache.timeline.frame.value;
                 auto f = cache.xToFrame( e.x - pos.left );
-                if ( cache.timeline.frame.value != f )
-                    window.mainWidget.handleAction( Action_ChangeFrame );
                 cache.timeline.frame.value = f;
+
+                if ( temp != f ) window.mainWidget.handleAction( Action_ChangeFrame );
             }
             return super.onMouseEvent( e );
         }
