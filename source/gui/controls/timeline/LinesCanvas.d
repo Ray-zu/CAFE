@@ -94,9 +94,9 @@ class LinesCanvas : CanvasWidget
             /+ 関連データ取得 +/
             auto line_id = delegate ()
             {
-                auto ry = e.y - pos.top - topHiddenPx;
+                auto ry = e.y - pos.top;
                 auto i  = cache.timeline.topLineIndex.to!int;
-                auto h  = 0;
+                auto h  = -topHiddenPx;
                 while ( h < ry && i < cache.lines.length )
                     h += (cache.lines[i++].heightMag * baseLineHeight).to!int;
                 return max( 0, min( cache.lines.length, h < ry ? -1 : i-1 ) );
