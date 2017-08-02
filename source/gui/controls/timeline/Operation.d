@@ -11,7 +11,8 @@ import cafe.project.Project,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.property.Property,
        cafe.gui.controls.timeline.Cache,
-       cafe.gui.controls.timeline.Line;
+       cafe.gui.controls.timeline.Line,
+       cafe.gui.controls.timeline.ObjectEditor;
 import dlangui;
 
 /+ タイムラインイベントのデータ受け渡しクラス +/
@@ -109,7 +110,8 @@ class Operation
                 if ( operatingProperty ) moveProp( f, l );
             }
             if ( state == State.ResizingStart ) {
-                if ( operatingObject ) {}
+                if ( operatingObject )
+                    operatingObject.resizeStart( new FrameAt(f) );
             }
         }
 

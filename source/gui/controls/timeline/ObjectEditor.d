@@ -8,6 +8,7 @@ module cafe.gui.controls.timeline.ObjectEditor;
 import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.Timeline,
        cafe.project.timeline.PlaceableObject,
+       cafe.project.timeline.property.PropertyList,
        cafe.project.timeline.property.Property,
        cafe.project.timeline.property.MiddlePoint,
        cafe.gui.controls.timeline.PropertyEditor;
@@ -64,7 +65,13 @@ class ObjectEditor
         void resizeDestroy ( int len )
         {
             enforce( len > 0, "Length must be 1 or more." );
-            obj.propertyList.properties.values.each!( x => x.resizeDestroy(len) );
+
+            void proc ( PropertyList ps )
+            {
+                ps.properties.values.each!( x => x.resizeDestroy(len) );
+            }
+            proc( obj.propertyList );
+            obj.effectList.effects.each!( x => proc( x.propertyList ) );
         }
 
         /+ 現在の設定でリサイズ +/
