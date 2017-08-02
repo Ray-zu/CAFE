@@ -104,14 +104,23 @@ class Operation
 
         auto move ( uint f, uint l )
         {
-            if ( state == State.Clicking ) state = State.Dragging;
-            if ( state == State.Dragging ) {
-                if ( operatingObject   ) moveObj ( f, l );
-                if ( operatingProperty ) moveProp( f, l );
-            }
-            if ( state == State.ResizingStart ) {
-                if ( operatingObject )
-                    operatingObject.resizeStart( new FrameAt(f) );
+            switch ( state ) with ( State ) {
+                case Clicking:
+                    state = Dragging;
+                    goto case;
+                case Dragging:
+                    if ( operatingObject   ) moveObj ( f, l );
+                    if ( operatingProperty ) moveProp( f, l );
+                    break;
+                case ResizingStart:
+                    if ( operatingObject )
+                        operatingObject.resizeStart( new FrameAt(f) );
+                    break;
+                case ResizingEnd:
+                    if ( operatingObject )
+                        operatingObject.resizeEnd( new FrameAt(f) );
+                    break;
+                default:
             }
         }
 
