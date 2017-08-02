@@ -158,6 +158,10 @@ class PropertyLine : Line
 
         void drawGraph ( DrawBuf b, Rect r )
         {
+            auto x = r.left + (r.right-r.left)/2;
+            auto y = r.top + (r.bottom-r.top)/2;
+            style.font.drawCenteredText( b, x,y,
+                    "Graph is Not Implemented", style.textColor );
         }
 
     public:
