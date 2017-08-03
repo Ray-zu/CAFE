@@ -7,9 +7,7 @@
 module cafe.gui.controls.timeline.LinesCanvas;
 import cafe.gui.Action,
        cafe.gui.utils.Rect,
-       cafe.gui.controls.Chooser,
-       cafe.gui.controls.timeline.Cache,
-       cafe.project.ObjectPlacingInfo;
+       cafe.gui.controls.timeline.Cache;
 import std.algorithm,
        std.conv,
        std.math;
@@ -116,11 +114,10 @@ class LinesCanvas : CanvasWidget
                     h += (cache.lines[i++].heightMag * baseLineHeight).to!int;
                 return max( 0, min( cache.lines.length, h < ry ? -1 : i-1 ) );
             }();
-            auto st    = cache.timeline.leftFrame.to!int;
-            auto ppf   = cache.pxPerFrame;
-            auto left  = e.button == MouseButton.Left;
-            auto right = e.button == MouseButton.Right;
-            auto f     = st + ((e.x-pos.left-cache.headerWidth.to!int)/ppf).to!int;
+            auto st   = cache.timeline.leftFrame.to!int;
+            auto ppf  = cache.pxPerFrame;
+            auto left = e.button == MouseButton.Left;
+            auto f    = st + ((e.x-pos.left-cache.headerWidth.to!int)/ppf).to!int;
             f = max( 0, min( f, cache.timeline.length.value-1 ) );
 
             auto trans_ev   = dragging;
@@ -151,16 +148,6 @@ class LinesCanvas : CanvasWidget
                 cache.operation.move( f, line_id );
                 trans_ev   = !cache.operation.isHandled && dragging;
                 redraw_obj = cache.operation.isProcessing;
-
-            } else if ( right && MouseAction.ButtonDown ) {
-                // 右クリック押し始め
-                auto layer = new LayerId( cache.lines[line_id].layerIndex );
-                auto frame = new FrameAt( f );
-                auto obj   = cache.timeline[frame,layer];
-                if ( obj ) {
-                } else {
-                    new Chooser( "hoge", window );
-                }
 
             }
             if ( trans_ev ) parent.childById( "grid" ).onMouseEvent( e );
