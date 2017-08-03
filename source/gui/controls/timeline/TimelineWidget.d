@@ -5,90 +5,110 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.TimelineWidget;
-import cafe.gui.controls.timeline.TimelineEditor,
-       cafe.gui.controls.timeline.TimelineCanvas,
-       cafe.project.timeline.custom.NullObject;
-import std.algorithm;
-import dlangui,
-       dlangui.widgets.metadata;
-
-mixin( registerWidgets!TimelineWidget );
+import cafe.project.Project,
+       cafe.project.timeline.Timeline,
+       cafe.gui.controls.timeline.Cache,
+       cafe.gui.controls.timeline.Grid,
+       cafe.gui.controls.timeline.LinesCanvas;
+import dlangui;
 
 /+ タイムラインウィジェット +/
 class TimelineWidget : VerticalLayout
 {
-    enum WheelMag = 5;
-    private:
-        TimelineEditor tl_editor;
-        TimelineCanvas tl_canvas;
+    enum VScrollMag = 10.0;
 
-        ScrollBar hscroll;
-        ScrollBar vscroll;
-
-        void wheel ( short delta, ushort key )
-        {
-            if ( key & KeyFlag.Control ) {
-                hscroll.pageSize = hscroll.pageSize - delta;
-
-            } else if ( key & KeyFlag.Shift ) {
-                auto npos = vscroll.position - delta*WheelMag;
-                npos = max( vscroll.minValue,
-                        min( npos, vscroll.maxValue - vscroll.pageSize ) );
-                vscroll.position = npos;
-
-            } else {
-                auto npos = hscroll.position - delta*WheelMag;
-                npos = max( hscroll.minValue,
-                       min( npos, hscroll.maxValue - hscroll.pageSize ) );
-                hscroll.position = npos;
-            }
-            invalidate;
+    enum HScrollLayout = q{
+        ScrollBar {
+            id:hscroll;
+            orientation:Horizontal
         }
-
-        auto onMouseEvent ( Widget w, MouseEvent e )
-        {
-            auto m = cast(TimelineWidget)w;
-            switch ( e.action )
-            {
-                case MouseAction.Wheel:
-                    m.wheel( e.wheelDelta, e.keyFlags );
-                    return true;
-
-                default:
-                    return false;
+    };
+    enum MainLayout = q{
+        HorizontalLayout {
+            layoutWidth:FILL_PARENT;
+            VerticalLayout {
+                HorizontalLayout {
+                    HSpacer { id:grid_spacer }
+                    TimelineGrid { id:grid }
+                }
+                LinesCanvas { id:canvas }
             }
+            ScrollBar { id:vscroll; orientation:Vertical }
+        }
+    };
+
+    private:
+        Cache cache;
+
+        ScrollBar    hscroll;
+        ScrollBar    vscroll;
+        TimelineGrid grid;
+        LinesCanvas  canvas;
+
+        auto hscrolled ( AbstractSlider = null, ScrollEvent e = null )
+        {
+            if ( !cache.timeline ) return false;
+            cache.timeline.leftFrame  = hscroll.position;
+            cache.timeline.rightFrame = cache.timeline.leftFrame + hscroll.pageSize;
+            invalidate;
+            return true;
+        }
+        auto vscrolled ( AbstractSlider = null, ScrollEvent e = null )
+        {
+            if ( !cache.timeline ) return false;
+            vscroll.setRange( 0, (cache.lines.length*VScrollMag).to!int );
+            vscroll.pageSize = VScrollMag.to!int;
+            cache.timeline.topLineIndex  = vscroll.position/VScrollMag;
+            invalidate;
+            return true;
         }
 
     public:
-        @property editor () { return tl_editor; }
-
-        this ( string id = "" )
+        this ( string id, Project p, Timeline t )
         {
             super( id );
-            mouseEvent = &onMouseEvent;
+            styleId = "TIMELINE";
             layoutWidth  = FILL_PARENT;
             layoutHeight = FILL_PARENT;
 
-            addChild( parseML( q{
-                ScrollBar {
-                    id:"hscroll";
-                    orientation:Horizontal
-                }
-            } ) );
-            addChild( parseML( q{
-                HorizontalLayout {
-                    TimelineCanvas { id:"canvas" }
-                    ScrollBar { id:"vscroll"; orientation:Vertical }
-                }
-            } ) );
+            cache = new Cache( p, t );
 
-            tl_canvas = cast(TimelineCanvas)childById( "canvas" );
-            hscroll   = cast(ScrollBar)childById( "hscroll" );
-            vscroll   = cast(ScrollBar)childById( "vscroll" );
+            addChild( parseML( HScrollLayout ) );
+            addChild( parseML( MainLayout ) );
 
-            tl_editor                  = new TimelineEditor( null );
-            tl_canvas.timeline         = tl_editor;
-            tl_canvas.verticalScroll   = vscroll;
-            tl_canvas.horizontalScroll = hscroll;
+            hscroll = cast(ScrollBar   )childById( "hscroll" );
+            vscroll = cast(ScrollBar   )childById( "vscroll" );
+            grid    = cast(TimelineGrid)childById( "grid" );
+            canvas  = cast(LinesCanvas )childById( "canvas" );
+
+            hscroll.position = 0;
+            vscroll.position = 0;
+            hscroll.scrollEvent = &hscrolled;
+            vscroll.scrollEvent = &vscrolled;
+
+            grid  .setCache( cache );
+            canvas.setCache( cache );
+
+            cache.updateLinesCache;
+            hscrolled; vscrolled;
+        }
+
+        override void invalidate ()
+        {
+            super.invalidate;
+            cache.updateGridCache( grid.pos );
+            grid.invalidate;
+        }
+
+        override void measure ( int w, int h )
+        {
+            childById("grid_spacer").minWidth = 150;
+            grid.minHeight = 50;
+            grid.minWidth  = w - 150;
+            canvas.minHeight = h;
+
+            super.measure( w, h );
+            cache.updateGridCache( grid.pos );
+            cache.headerWidth = childById("grid_spacer").width;
         }
 }

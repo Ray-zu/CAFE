@@ -318,6 +318,50 @@
     <style id="PROPERTY_EDITOR_INPUT"
         backgroundColor="#00444444">
     </style>
-    
+
+    <style id="TIMELINE"
+        backgroundColor="#00222222">
+    </style>
+
+    <style id="TIMELINE_GRID"
+        backgroundColor="#00444444"
+        textColor="#00999999">
+    </style>
+
+    <style id="TIMELINE_LINES_CANVAS"
+        textColor="#00888888">
+        <color id="timeline_line_canvas_current_frame" value="#00999999" />
+    </style>
+
+    <style id="TIMELINE_LINE_HEADER"
+        backgroundColor="#00444444">
+    </style>
+
+    <style id="TIMELINE_LAYER_LINE"
+        backgroundColor="#00333333"
+        textColor="#00888888"
+        padding="3,3,3,3">
+    </style>
+
+    <style id="TIMELINE_PROPERTY_LINE"
+        backgroundColor="#00333333"
+        textColor="#00888888">
+        <drawable id="tl_propline_mp" value="cafe_tl_propline_mp" />
+    </style>
+
+    <style id="TIMELINE_EFFECT_LINE"
+        backgroundColor="#00333333"
+        textColor="#00888888"
+        padding="3,3,3,3">
+    </style>
+
+    <style id="TIMELINE_UNCATEGORIZED_OBJECT"
+        backgroundColor="#00444466"
+        padding="5,5,5,5">
+    </style>
+
+    <style id="TIMELINE_UNCATEGORIZED_EFFECT"
+        backgroundColor="#00447744">
+    </style>
 
 </theme>
