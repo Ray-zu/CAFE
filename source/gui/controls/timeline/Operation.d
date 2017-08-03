@@ -13,6 +13,7 @@ import cafe.project.Project,
        cafe.gui.controls.timeline.Cache,
        cafe.gui.controls.timeline.Line,
        cafe.gui.controls.timeline.ObjectEditor;
+import std.algorithm;
 import dlangui;
 
 /+ タイムラインイベントのデータ受け渡しクラス +/
