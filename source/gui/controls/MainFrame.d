@@ -56,12 +56,14 @@ class MainFrame : AppFrame
         {
             auto p = Cafe.instance.curProject;
             timeline.project = p;
+            tabs.propertyEditor.project = p;
 
             if ( p ) {
             } else {
                 new StartPanel( window );
             }
             handleAction( Action_PreviewRefresh );
+            handleAction( Action_ObjectRefresh  );
             return true;
         }
 
@@ -153,15 +155,20 @@ class MainFrame : AppFrame
         {
             import cafe.gui.Action;
             if ( a ) {
-                switch ( a.id ) {
-                    case EditorActions.ProjectNew:
+                switch ( a.id ) with( EditorActions ) {
+                    case ProjectNew:
                         new ProjectCreationPanel( window );
                         return true;
-                    case EditorActions.ProjectRefresh:
+                    case ProjectRefresh:
                         return projectRefresh;
-                    case EditorActions.PreviewRefresh:
+                    case PreviewRefresh:
                         return preview.handleAction( a );
-                    case EditorActions.AddFrag:
+                    case ObjectRefresh:
+                        tabs.propertyEditor.updateWidgets;
+                        return true;
+                    case ChangeFrame:
+                        return handleAction( Action_ObjectRefresh );
+                    case AddFrag:
                         return fragexp.handleAction( a );
 
                     default:

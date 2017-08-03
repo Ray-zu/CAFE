@@ -6,6 +6,7 @@
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.PropertyEditor;
 import cafe.project.ObjectPlacingInfo,
+       cafe.project.Project,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.property.Property,
        cafe.project.timeline.property.PropertyList;
@@ -20,34 +21,47 @@ mixin( registerWidgets!PropertyEditor );
 class PropertyEditor : VerticalLayout
 {
     private:
-        PlaceableObject obj;
+        Project pro;
+
+        PlaceableObject cached_obj = null;
+        uint cached_frame = 0;
 
     public:
-        @property object () { return obj; }
-        @property object ( PlaceableObject o )
+        @property project () { return pro; }
+        @property project ( Project p )
         {
-            obj = o;
+            pro = p;
             updateWidgets;
         }
 
         this ( string id = "" )
         {
             super( id );
-
-            // TODO test
-            import cafe.project.timeline.custom.NullObject;
-            object = new NullObject( new ObjectPlacingInfo( new LayerId(0),
-                        new FramePeriod( new FrameLength(100), new FrameAt(0), new FrameLength(50) ) ) );
+            styleId = "PROPERTY_EDITOR";
         }
 
         void updateWidgets ()
         {
-            removeAllChildren;
-            if ( object ) {
-                addChild( new GroupPanelFrame( object.propertyList, object.name ) );
-                object.effectList.effects.each!
-                    ( x => addChild( new GroupPanelFrame( x.propertyList, x.name ) ) );
-            }
+            if ( !project ) return;
+
+            auto upflag = cached_obj !is project.selectingObject;
+            cached_obj = project.selectingObject;
+
+            if ( cached_obj ) {
+                auto f = project.componentList.selecting.timeline.frame.value.to!int -
+                    cached_obj.place.frame.start.value.to!int;
+                f = min( cached_obj.place.frame.length.value.to!int-1, max( 0, f ) );
+                upflag = upflag || f != cached_frame;
+                cached_frame = f;
+
+                if ( upflag ) {
+                    auto fat = new FrameAt( f.to!uint );
+                    removeAllChildren;
+                    addChild( new GroupPanelFrame( cached_obj.propertyList, cached_obj.name, fat ) );
+                    cached_obj.effectList.effects.each!
+                        ( x => addChild( new GroupPanelFrame( x.propertyList, x.name, fat ) ) );
+                }
+            } else removeAllChildren;
             invalidate;
         }
 }
@@ -58,8 +72,9 @@ private class GroupPanelFrame : VerticalLayout
     enum HeaderLayout = q{
         HorizontalLayout {
             layoutWidth:FILL_PARENT;
+            styleId:PROPERTY_EDITOR_GROUP_HEADER;
             HSpacer {}
-            TextWidget { id:header; styleId:PROPERTY_EDITOR_GROUP_HEADER; fontSize:16 }
+            TextWidget { id:header; fontSize:16 }
             HSpacer {}
             ImageWidget { id:shrink; drawableId:move_behind; }
         }
@@ -69,14 +84,14 @@ private class GroupPanelFrame : VerticalLayout
         PropertyPanel panel;
 
     public:
-        this ( PropertyList l, string title )
+        this ( PropertyList l, string title, FrameAt f )
         {
             super();
             margins = Rect( 5, 5, 5, 5 );
             padding = Rect( 5, 5, 5, 5 );
 
             addChild( parseML(HeaderLayout) );
-            panel = cast(PropertyPanel)addChild( new PropertyPanel( l ) );
+            panel = cast(PropertyPanel)addChild( new PropertyPanel( l, f ) );
 
             childById( "header" ).text = title.to!dstring;
             childById( "shrink" ).mouseEvent = delegate ( Widget w, MouseEvent e )
@@ -96,12 +111,10 @@ private class PropertyPanel : VerticalLayout
 {
     private:
         PropertyList props;
+        FrameAt frame;
 
         void addProperty ( Property p, string name )
         {
-            // TODO test
-            auto frame = new FrameAt(0);
-
             addChild( new TextWidget( "", name.to!dstring ) );
 
             auto l = addChild( new HorizontalLayout );
@@ -111,7 +124,14 @@ private class PropertyPanel : VerticalLayout
                     new EditBox( name ) : new EditLine( name ) );
             l.addChild( new HSpacer );
 
+            input.styleId  = "PROPERTY_EDITOR_INPUT";
             input.minWidth = 200;
+            if ( p.allowMultiline )
+                input.minHeight = 100;
+            else {
+                input.padding = Rect( 2,2,2,2 );
+            }
+
             input.text = p.getString( frame ).to!dstring;
             input.contentChange = delegate ( EditableContent e )
             {
@@ -120,10 +140,11 @@ private class PropertyPanel : VerticalLayout
         }
 
     public:
-        this ( PropertyList p )
+        this ( PropertyList p, FrameAt f )
         {
             super();
             props = p;
+            frame = f;
             updateWidgets;
         }
 

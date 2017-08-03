@@ -47,6 +47,13 @@ class Project
             fps = j["fps"].uinteger.to!uint;
         }
 
+        @property selectingObject ()
+        {
+            return componentList.selecting ?
+                componentList.selecting.timeline.selecting :
+                null ;
+        }
+
         /+ JSON出力 +/
         @property json ()
         {

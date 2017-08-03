@@ -11,6 +11,7 @@ import cafe.project.timeline.property.PropertyList,
        cafe.renderer.World;
 import std.algorithm,
        std.json;
+import dlangui;
 
 debug = 0;
 
@@ -22,7 +23,14 @@ abstract class Effect : PropertyKeepableObject
         PropertyList props;
 
     public:
+        bool propertiesOpened;
+
         @property string name ();
+
+        @property styleId ()
+        {
+            return "TIMELINE_UNCATEGORIZED_EFFECT";
+        }
 
         override @property PropertyList propertyList ()
         {
@@ -34,17 +42,20 @@ abstract class Effect : PropertyKeepableObject
         this ( Effect src, FrameLength f )
         {
             props = new PropertyList( src.propertyList, f );
+            propertiesOpened = src.propertiesOpened;
         }
 
         this ( FrameLength f )
         {
             props = new PropertyList;
             initProperties(f);
+            propertiesOpened = false;
         }
 
         this ( JSONValue j, FrameLength f )
         {
             props = new PropertyList( j["properties"], f );
+            propertiesOpened = j["propertiesOpened"].type == JSON_TYPE.TRUE;
         }
 
         override void initProperties ( FrameLength )
@@ -57,7 +68,15 @@ abstract class Effect : PropertyKeepableObject
             auto j = JSONValue( null );
             j["name"]       = JSONValue(name);
             j["properties"] = JSONValue(propertyList.json);
+            j["propertiesOpened"] = JSONValue( propertiesOpened );
             return j;
+        }
+
+        void draw ( DrawBuf b, Rect r )
+        {
+            auto style = currentTheme.get( styleId );
+            if ( style.backgroundDrawable )
+                style.backgroundDrawable.drawTo( b, r );
         }
 
         /+ Worldクラスにエフェクトをかける +/

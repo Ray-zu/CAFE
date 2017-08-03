@@ -47,6 +47,10 @@ interface Property
         void  setFloat ( FrameAt, float );
         float getFloat ( FrameAt );
 
+        /+ タイムライン上でグラフ表示するかどうか +/
+        @property bool graphOpened ();
+        @property void graphOpened ( bool );
+
         /+ プロパティが数値かどうか +/
         @property bool increasable ();
         /+ プロパティの文字列変換で、複数行文字列を許可するかどうか +/
@@ -96,6 +100,7 @@ class PropertyBase (T) : Property
         FrameLength         frame_len;
         MiddlePointBase!T[] middle_points; // MiddlePointBase!T型で取得したい場合はプロパティではなく変数を参照する
         T                   end_value;
+        bool                gopened;
 
         /+ 次の中間点を返す(最後の中間点だった場合はnullが返る) +/
         @property nextMiddlePoint ( MiddlePoint mp )
@@ -178,6 +183,7 @@ class PropertyBase (T) : Property
             foreach ( mp; src.middle_points )
                 middle_points ~= new MiddlePointBase!T( mp, f );
             end_value = src.endValue;
+            gopened = src.gopened;
         }
 
         this ( FrameLength f, T v )
@@ -186,6 +192,7 @@ class PropertyBase (T) : Property
             middle_points ~= new MiddlePointBase!T( v,
                     new FramePeriod( f, new FrameAt(0), new FrameLength(f.value) ) );
             end_value = v;
+            gopened = false;
         }
 
         /+ 中間点JSON配列から作成 +/
@@ -197,6 +204,7 @@ class PropertyBase (T) : Property
                             MiddlePoint.create( typeToString, x, f )
                      );
             end_value = v;
+            gopened = false;
         }
 
         override MiddlePoint middlePointAtFrame ( FrameAt f )
@@ -279,6 +287,16 @@ class PropertyBase (T) : Property
             static if ( isNumeric!T )
                 return get( f );
             else throw new Exception( "The property isn't increasable." );
+        }
+
+        override @property bool graphOpened ()
+        {
+            return gopened && increasable;
+        }
+
+        override @property void graphOpened ( bool g )
+        {
+            gopened = g;
         }
 
         override @property bool increasable ()

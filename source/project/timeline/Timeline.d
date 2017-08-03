@@ -21,7 +21,15 @@ class Timeline
         PlaceableObject[] objs;
         FrameLength frame_len;
 
+        /+ 編集情報 +/
+        FrameAt current_frame;
     public:
+        PlaceableObject selecting = null;
+        uint  leftFrame  = 0;
+        uint  rightFrame = 100;
+        float topLineIndex = 0;
+        @property frame () { return current_frame; }
+
         @property objects () { return objs;      }
         @property length  () { return frame_len; }
 
@@ -29,12 +37,14 @@ class Timeline
         {
             src.objects.each!( x => objs ~= x.copy );
             frame_len = new FrameLength( src.length );
+            current_frame = new FrameAt( src.frame );
         }
 
         this ( FrameLength f = new FrameLength(1) )
         {
             objs = [];
             frame_len = f;
+            current_frame = new FrameAt(0);
         }
 
         this ( JSONValue j )
@@ -42,15 +52,19 @@ class Timeline
             frame_len = new FrameLength( j["length"].uinteger.to!uint );
             j["objects"].array.each!
                 ( x => objs ~= PlaceableObject.create( x, frame_len ) );
+            current_frame = new FrameAt( j["frame"].uinteger.to!uint );
+            leftFrame  = j["leftFrame" ].uinteger.to!uint;
+            rightFrame = j["rightFrame"].uinteger.to!uint;
+            topLineIndex = j["topLineIndex"].floating;
         }
 
         /+ オブジェクトの配置されている最大のレイヤ数を返す +/
         @property layerLength ()
         {
             auto r = objects.length ?
-                objects.maxElement!"a.place.layer.value".place.layer.value:
+                objects.maxElement!"a.place.layer.value".place.layer.value+1:
                 0;
-            return new LayerId( r );
+            return r;
         }
 
         /+ objを削除 +/
@@ -120,6 +134,10 @@ class Timeline
             objects.each!( x => objs ~= x.json );
             j["objects"] = JSONValue( objs );
 
+            j["frame"] = JSONValue( frame.value );
+            j["leftFrame" ] = JSONValue( leftFrame  );
+            j["rightFrame"] = JSONValue( rightFrame );
+            j["topLineIndex"] = JSONValue( topLineIndex );
             return j;
         }
 

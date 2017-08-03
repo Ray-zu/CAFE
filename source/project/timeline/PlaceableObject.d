@@ -25,8 +25,12 @@ abstract class PlaceableObject : PropertyKeepableObject
 
     public:
         @property string typeStr ();
-        /+ オブジェクトの表示名 +/
         @property string name ();
+
+        @property string styleId ()
+        {
+            return "TIMELINE_UNCATEGORIZED_OBJECT";
+        }
 
         @property place () { return opi; }
 
@@ -80,9 +84,16 @@ abstract class PlaceableObject : PropertyKeepableObject
         }
 
         /+ 指定された画像バッファにタイムラインのオブジェクト画像を描画 +/
-        void draw ( DrawBuf b )
+        void draw ( DrawBuf b, Rect r )
         {
-            b.fill( 0x333388 );
+            auto style = currentTheme.get( styleId );
+            if ( style.backgroundDrawable )
+                style.backgroundDrawable.drawTo( b, r );
+
+            import cafe.gui.utils.Font;
+            auto x = r.left + style.padding.left;
+            auto y = r.top + (r.bottom-r.top)/2;
+            style.font.drawLeftCenteredText( b, x,y, name, style.textColor );
         }
 
         /+ レンダリング情報にオブジェクトの内容を適用 +/
