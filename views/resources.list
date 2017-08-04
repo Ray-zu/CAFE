@@ -7,6 +7,7 @@ langs/en.ini
 icons/move_ahead.png
 icons/move_behind.png
 icons/new.png
+icons/obj_ctg_others.png
 icons/open.png
 icons/pause.png
 icons/save.png
@@ -16,3 +17,4 @@ icons/shift_behind.png
 icons/play.png
 icons/quit.png
 icons/stop.png
+icons/zoom.png
