@@ -228,7 +228,7 @@
         backgroundImageId="dock_window_background_dark"
         />
     <style id="FLOATING_WINDOW"
-        backgroundImageId="popup_window_background_dark"
+        backgroundImageId="cafe_popup_window_background"
         />
     <style id="DOCK_WINDOW_CAPTION"
         backgroundImageId="dock_window_caption_background_dark"
