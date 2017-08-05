@@ -101,4 +101,9 @@ class ChooserItem : VerticalLayout
             icon.alignment = Align.HCenter;
             name.alignment = Align.HCenter;
         }
+
+        override uint getCursorType ( int x, int y )
+        {
+            return CursorType.Hand;
+        }
 }
