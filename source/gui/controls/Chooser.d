@@ -37,7 +37,8 @@ class Chooser : Dialog
         void updateSearchResult ( EditableContent = null )
         {
             list.removeAllChildren;
-            list.addChild( new ChooserItem( "hogee", "new" ) );
+            foreach ( i; 0 .. 100 )
+                list.addChild( new ChooserItem( "hogee" ) );
         }
 
     public:
@@ -64,7 +65,8 @@ class Chooser : Dialog
             scroll.minHeight  = DlgHeight - search.height;
             super.measure( w, h );
 
-            list.colCount = max( 1, list.width / ChooserItem.Width );
+            if ( w != SIZE_UNSPECIFIED )
+                list.colCount = w / ChooserItem.Width;
         }
 }
 
@@ -79,7 +81,7 @@ class ChooserItem : VerticalLayout
         TextWidget  name;
 
     public:
-        this ( string t, string i = "" )
+        this ( string t, string i = "obj_ctg_others" )
         {
             super( t );
             styleId   = Style;
