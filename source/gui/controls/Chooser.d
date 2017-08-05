@@ -53,6 +53,8 @@ class Chooser : Dialog
             list   = cast(TableLayout ) scroll.addChild( new TableLayout );
             scroll.contentWidget = list;
 
+            addChild( createButtonsPanel( [ACTION_CANCEL], 0, true ) );
+
             updateSearchResult;
         }
 
