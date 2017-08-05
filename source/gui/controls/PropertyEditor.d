@@ -190,7 +190,7 @@ class EffectChooser : Chooser
             auto word = search.text;
             list.removeAllChildren;
             foreach ( i; Effect.registeredEffects ) {
-                if ( word != "" && i.name.indexOf( word ) >= 0 ) continue;
+                if ( word != "" && i.name.indexOf( word ) == -1 ) continue;
 
                 auto item = list.addChild( new ChooserItem( i.name, i.icon ) );
                 item.click = delegate ( Widget w )
