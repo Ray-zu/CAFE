@@ -302,7 +302,7 @@
     <style id="CHOOSER_ITEM"
         backgroundColor="@null">
         <state state_pressed="true" backgroundColor="#00555555"/>
-        <state state_hovered="true" backgroundColor="#00333333"/>
+        <state state_hovered="true" backgroundColor="#00444444"/>
     </style>
 
     <style id="PREVIEW_PLAYER"
