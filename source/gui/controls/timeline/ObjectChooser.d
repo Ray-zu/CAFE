@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.ObjectChooser;
-import cafe.gui.controls.Chooser,
+import cafe.gui.Action,
+       cafe.gui.controls.Chooser,
        cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.Timeline,
        cafe.project.timeline.PlaceableObject;
@@ -31,6 +32,8 @@ class ObjectChooser : Chooser
                 item.click = delegate ( Widget w )
                 {
                     timeline += i.createAt(opi);
+                    window.mainWidget.handleAction( Action_ObjectRefresh );
+                    window.mainWidget.handleAction( Action_TimelineRefresh );
                     close( null );
                     return true;
                 };

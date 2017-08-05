@@ -37,12 +37,6 @@ class LinesCanvas : CanvasWidget
             return (cache.lines[index].heightMag*baseLineHeight*fraction).to!int;
         }
 
-        void addNewObject ( uint f, uint l )
-        {
-            auto dlg = new ObjectChooser( f, l, cache.timeline, window );
-            cache.updateLinesCache;
-        }
-
     public:
         @property baseLineHeight () { return base_line_height; }
         @property baseLineHeight ( uint blh )
@@ -163,7 +157,7 @@ class LinesCanvas : CanvasWidget
                 // 右クリック押し始め
                 auto layer = line.layerIndex;
                 if ( !header && layer >= 0 && !cache.timeline[new FrameAt(f), new LayerId(layer)] )
-                    addNewObject( f, layer );
+                    (new ObjectChooser( f, layer, cache.timeline, window )).show;
             }
             if ( trans_ev ) parent.childById( "grid" ).onMouseEvent( e );
 
