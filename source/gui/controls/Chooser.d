@@ -54,7 +54,6 @@ class Chooser : Dialog
             scroll.contentWidget = list;
 
             updateSearchResult;
-            show;
         }
 
         override void measure ( int w, int h )

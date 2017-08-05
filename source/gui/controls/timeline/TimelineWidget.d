@@ -93,6 +93,11 @@ class TimelineWidget : VerticalLayout
             hscrolled; vscrolled;
         }
 
+        void updateCache ()
+        {
+            cache.updateLinesCache;
+        }
+
         override void invalidate ()
         {
             super.invalidate;

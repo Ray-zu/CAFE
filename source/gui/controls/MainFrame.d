@@ -166,6 +166,9 @@ class MainFrame : AppFrame
                     case ObjectRefresh:
                         tabs.propertyEditor.updateWidgets;
                         return true;
+                    case TimelineRefresh:
+                        timeline.updateWidgets;
+                        return true;
                     case ChangeFrame:
                         return handleAction( Action_ObjectRefresh );
                     case AddFrag:

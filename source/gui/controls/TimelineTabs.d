@@ -26,11 +26,12 @@ class TimelineTabs : TabWidget
 
     private:
         Project pro = null;
+        TimelineWidget[] timelines;
 
         void addTab ( string name, Component com, bool closeable = true )
         {
-            auto tlw = new TimelineWidget( name, pro, com ? com.timeline : null );
-            super.addTab( tlw, name.to!dstring, null, closeable );
+            timelines ~= new TimelineWidget( name, pro, com ? com.timeline : null );
+            super.addTab( timelines[$-1], name.to!dstring, null, closeable );
             selectTab = name;
         }
 
@@ -41,6 +42,7 @@ class TimelineTabs : TabWidget
             project.componentList.selecting =
                 n in project.componentList.components ?
                 project.componentList[n] : null;
+            updateWidgets;
         }
 
     public:
@@ -65,5 +67,12 @@ class TimelineTabs : TabWidget
             TabItem t;
             while ( (t = tab(0)) !is null )
                 removeTab( t.id );
+            timelines = null;
+        }
+
+        void updateWidgets ()
+        {
+            auto t = (cast(TimelineWidget)selectedTabBody);
+            if ( t ) t.updateCache;
         }
 }

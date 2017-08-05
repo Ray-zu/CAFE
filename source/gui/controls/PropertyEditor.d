@@ -11,12 +11,14 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.property.Property,
        cafe.project.timeline.property.PropertyList,
        cafe.project.timeline.effect.Effect,
+       cafe.gui.Action,
        cafe.gui.controls.Chooser;
 import std.algorithm,
        std.conv,
        std.string;
 import dlangui,
-       dlangui.widgets.metadata;
+       dlangui.widgets.metadata,
+       dlangui.dialogs.dialog;
 
 mixin( registerWidgets!PropertyEditor );
 
@@ -25,9 +27,6 @@ class PropertyEditor : ScrollWidget
 {
     private:
         Project pro;
-
-        PlaceableObject cached_obj = null;
-        uint cached_frame = 0;
 
         VerticalLayout main;
 
@@ -54,25 +53,19 @@ class PropertyEditor : ScrollWidget
         void updateWidgets ()
         {
             if ( !project ) return;
+            auto obj = project.selectingObject;
 
-            auto upflag = cached_obj !is project.selectingObject;
-            cached_obj = project.selectingObject;
-
-            if ( cached_obj ) {
+            main.removeAllChildren;
+            if ( obj ) {
                 auto f = project.componentList.selecting.timeline.frame.value.to!int -
-                    cached_obj.place.frame.start.value.to!int;
-                f = min( cached_obj.place.frame.length.value.to!int-1, max( 0, f ) );
-                upflag = upflag || f != cached_frame;
-                cached_frame = f;
+                    obj.place.frame.start.value.to!int;
+                f = min( obj.place.frame.length.value.to!int-1, max( 0, f ) );
 
-                if ( upflag ) {
-                    auto fat = new FrameAt( f.to!uint );
-                    main.removeAllChildren;
-                    main.addChild( new GroupPanelFrame( cached_obj.propertyList, cached_obj.name, fat ) );
-                    cached_obj.effectList.effects.each!
-                        ( x => main.addChild( new GroupPanelFrame( x.propertyList, x.name, fat ) ) );
-                }
-            } else main.removeAllChildren;
+                auto fat = new FrameAt( f.to!uint );
+                main.addChild( new GroupPanelFrame( obj.propertyList, obj.name, fat ) );
+                obj.effectList.effects.each!
+                    ( x => main.addChild( new GroupPanelFrame( x.propertyList, x.name, fat ) ) );
+            }
             main.invalidate;
         }
 
@@ -81,7 +74,7 @@ class PropertyEditor : ScrollWidget
             auto result = false;
             auto obj    = project.selectingObject;
             if ( e.button == MouseButton.Right && e.action == MouseAction.ButtonDown ) {
-                if ( obj ) new EffectChooser( obj , window );
+                if ( obj ) (new EffectChooser( obj , window )).show;
             }
             return super.onMouseEvent( e ) || result;
         }
@@ -203,6 +196,8 @@ class EffectChooser : Chooser
                 item.click = delegate ( Widget w )
                 {
                     obj.effectList += i.createNew( obj.place.frame.length );
+                    window.mainWidget.handleAction( Action_ObjectRefresh );
+                    window.mainWidget.handleAction( Action_TimelineRefresh );
                     close( null );
                     return true;
                 };
