@@ -9,7 +9,8 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.Project,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.property.Property,
-       cafe.project.timeline.property.PropertyList;
+       cafe.project.timeline.property.PropertyList,
+       cafe.gui.controls.Chooser;
 import std.algorithm,
        std.conv;
 import dlangui,
@@ -18,13 +19,15 @@ import dlangui,
 mixin( registerWidgets!PropertyEditor );
 
 /+ プロパティを編集するウィジェット +/
-class PropertyEditor : VerticalLayout
+class PropertyEditor : ScrollWidget
 {
     private:
         Project pro;
 
         PlaceableObject cached_obj = null;
         uint cached_frame = 0;
+
+        VerticalLayout main;
 
     public:
         @property project () { return pro; }
@@ -37,7 +40,13 @@ class PropertyEditor : VerticalLayout
         this ( string id = "" )
         {
             super( id );
+            layoutWidth  = FILL_PARENT;
+            layoutHeight = FILL_PARENT;
             styleId = "PROPERTY_EDITOR";
+            hscrollbarMode = ScrollBarMode.Invisible;
+
+            main = cast(VerticalLayout) addChild( new VerticalLayout );
+            contentWidget = main;
         }
 
         void updateWidgets ()
@@ -56,13 +65,29 @@ class PropertyEditor : VerticalLayout
 
                 if ( upflag ) {
                     auto fat = new FrameAt( f.to!uint );
-                    removeAllChildren;
-                    addChild( new GroupPanelFrame( cached_obj.propertyList, cached_obj.name, fat ) );
+                    main.removeAllChildren;
+                    main.addChild( new GroupPanelFrame( cached_obj.propertyList, cached_obj.name, fat ) );
                     cached_obj.effectList.effects.each!
-                        ( x => addChild( new GroupPanelFrame( x.propertyList, x.name, fat ) ) );
+                        ( x => main.addChild( new GroupPanelFrame( x.propertyList, x.name, fat ) ) );
                 }
-            } else removeAllChildren;
-            invalidate;
+            } else main.removeAllChildren;
+            main.invalidate;
+        }
+
+        override bool onMouseEvent ( MouseEvent e )
+        {
+            auto result = false;
+            auto obj    = project.selectingObject;
+            if ( e.button == MouseButton.Right && e.action == MouseAction.ButtonDown ) {
+                if ( obj ) new EffectChooser( obj , window );
+            }
+            return super.onMouseEvent( e ) || result;
+        }
+
+        override void measure ( int w, int h )
+        {
+            main.minWidth = w - vscrollbar.width;
+            super.measure( w, h );
         }
 }
 
@@ -154,5 +179,19 @@ private class PropertyPanel : VerticalLayout
             foreach ( k,v; props.properties )
                 addProperty( v, k );
             invalidate;
+        }
+}
+
+/+ エフェクト追加 +/
+class EffectChooser : Chooser
+{
+    private:
+        PlaceableObject obj;
+
+    public:
+        this ( PlaceableObject o, Window w = null )
+        {
+            obj = o;
+            super( UIString.fromRaw("Choose Effect"), w );
         }
 }

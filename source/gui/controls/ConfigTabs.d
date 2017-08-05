@@ -26,4 +26,10 @@ class ConfigTabs : TabWidget
             pedit = new PropertyEditor("property_editor");
             addTab( pedit, "Property"d );
         }
+
+        override void measure ( int w, int h )
+        {
+            pedit.minHeight = h;
+            super.measure( w, h );
+        }
 }
