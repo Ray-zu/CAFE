@@ -29,14 +29,15 @@ class Chooser : Dialog
     protected:
         ImageWidget search_icon;
         EditLine    search;
-        ListWidget  list;
 
-        WidgetListAdapter adapter;
+        ScrollWidget scroll;
+        TableLayout  list;
 
         /+ オーバーライドして検索文字列にマッチするアイテムを追加 +/
         void updateSearchResult ( EditableContent = null )
         {
-            adapter.clear;
+            list.removeAllChildren;
+            list.addChild( new ChooserItem( "hogee", "new" ) );
         }
 
     public:
@@ -47,12 +48,11 @@ class Chooser : Dialog
 
             search_icon = cast(ImageWidget) childById( "search_icon" );
             search      = cast(EditLine   ) childById( "search"      );
-
             search.contentChange = &updateSearchResult;
 
-            list    = cast(ListWidget) addChild( new ListWidget );
-            adapter = new WidgetListAdapter;
-            list.ownAdapter = adapter;
+            scroll = cast(ScrollWidget) addChild( new ScrollWidget );
+            list   = cast(TableLayout ) scroll.addChild( new TableLayout );
+            scroll.contentWidget = list;
 
             updateSearchResult;
             show;
@@ -61,7 +61,44 @@ class Chooser : Dialog
         override void measure ( int w, int h )
         {
             search.minWidth = DlgWidth  - search_icon.width;
-            list.minHeight  = DlgHeight - search.height;
+            scroll.minHeight  = DlgHeight - search.height;
             super.measure( w, h );
+
+            list.colCount = max( 1, list.width / ChooserItem.Width );
+        }
+}
+
+class ChooserItem : VerticalLayout
+{
+    enum Style  = "CHOOSER_ITEM";
+    enum Width  = 100;
+    enum Height = 100;
+
+    private:
+        ImageWidget icon;
+        TextWidget  name;
+
+    public:
+        this ( string t, string i = "" )
+        {
+            super( t );
+            styleId   = Style;
+            minWidth  = Width;
+            minHeight = Height;
+            maxWidth  = Width;
+            maxHeight = Height;
+            layoutHeight = FILL_PARENT;
+
+            trackHover = true;
+            focusable  = true;
+            clickable  = true;
+
+            addChild( new VSpacer );
+            icon = cast(ImageWidget) addChild( new ImageWidget( "", i ) );
+            name = cast(TextWidget ) addChild( new TextWidget ( "", t.to!dstring ) );
+            addChild( new VSpacer );
+
+            icon.alignment = Align.HCenter;
+            name.alignment = Align.HCenter;
         }
 }

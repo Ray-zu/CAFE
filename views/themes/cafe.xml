@@ -299,6 +299,12 @@
         padding="1pt,1pt,1pt,1pt">
     </style>
 
+    <style id="CHOOSER_ITEM"
+        backgroundColor="@null">
+        <state state_pressed="true" backgroundColor="#00555555"/>
+        <state state_hovered="true" backgroundColor="#00333333"/>
+    </style>
+
     <style id="PREVIEW_PLAYER"
         backgroundColor="#00111111">
     </style>
