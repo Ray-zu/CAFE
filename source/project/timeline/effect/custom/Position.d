@@ -23,6 +23,10 @@ class Position : Effect
         {
             return "Position";
         }
+        static @property icon ()
+        {
+            return "obj_ctg_others";
+        }
         override @property string name () { return type; }
         // static の override ができないので
 

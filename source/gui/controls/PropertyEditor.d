@@ -10,9 +10,11 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.property.Property,
        cafe.project.timeline.property.PropertyList,
+       cafe.project.timeline.effect.Effect,
        cafe.gui.controls.Chooser;
 import std.algorithm,
-       std.conv;
+       std.conv,
+       std.string;
 import dlangui,
        dlangui.widgets.metadata;
 
@@ -187,6 +189,25 @@ class EffectChooser : Chooser
 {
     private:
         PlaceableObject obj;
+
+    protected:
+        override void updateSearchResult ( EditableContent = null )
+        {
+            super.updateSearchResult;
+            auto word = search.text;
+            list.removeAllChildren;
+            foreach ( i; Effect.registeredEffects ) {
+                if ( word != "" && i.name.indexOf( word ) >= 0 ) continue;
+
+                auto item = list.addChild( new ChooserItem( i.name, i.icon ) );
+                item.click = delegate ( Widget w )
+                {
+                    obj.effectList += i.createNew( obj.place.frame.length );
+                    close( null );
+                    return true;
+                };
+            }
+        }
 
     public:
         this ( PlaceableObject o, Window w = null )
