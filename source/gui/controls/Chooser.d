@@ -37,8 +37,6 @@ class Chooser : Dialog
         void updateSearchResult ( EditableContent = null )
         {
             list.removeAllChildren;
-            foreach ( i; 0 .. 100 )
-                list.addChild( new ChooserItem( "hogee" ) );
         }
 
     public:

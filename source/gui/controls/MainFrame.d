@@ -157,9 +157,7 @@ class MainFrame : AppFrame
             if ( a ) {
                 switch ( a.id ) with( EditorActions ) {
                     case ProjectNew:
-                        //new ProjectCreationPanel( window );
-                        import cafe.gui.controls.Chooser;
-                        new Chooser( UIString.fromRaw("hoge"), window );
+                        new ProjectCreationPanel( window );
                         return true;
                     case ProjectRefresh:
                         return projectRefresh;
