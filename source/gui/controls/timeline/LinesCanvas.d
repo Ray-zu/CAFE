@@ -7,12 +7,15 @@
 module cafe.gui.controls.timeline.LinesCanvas;
 import cafe.gui.Action,
        cafe.gui.utils.Rect,
-       cafe.gui.controls.timeline.Cache;
+       cafe.gui.controls.timeline.Cache,
+       cafe.gui.controls.timeline.ObjectChooser,
+       cafe.project.ObjectPlacingInfo;
 import std.algorithm,
        std.conv,
        std.math;
 import dlangui,
-       dlangui.widgets.metadata;
+       dlangui.widgets.metadata,
+       dlangui.dialogs.dialog;
 
 mixin( registerWidgets!LinesCanvas );
 
@@ -32,6 +35,12 @@ class LinesCanvas : CanvasWidget
             auto index    = top.trunc.to!int;
             auto fraction = top - index;
             return (cache.lines[index].heightMag*baseLineHeight*fraction).to!int;
+        }
+
+        void addNewObject ( uint f, uint l )
+        {
+            auto dlg = new ObjectChooser( f, l, cache.timeline, window );
+            cache.updateLinesCache;
         }
 
     public:
@@ -114,10 +123,13 @@ class LinesCanvas : CanvasWidget
                     h += (cache.lines[i++].heightMag * baseLineHeight).to!int;
                 return max( 0, min( cache.lines.length, h < ry ? -1 : i-1 ) );
             }();
-            auto st   = cache.timeline.leftFrame.to!int;
-            auto ppf  = cache.pxPerFrame;
-            auto left = e.button == MouseButton.Left;
-            auto f    = st + ((e.x-pos.left-cache.headerWidth.to!int)/ppf).to!int;
+            auto header = (e.x-pos.left) < cache.headerWidth;
+            auto line   = cache.lines[line_id];
+            auto st     = cache.timeline.leftFrame.to!int;
+            auto ppf    = cache.pxPerFrame;
+            auto left   = e.button == MouseButton.Left;
+            auto right  = e.button == MouseButton.Right;
+            auto f      = st + ((e.x-pos.left-cache.headerWidth.to!int)/ppf).to!int;
             f = max( 0, min( f, cache.timeline.length.value-1 ) );
 
             auto trans_ev   = dragging;
@@ -125,8 +137,6 @@ class LinesCanvas : CanvasWidget
 
             if ( left && e.action == MouseAction.ButtonDown ) {
                 // 左クリック押し始め
-                auto header = (e.x-pos.left) < cache.headerWidth;
-                auto line   = cache.lines[line_id];
                 if ( header )
                     line.onHeaderLeftClicked;
                 else {
@@ -149,6 +159,11 @@ class LinesCanvas : CanvasWidget
                 trans_ev   = !cache.operation.isHandled && dragging;
                 redraw_obj = cache.operation.isProcessing;
 
+            } else if ( right && e.action == MouseAction.ButtonDown ) {
+                // 右クリック押し始め
+                auto layer = line.layerIndex;
+                if ( !header && layer >= 0 && !cache.timeline[new FrameAt(f), new LayerId(layer)] )
+                    addNewObject( f, layer );
             }
             if ( trans_ev ) parent.childById( "grid" ).onMouseEvent( e );
 

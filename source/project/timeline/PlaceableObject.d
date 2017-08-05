@@ -105,7 +105,9 @@ abstract class PlaceableObject : PropertyKeepableObject
         struct RegisteredObject
         {
             string name;
+            string icon;
             PlaceableObject delegate ( JSONValue, FrameLength ) create;
+            PlaceableObject delegate ( ObjectPlacingInfo )      createAt;
         }
         static RegisteredObject[] registeredObjects;
 
@@ -116,9 +118,14 @@ abstract class PlaceableObject : PropertyKeepableObject
             {
                 RegisteredObject r;
                 r.name = T.type;
+                r.icon = T.icon;
                 r.create = delegate ( JSONValue j, FrameLength f )
                 {
                     return new T( j, f );
+                };
+                r.createAt = delegate ( ObjectPlacingInfo opi )
+                {
+                    return new T( opi );
                 };
                 registeredObjects ~= r;
             }
