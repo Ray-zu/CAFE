@@ -53,12 +53,8 @@ class Bitmap (T)
             assert( hoge.height == 100 );
             hoge[50, 50] = 'a';
             assert( hoge[50,50] == 'a' );
-
-            auto huge = new BMP( 100, 100 );
-            huge[50,50] = RGBA( 100, 100, 100, 150 );
-            assert( huge[50,50].r == 100 );
         }
 }
 
-alias BitmapRGBA = Bitmap!RGBA;     // RGBAをピクセルデータに持ったBMP
+alias BitmapRGBA = Bitmap!uint;     // RGBAをピクセルデータに持ったBMP
 alias BMP = BitmapRGBA;             // BMPを使用してください
