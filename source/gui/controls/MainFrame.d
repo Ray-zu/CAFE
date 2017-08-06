@@ -171,7 +171,9 @@ class MainFrame : AppFrame
                         timeline.updateWidgets;
                         return true;
                     case ChangeFrame:
-                        return handleAction( Action_ObjectRefresh );
+                        handleAction( Action_ObjectRefresh );
+                        handleAction( Action_PreviewRefresh );
+                        return true;
                     case AddFrag:
                         return fragexp.handleAction( a );
 
