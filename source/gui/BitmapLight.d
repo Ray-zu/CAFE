@@ -20,13 +20,6 @@ class BitmapLight : ColorDrawBuf
         this ( BMP src )
         {
             super( src.width.to!int, src.height.to!int );
-
-            RGBA col;   // ループ高速化のための前定義
-            auto bmp = src.bitmap;
-            foreach ( y; 0 .. src.height )
-                foreach ( x; 0 .. src.width ) {
-                    // dlangui用にアルファ値を反転します
-                    _buf[y*_dx+x] = bmp[y][x];
-                }
+            _buf = src.bitmap;
         }
 }
