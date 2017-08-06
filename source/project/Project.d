@@ -5,7 +5,9 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.project.Project;
-import cafe.project.ComponentList;
+import cafe.project.ObjectPlacingInfo,
+       cafe.project.ComponentList,
+       cafe.renderer.custom.OpenGLRenderer;
 import std.conv,
        std.json;
 
@@ -52,6 +54,15 @@ class Project
             return componentList.selecting ?
                 componentList.selecting.timeline.selecting :
                 null ;
+        }
+
+        auto render ( FrameAt f = null )
+        {
+            auto root = componentList.root;
+            auto frame = f ? f : new FrameAt( root.timeline.frame );
+            auto w = root.width;
+            auto h = root.height;
+            return componentList.root.render( frame, new OpenGLRenderer );
         }
 
         /+ JSON出力 +/

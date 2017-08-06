@@ -7,7 +7,9 @@
 module cafe.gui.controls.PreviewPlayer;
 import cafe.app,
        cafe.gui.Action,
-       cafe.gui.controls.BMPViewer;
+       cafe.gui.BitmapLight,
+       cafe.gui.controls.BMPViewer,
+       cafe.project.Project;
 import dlangui,
        dlangui.widgets.metadata;
 
@@ -36,6 +38,8 @@ class PreviewPlayer : VerticalLayout
     };
 
     private:
+        Project pro;
+
         BMPViewer preview;
         ImageButton shift_behind;
         ImageButton move_behind;
@@ -46,6 +50,13 @@ class PreviewPlayer : VerticalLayout
         ImageButton shift_ahead;
 
     public:
+        @property project () { return pro; }
+        @property project ( Project p )
+        {
+            pro = p;
+            handleAction( Action_PreviewRefresh );
+        }
+
         this ( string id = "" )
         {
             super( id );
@@ -55,6 +66,7 @@ class PreviewPlayer : VerticalLayout
             addChild( parseML( Preview ) );
             addChild( parseML( PlayControler ) );
 
+            pro          = null;
             preview      = cast(BMPViewer)  childById( "preview" );
 
             /+ ボタンの取得とアクションの設定 +/
@@ -79,9 +91,11 @@ class PreviewPlayer : VerticalLayout
             import cafe.gui.Action;
             switch ( a.id ) {
                 case EditorActions.PreviewRefresh:
-                    Cafe.instance.setStatus( "Rendering..." );
-                    // TODO preview.bitmap = Cafe.curProject.componentList.root.render();
-                    Cafe.instance.setStatus( "Rendered..." );
+                    if ( project ) {
+                        Cafe.instance.setStatus( "Rendering..." );
+                        preview.bitmap = new BitmapLight( project.render.bitmap );
+                        Cafe.instance.setStatus( "Rendered..." );
+                    }
                     return true;
                 default:
             }

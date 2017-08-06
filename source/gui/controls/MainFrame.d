@@ -55,6 +55,7 @@ class MainFrame : AppFrame
         auto projectRefresh ()
         {
             auto p = Cafe.instance.curProject;
+            preview.project = p;
             timeline.project = p;
             tabs.propertyEditor.project = p;
 
