@@ -18,10 +18,19 @@ class BMPViewer : Widget
     private:
         DrawBuf bmp;
 
+        auto destroy ()
+        {
+            if ( this.bmp ) {
+                this.bmp.releaseRef;
+                object.destroy( this.bmp );
+            }
+        }
+
     public:
         @property bitmap () { return bmp; }
         @property bitmap ( DrawBuf bmp )
         {
+            destroy;
             this.bmp = bmp;
             invalidate;
         }
@@ -36,6 +45,11 @@ class BMPViewer : Widget
             super( id );
             bitmap = bmp ?
                 new BitmapLight( bmp ) : null;
+        }
+
+        ~this ()
+        {
+            destroy;
         }
 
         override void onDraw ( DrawBuf b )
