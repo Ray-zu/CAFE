@@ -6,6 +6,7 @@
  + ------------------------------------------------------------ +/
 module cafe.renderer.graphics.Bitmap;
 import cafe.renderer.graphics.Color;
+import core.stdc.stdlib;
 import std.algorithm;
 
 debug = 0;
@@ -15,7 +16,7 @@ debug = 0;
 class Bitmap (T)
 {
     private:
-        T[] bmp;    // Y * width + X でアクセス
+        T* bmp = null;    // Y * width + X でアクセス
         uint bmp_width;
         uint bmp_height;
 
@@ -29,13 +30,20 @@ class Bitmap (T)
             resize( w, h );
         }
 
+        ~this ()
+        {
+            free( cast(void*) bmp );
+        }
+
         /+ Bitmapをリサイズ +/
         void resize ( uint w, uint h )
         {
             w = max( w, 1 ); h = max( h, 1 );
             bmp_width  = w;
             bmp_height = h;
-            bmp.length = w*h;
+
+            if ( bmp ) free( cast(void*) bmp );
+            bmp = cast(T*) malloc( w*h*T.sizeof );
         }
 
         /+ this[x,y]で指定座標のT構造体取得 +/
