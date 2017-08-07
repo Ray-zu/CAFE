@@ -43,7 +43,7 @@ class OpenGLRenderer : Renderer
         debug (1) auto renderTest ()
         {
             auto white_bmp = new BMP(1,1);
-            white_bmp[0,0] = 0xffffff;
+            white_bmp[0,0] = RGBA( 255, 255, 255 );
             auto polygon = new Polygon( white_bmp, [
                     Vertex( Vector3D(-50,-50,0), Vector2D(0,0) ),
                     Vertex( Vector3D( 50,-50,0), Vector2D(1,0) ),
