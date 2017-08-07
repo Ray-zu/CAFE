@@ -16,19 +16,22 @@ mixin( registerWidgets!BMPViewer );
 class BMPViewer : Widget
 {
     private:
-        ColorDrawBuf bmp;
+        DrawBuf bmp;
+
+        auto destroy ()
+        {
+            if ( this.bmp ) {
+                this.bmp.releaseRef;
+                object.destroy( this.bmp );
+            }
+        }
 
     public:
         @property bitmap () { return bmp; }
-        @property bitmap ( BMP b )
+        @property bitmap ( DrawBuf bmp )
         {
-            if ( b ) {
-                if ( bmp )
-                    bmp.resize( b.width, b.height );
-                else
-                    bmp = new ColorDrawBuf( b.width, b.height );
-                bmp._buf = b.bitmap;
-            } else if ( bmp ) bmp.clear;
+            destroy;
+            this.bmp = bmp;
             invalidate;
         }
 
@@ -37,19 +40,16 @@ class BMPViewer : Widget
             this( id, null );
         }
 
-        this ( string id, BMP b )
+        this ( string id, BMP bmp )
         {
             super( id );
-            bmp = null;
-            bitmap = b;
+            bitmap = bmp ?
+                new BitmapLight( bmp ) : null;
         }
 
         ~this ()
         {
-            if ( this.bmp ) {
-                this.bmp.releaseRef;
-                object.destroy( this.bmp );
-            }
+            destroy;
         }
 
         override void onDraw ( DrawBuf b )

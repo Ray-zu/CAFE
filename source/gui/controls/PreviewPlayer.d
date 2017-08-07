@@ -93,7 +93,7 @@ class PreviewPlayer : VerticalLayout
                 case EditorActions.PreviewRefresh:
                     if ( project ) {
                         Cafe.instance.setStatus( "Rendering..." );
-                        preview.bitmap = project.render.bitmap;
+                        preview.bitmap = new BitmapLight( project.render.bitmap );
                         Cafe.instance.setStatus( "Rendered..." );
                     }
                     return true;
