@@ -12,7 +12,7 @@ import dlangui;
 
 class Cafe
 {
-    static Cafe instance = null;
+    static __gshared Cafe instance = null;
     private:
         Project cur_project  = null;
         MainFrame main_frame = null;
