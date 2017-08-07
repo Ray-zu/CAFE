@@ -9,7 +9,9 @@ import cafe.app,
        cafe.gui.Action,
        cafe.gui.BitmapLight,
        cafe.gui.controls.BMPViewer,
-       cafe.project.Project;
+       cafe.project.Project,
+       cafe.renderer.Renderer;
+import core.thread;
 import dlangui,
        dlangui.widgets.metadata;
 
@@ -93,8 +95,10 @@ class PreviewPlayer : VerticalLayout
                 case EditorActions.PreviewRefresh:
                     if ( project ) {
                         Cafe.instance.setStatus( "Rendering..." );
-                        preview.bitmap = new BitmapLight( project.render.bitmap );
-                        Cafe.instance.setStatus( "Rendered..." );
+                        new Thread( delegate () {
+                            preview.bitmap = new BitmapLight( project.render.bitmap );
+                            Cafe.instance.setStatus( "Rendered..." );
+                        } ).start;
                     }
                     return true;
                 default:
