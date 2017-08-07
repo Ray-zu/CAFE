@@ -98,6 +98,7 @@ class PreviewPlayer : VerticalLayout
                         new Thread( delegate () {
                             preview.bitmap = new BitmapLight( project.render.bitmap );
                             Cafe.instance.setStatus( "Rendered..." );
+                            window.invalidate;
                         } ).start;
                     }
                     return true;
