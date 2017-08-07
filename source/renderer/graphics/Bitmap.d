@@ -15,12 +15,14 @@ debug = 0;
 class Bitmap (T)
 {
     private:
-        T[][] bmp;
+        T[] bmp;    // Y * width + X でアクセス
+        uint bmp_width;
+        uint bmp_height;
 
     public:
-        @property bitmap () { return bmp;           }
-        @property width  () { return bmp[0].length; }
-        @property height () { return bmp.length;    }
+        @property bitmap () { return bmp;        }
+        @property width  () { return bmp_width;  }
+        @property height () { return bmp_height; }
 
         this ( uint w, uint h )
         {
@@ -31,20 +33,21 @@ class Bitmap (T)
         void resize ( uint w, uint h )
         {
             w = max( w, 1 ); h = max( h, 1 );
-            bmp.length = h;
-            bmp.each!( (ref x) => x.length = w );
+            bmp_width  = w;
+            bmp_height = h;
+            bmp.length = w*h;
         }
 
         /+ this[x,y]で指定座標のT構造体取得 +/
         T opIndex ( size_t x, size_t y )
         {
-            return bmp[y][x];
+            return bmp[y*width+x];
         }
 
         /+ this[x,y] = vで指定座標のT構造体設定 +/
         T opIndexAssign ( T v, size_t x, size_t y )
         {
-            return bmp[y][x] = v;
+            return bmp[y*width+x] = v;
         }
 
         debug (1) unittest {

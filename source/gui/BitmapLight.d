@@ -21,13 +21,14 @@ class BitmapLight : ColorDrawBuf
         {
             super( src.width.to!int, src.height.to!int );
 
-            RGBA col;   // ループ高速化のための前定義
-            foreach ( y; 0 .. src.height )
-                foreach ( x; 0 .. src.width ) {
-                    // dlangui用にアルファ値を反転します
-                    col = src[x,y];
-                    col.a = ubyte.max - col.a;
-                    _buf[y*_dx+x] = col.toHex;
-                }
+            RGBA  col;   // ループ高速化のための前定義
+            const len = src.width * src.height;
+            const bmp = src.bitmap;
+            for ( auto i = 0; i < len; i++ ) {
+                // dlangui用にアルファ値を反転します
+                col = bmp[i];
+                col.a = ubyte.max - col.a;
+                _buf[i] = col.toHex;
+            }
         }
 }
