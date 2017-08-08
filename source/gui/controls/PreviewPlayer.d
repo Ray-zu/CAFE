@@ -61,7 +61,7 @@ class PreviewPlayer : VerticalLayout
             render_th.create( delegate () {
                 auto r = project.render;
                 synchronized {
-                    preview.bitmap = new BitmapLight( r.bitmap );
+                    preview.drawable = r.bitmap;
                     Cafe.instance.setStatus( "Rendered..." );
                 }
                 window.invalidate;
