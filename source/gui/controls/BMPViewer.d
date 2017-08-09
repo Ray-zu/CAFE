@@ -13,35 +13,26 @@ import dlangui,
 mixin( registerWidgets!BMPViewer );
 
 /+ BMPを表示するウィジェット +/
-class BMPViewer : Widget
+class BMPViewer : ImageWidget
 {
     private:
-        DrawBuf bmp;
+        BitmapLight buf = null;
 
     public:
-        @property bitmap () { return bmp; }
-        @property bitmap ( DrawBuf bmp )
+        bool f = false;
+        @property void drawable ( BMP b )
         {
-            this.bmp = bmp;
-            invalidate;
+            buf = new BitmapLight( b );
+
+            if ( f ) buf.fill( 0x00ffff );
+            f = !f;
+
+            DrawBufRef bmp = buf;
+            super.drawable = new ImageDrawable( bmp );
         }
 
         this ( string id = "" )
         {
-            this( id, null );
-        }
-
-        this ( string id, BMP bmp )
-        {
             super( id );
-            bitmap = bmp ?
-                new BitmapLight( bmp ) : null;
-        }
-
-        override void onDraw ( DrawBuf b )
-        {
-            if ( !bitmap ) return;
-            auto src_rect = Rect( 0, 0, bitmap.width, bitmap.height );
-            b.drawRescaled( pos, bitmap, src_rect );
         }
 }

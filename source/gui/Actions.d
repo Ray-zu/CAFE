@@ -27,6 +27,7 @@ enum EditorActions : int
     ProjectRefresh,
     PreviewRefresh,
     ObjectRefresh,
+    TimelineRefresh,
 
     ChangeFrame,
 
@@ -49,9 +50,10 @@ const Action_MoveAHead   = new Action( cast(int)EditorActions.MoveAHead  , "Move
 const Action_ShiftBehind = new Action( cast(int)EditorActions.ShiftBehind, "ShiftBehind", "shift_behind" );
 const Action_ShiftAHead  = new Action( cast(int)EditorActions.ShiftAHead , "ShiftAHead" , "shift_ahead"  );
 
-const Action_ProjectRefresh = new Action( cast(int)EditorActions.ProjectRefresh, "ProjectRefresh" );
-const Action_PreviewRefresh = new Action( cast(int)EditorActions.PreviewRefresh, "PreviewRefresh" );
-const Action_ObjectRefresh  = new Action( cast(int)EditorActions.ObjectRefresh , "ObjectRefresh"  );
+const Action_ProjectRefresh  = new Action( cast(int)EditorActions.ProjectRefresh , "ProjectRefresh"  );
+const Action_PreviewRefresh  = new Action( cast(int)EditorActions.PreviewRefresh , "PreviewRefresh"  );
+const Action_ObjectRefresh   = new Action( cast(int)EditorActions.ObjectRefresh  , "ObjectRefresh"   );
+const Action_TimelineRefresh = new Action( cast(int)EditorActions.TimelineRefresh, "TimelineRefresh" );
 
 const Action_ChangeFrame = new Action( cast(int)EditorActions.ChangeFrame, "ChangeFrame" );
 

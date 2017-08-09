@@ -24,6 +24,10 @@ class NullObject : PlaceableObject
         {
             return "NullObject";
         }
+        static @property icon ()
+        {
+            return "obj_ctg_others";
+        }
         override @property string typeStr () { return type; }
         // static の override ができない！
 

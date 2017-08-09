@@ -228,7 +228,7 @@
         backgroundImageId="dock_window_background_dark"
         />
     <style id="FLOATING_WINDOW"
-        backgroundImageId="popup_window_background_dark"
+        backgroundImageId="cafe_popup_window_background"
         />
     <style id="DOCK_WINDOW_CAPTION"
         backgroundImageId="dock_window_caption_background_dark"
@@ -297,6 +297,12 @@
         align="Left|VCenter"
 	textColor="#504840"
         padding="1pt,1pt,1pt,1pt">
+    </style>
+
+    <style id="CHOOSER_ITEM"
+        backgroundColor="@null">
+        <state state_pressed="true" backgroundColor="#00555555"/>
+        <state state_hovered="true" backgroundColor="#00444444"/>
     </style>
 
     <style id="PREVIEW_PLAYER"

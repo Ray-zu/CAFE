@@ -7,7 +7,12 @@
 module cafe.gui.controls.PreviewPlayer;
 import cafe.app,
        cafe.gui.Action,
-       cafe.gui.controls.BMPViewer;
+       cafe.gui.BitmapLight,
+       cafe.gui.controls.BMPViewer,
+       cafe.project.Project,
+       cafe.renderer.Renderer;
+import core.memory,
+       core.thread;
 import dlangui,
        dlangui.widgets.metadata;
 
@@ -36,6 +41,8 @@ class PreviewPlayer : VerticalLayout
     };
 
     private:
+        Project pro;
+
         BMPViewer preview;
         ImageButton shift_behind;
         ImageButton move_behind;
@@ -45,7 +52,30 @@ class PreviewPlayer : VerticalLayout
         ImageButton move_ahead;
         ImageButton shift_ahead;
 
+        ThreadGroup render_th;
+
+        void frameChanged ()
+        {
+            if ( !project ) return;
+            Cafe.instance.setStatus( "Rendering..." );
+            render_th.create( delegate () {
+                auto r = project.render;
+                synchronized {
+                    preview.drawable = r.bitmap;
+                    Cafe.instance.setStatus( "Rendered..." );
+                    window.invalidate;
+                }
+            } );
+        }
+
     public:
+        @property project () { return pro; }
+        @property project ( Project p )
+        {
+            pro = p;
+            handleAction( Action_PreviewRefresh );
+        }
+
         this ( string id = "" )
         {
             super( id );
@@ -55,6 +85,7 @@ class PreviewPlayer : VerticalLayout
             addChild( parseML( Preview ) );
             addChild( parseML( PlayControler ) );
 
+            pro          = null;
             preview      = cast(BMPViewer)  childById( "preview" );
 
             /+ ボタンの取得とアクションの設定 +/
@@ -72,6 +103,13 @@ class PreviewPlayer : VerticalLayout
             stop        .action = Action_Stop       ;
             move_ahead  .action = Action_MoveAHead  ;
             shift_ahead .action = Action_ShiftAHead ;
+
+            render_th = new ThreadGroup;
+        }
+
+        ~this ()
+        {
+            render_th.joinAll;
         }
 
         override bool handleAction ( const Action a )
@@ -79,9 +117,7 @@ class PreviewPlayer : VerticalLayout
             import cafe.gui.Action;
             switch ( a.id ) {
                 case EditorActions.PreviewRefresh:
-                    Cafe.instance.setStatus( "Rendering..." );
-                    // TODO preview.bitmap = Cafe.curProject.componentList.root.render();
-                    Cafe.instance.setStatus( "Rendered..." );
+                    frameChanged;
                     return true;
                 default:
             }

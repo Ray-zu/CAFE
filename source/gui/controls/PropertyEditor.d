@@ -9,22 +9,26 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.Project,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.property.Property,
-       cafe.project.timeline.property.PropertyList;
+       cafe.project.timeline.property.PropertyList,
+       cafe.project.timeline.effect.Effect,
+       cafe.gui.Action,
+       cafe.gui.controls.Chooser;
 import std.algorithm,
-       std.conv;
+       std.conv,
+       std.string;
 import dlangui,
-       dlangui.widgets.metadata;
+       dlangui.widgets.metadata,
+       dlangui.dialogs.dialog;
 
 mixin( registerWidgets!PropertyEditor );
 
 /+ プロパティを編集するウィジェット +/
-class PropertyEditor : VerticalLayout
+class PropertyEditor : ScrollWidget
 {
     private:
         Project pro;
 
-        PlaceableObject cached_obj = null;
-        uint cached_frame = 0;
+        VerticalLayout main;
 
     public:
         @property project () { return pro; }
@@ -37,32 +41,48 @@ class PropertyEditor : VerticalLayout
         this ( string id = "" )
         {
             super( id );
+            layoutWidth  = FILL_PARENT;
+            layoutHeight = FILL_PARENT;
             styleId = "PROPERTY_EDITOR";
+            hscrollbarMode = ScrollBarMode.Invisible;
+
+            main = cast(VerticalLayout) addChild( new VerticalLayout );
+            contentWidget = main;
         }
 
         void updateWidgets ()
         {
             if ( !project ) return;
+            auto obj = project.selectingObject;
 
-            auto upflag = cached_obj !is project.selectingObject;
-            cached_obj = project.selectingObject;
-
-            if ( cached_obj ) {
+            main.removeAllChildren;
+            if ( obj ) {
                 auto f = project.componentList.selecting.timeline.frame.value.to!int -
-                    cached_obj.place.frame.start.value.to!int;
-                f = min( cached_obj.place.frame.length.value.to!int-1, max( 0, f ) );
-                upflag = upflag || f != cached_frame;
-                cached_frame = f;
+                    obj.place.frame.start.value.to!int;
+                f = min( obj.place.frame.length.value.to!int-1, max( 0, f ) );
 
-                if ( upflag ) {
-                    auto fat = new FrameAt( f.to!uint );
-                    removeAllChildren;
-                    addChild( new GroupPanelFrame( cached_obj.propertyList, cached_obj.name, fat ) );
-                    cached_obj.effectList.effects.each!
-                        ( x => addChild( new GroupPanelFrame( x.propertyList, x.name, fat ) ) );
-                }
-            } else removeAllChildren;
-            invalidate;
+                auto fat = new FrameAt( f.to!uint );
+                main.addChild( new GroupPanelFrame( obj.propertyList, obj.name, fat ) );
+                obj.effectList.effects.each!
+                    ( x => main.addChild( new GroupPanelFrame( x.propertyList, x.name, fat ) ) );
+            }
+            main.invalidate;
+        }
+
+        override bool onMouseEvent ( MouseEvent e )
+        {
+            auto result = false;
+            auto obj    = project.selectingObject;
+            if ( e.button == MouseButton.Right && e.action == MouseAction.ButtonDown ) {
+                if ( obj ) (new EffectChooser( obj , window )).show;
+            }
+            return super.onMouseEvent( e ) || result;
+        }
+
+        override void measure ( int w, int h )
+        {
+            main.minWidth = w - vscrollbar.width;
+            super.measure( w, h );
         }
 }
 
@@ -154,5 +174,40 @@ private class PropertyPanel : VerticalLayout
             foreach ( k,v; props.properties )
                 addProperty( v, k );
             invalidate;
+        }
+}
+
+/+ エフェクト追加 +/
+class EffectChooser : Chooser
+{
+    private:
+        PlaceableObject obj;
+
+    protected:
+        override void updateSearchResult ( EditableContent = null )
+        {
+            super.updateSearchResult;
+            auto word = search.text;
+            list.removeAllChildren;
+            foreach ( i; Effect.registeredEffects ) {
+                if ( word != "" && i.name.indexOf( word ) == -1 ) continue;
+
+                auto item = list.addChild( new ChooserItem( i.name, i.icon ) );
+                item.click = delegate ( Widget w )
+                {
+                    obj.effectList += i.createNew( obj.place.frame.length );
+                    window.mainWidget.handleAction( Action_ObjectRefresh );
+                    window.mainWidget.handleAction( Action_TimelineRefresh );
+                    close( null );
+                    return true;
+                };
+            }
+        }
+
+    public:
+        this ( PlaceableObject o, Window w = null )
+        {
+            obj = o;
+            super( UIString.fromRaw("Choose Effect"), w );
         }
 }

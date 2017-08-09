@@ -55,6 +55,7 @@ class MainFrame : AppFrame
         auto projectRefresh ()
         {
             auto p = Cafe.instance.curProject;
+            preview.project = p;
             timeline.project = p;
             tabs.propertyEditor.project = p;
 
@@ -166,8 +167,13 @@ class MainFrame : AppFrame
                     case ObjectRefresh:
                         tabs.propertyEditor.updateWidgets;
                         return true;
+                    case TimelineRefresh:
+                        timeline.updateWidgets;
+                        return true;
                     case ChangeFrame:
-                        return handleAction( Action_ObjectRefresh );
+                        handleAction( Action_ObjectRefresh );
+                        handleAction( Action_PreviewRefresh );
+                        return true;
                     case AddFrag:
                         return fragexp.handleAction( a );
 

@@ -6,6 +6,7 @@
  + ------------------------------------------------------------ +/
 module cafe.renderer.graphics.Bitmap;
 import cafe.renderer.graphics.Color;
+import core.stdc.stdlib;
 import std.algorithm;
 
 debug = 0;
@@ -15,36 +16,55 @@ debug = 0;
 class Bitmap (T)
 {
     private:
-        T[][] bmp;
+        T* bmp = null;    // Y * width + X でアクセス
+        uint bmp_width;
+        uint bmp_height;
 
     public:
-        @property bitmap () { return bmp;           }
-        @property width  () { return bmp[0].length; }
-        @property height () { return bmp.length;    }
+        @property bitmap () { return bmp;        }
+        @property width  () { return bmp_width;  }
+        @property height () { return bmp_height; }
 
         this ( uint w, uint h )
         {
             resize( w, h );
         }
 
+        ~this ()
+        {
+            destroy;
+        }
+
+        void destroy ()
+        {
+            if ( bmp != null ) free( cast(void*) bmp );
+            bmp = null;
+            bmp_width  = 0;
+            bmp_height = 0;
+        }
+
         /+ Bitmapをリサイズ +/
         void resize ( uint w, uint h )
         {
+            destroy;
+
             w = max( w, 1 ); h = max( h, 1 );
-            bmp.length = h;
-            bmp.each!( (ref x) => x.length = w );
+            bmp_width  = w;
+            bmp_height = h;
+
+            bmp = cast(T*) malloc( w*h*T.sizeof );
         }
 
         /+ this[x,y]で指定座標のT構造体取得 +/
         T opIndex ( size_t x, size_t y )
         {
-            return bmp[y][x];
+            return bmp[y*width+x];
         }
 
         /+ this[x,y] = vで指定座標のT構造体設定 +/
         T opIndexAssign ( T v, size_t x, size_t y )
         {
-            return bmp[y][x] = v;
+            return bmp[y*width+x] = v;
         }
 
         debug (1) unittest {

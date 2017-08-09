@@ -91,7 +91,9 @@ abstract class Effect : PropertyKeepableObject
         struct RegisteredEffect
         {
             string name;
+            string icon;
             Effect delegate ( JSONValue, FrameLength ) create;
+            Effect delegate ( FrameLength ) createNew;
         }
         static RegisteredEffect[] registeredEffects;
 
@@ -101,9 +103,14 @@ abstract class Effect : PropertyKeepableObject
             static this () {
                 RegisteredEffect r;
                 r.name = T.type;
+                r.icon = T.icon;
                 r.create = delegate ( JSONValue j, FrameLength f )
                 {
                     return new T( j, f );
+                };
+                r.createNew = delegate ( FrameLength f )
+                {
+                    return new T( f );
                 };
                 registeredEffects ~= r;
             }
