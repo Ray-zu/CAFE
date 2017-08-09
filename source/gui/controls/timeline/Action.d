@@ -28,5 +28,5 @@ private template PointAction ( alias ID, string LABEL, string ICON )
 }
 
 class Action_Dlg_AddObject : Action {
-    mixin PointAction!( TimelineActions.Dlg_AddObject, "AddObject", "new" );
+    mixin PointAction!( TimelineActions.Dlg_AddObject, "Timeline_AddObject", "new" );
 }
