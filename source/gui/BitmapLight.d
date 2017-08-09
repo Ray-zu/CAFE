@@ -6,14 +6,15 @@
  + ------------------------------------------------------------ +/
 module cafe.gui.BitmapLight;
 import cafe.renderer.graphics.Bitmap,
-       cafe.renderer.graphics.Color;
+       cafe.renderer.graphics.Color,
+       cafe.gui.ColorDrawBufNoGC;
 import std.conv;
 import dlangui;
 
 debug = 0;
 
 /+ BMPViewerコンポーネントに直接渡せるBitmapクラス +/
-class BitmapLight : ColorDrawBuf
+class BitmapLight : ColorDrawBufNoGC
 {
     public:
         /+ 通常のBMPから生成 +/

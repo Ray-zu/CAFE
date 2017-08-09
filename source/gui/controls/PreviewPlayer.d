@@ -65,8 +65,6 @@ class PreviewPlayer : VerticalLayout
                     Cafe.instance.setStatus( "Rendered..." );
                     window.invalidate;
                 }
-                object.destroy( r );
-                GC.collect;
             } );
         }
 

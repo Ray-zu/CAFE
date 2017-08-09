@@ -32,17 +32,26 @@ class Bitmap (T)
 
         ~this ()
         {
-            free( cast(void*) bmp );
+            destroy;
+        }
+
+        void destroy ()
+        {
+            if ( bmp != null ) free( cast(void*) bmp );
+            bmp = null;
+            bmp_width  = 0;
+            bmp_height = 0;
         }
 
         /+ Bitmapをリサイズ +/
         void resize ( uint w, uint h )
         {
+            destroy;
+
             w = max( w, 1 ); h = max( h, 1 );
             bmp_width  = w;
             bmp_height = h;
 
-            if ( bmp ) free( cast(void*) bmp );
             bmp = cast(T*) malloc( w*h*T.sizeof );
         }
 
