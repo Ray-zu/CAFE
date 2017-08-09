@@ -63,8 +63,8 @@ class PreviewPlayer : VerticalLayout
                 synchronized {
                     preview.drawable = r.bitmap;
                     Cafe.instance.setStatus( "Rendered..." );
+                    window.invalidate;
                 }
-                window.invalidate;
                 object.destroy( r );
                 GC.collect;
             } );
