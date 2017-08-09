@@ -8,6 +8,7 @@ module cafe.gui.controls.timeline.Line;
 import cafe.gui.utils.Font,
        cafe.gui.utils.Rect,
        cafe.gui.controls.timeline.Cache,
+       cafe.gui.controls.timeline.ObjectChooser,
        cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.property.Property,
@@ -60,6 +61,16 @@ abstract class Line
         bool onContentLeftClicked ( uint )
         {
             return false;
+        }
+
+        MenuItem headerMenu  ()
+        {
+            return null;
+        }
+
+        MenuItem contentMenu ( uint )
+        {
+            return null;
         }
 }
 
@@ -130,6 +141,19 @@ class LayerLine : Line
                 cache.operation.clicking( state );
                 return true;
             } else return false;
+        }
+
+        override MenuItem contentMenu ( uint f )
+        {
+            auto index = objs.countUntil!
+                ( x => x.place.frame.isInRange( new FrameAt(f) ) );
+            if ( index >= 0 ? objs[index] : null ) {
+                return null;
+            } else {
+                auto root = new MenuItem;
+                //root.add(  );
+                return null;
+            }
         }
 }
 

@@ -8,7 +8,6 @@ module cafe.gui.controls.timeline.LinesCanvas;
 import cafe.gui.Action,
        cafe.gui.utils.Rect,
        cafe.gui.controls.timeline.Cache,
-       cafe.gui.controls.timeline.ObjectChooser,
        cafe.project.ObjectPlacingInfo;
 import std.algorithm,
        std.conv,
@@ -155,9 +154,13 @@ class LinesCanvas : CanvasWidget
 
             } else if ( right && e.action == MouseAction.ButtonDown ) {
                 // 右クリック押し始め
-                auto layer = line.layerIndex;
-                if ( !header && layer >= 0 && !cache.timeline[new FrameAt(f), new LayerId(layer)] )
-                    (new ObjectChooser( f, layer, cache.timeline, window )).show;
+                MenuItem menu = header ? line.headerMenu : line.contentMenu( f );
+                if ( menu ) {
+                    auto popup_menu = new PopupMenu( menu );
+                    auto popup      = window.showPopup( popup_menu, this,
+                            PopupAlign.Point | PopupAlign.Right, e.x, e.y );
+                    popup.flags = PopupFlags.CloseOnClickOutside;
+                }
             }
             if ( trans_ev ) parent.childById( "grid" ).onMouseEvent( e );
 
