@@ -7,8 +7,8 @@
 module cafe.gui.controls.timeline.Line;
 import cafe.gui.utils.Font,
        cafe.gui.utils.Rect,
+       cafe.gui.controls.timeline.Action,
        cafe.gui.controls.timeline.Cache,
-       cafe.gui.controls.timeline.ObjectChooser,
        cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.property.Property,
@@ -151,8 +151,8 @@ class LayerLine : Line
                 return null;
             } else {
                 auto root = new MenuItem;
-                //root.add(  );
-                return null;
+                root.add( new Action_Dlg_AddObject( f, layerIndex ) );
+                return root;
             }
         }
 }

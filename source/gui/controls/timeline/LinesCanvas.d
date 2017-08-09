@@ -7,7 +7,9 @@
 module cafe.gui.controls.timeline.LinesCanvas;
 import cafe.gui.Action,
        cafe.gui.utils.Rect,
+       cafe.gui.controls.timeline.Action,
        cafe.gui.controls.timeline.Cache,
+       cafe.gui.controls.timeline.ObjectChooser,
        cafe.project.ObjectPlacingInfo;
 import std.algorithm,
        std.conv,
@@ -159,6 +161,7 @@ class LinesCanvas : CanvasWidget
                     auto popup_menu = new PopupMenu( menu );
                     auto popup      = window.showPopup( popup_menu, this,
                             PopupAlign.Point | PopupAlign.Right, e.x, e.y );
+                    popup_menu.menuItemAction = &handleMenuAction;
                     popup.flags = PopupFlags.CloseOnClickOutside;
                 }
             }
@@ -168,5 +171,17 @@ class LinesCanvas : CanvasWidget
 
             super.onMouseEvent( e );
             return true;
+        }
+
+        bool handleMenuAction ( const Action a )
+        {
+            switch ( a.id ) with ( TimelineActions ) {
+                case Dlg_AddObject:
+                    auto ev = cast(Action_Dlg_AddObject) a;
+                    new ObjectChooser( ev.frame, ev.line, cache.timeline, window ).show;
+                    return true;
+
+                default: return false;
+            }
         }
 }
