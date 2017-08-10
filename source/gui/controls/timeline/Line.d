@@ -147,13 +147,13 @@ class LayerLine : Line
         {
             auto index = objs.countUntil!
                 ( x => x.place.frame.isInRange( new FrameAt(f) ) );
+            auto root = new MenuItem;
             if ( index >= 0 ? objs[index] : null ) {
-                return null;
+                root.add( new Action_RmObject( f, layerIndex ) );
             } else {
-                auto root = new MenuItem;
                 root.add( new Action_Dlg_AddObject( f, layerIndex ) );
-                return root;
             }
+            return root;
         }
 }
 

@@ -9,7 +9,9 @@ import dlangui;
 
 enum TimelineActions : int
 {
-    Dlg_AddObject = 20000
+    Dlg_AddObject = 20000,
+
+    RmObject
 }
 
 /+ フレーム数とラインインデックスを指定できるアクション +/
@@ -29,4 +31,8 @@ private template PointAction ( alias ID, string LABEL, string ICON )
 
 class Action_Dlg_AddObject : Action {
     mixin PointAction!( TimelineActions.Dlg_AddObject, "Timeline_AddObject", "new" );
+}
+
+class Action_RmObject : Action {
+    mixin PointAction!( TimelineActions.RmObject, "Timeline_RmObject", "quit" );
 }

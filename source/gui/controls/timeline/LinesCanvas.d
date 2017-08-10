@@ -181,6 +181,19 @@ class LinesCanvas : CanvasWidget
                     new ObjectChooser( ev.frame, ev.line, cache.timeline, window ).show;
                     return true;
 
+                case RmObject:
+                    auto ev  = cast(Action_RmObject) a;
+                    auto obj = cache.timeline[new FrameAt(ev.frame),new LayerId(ev.line)];
+                    if ( obj ) {
+                        cache.timeline.remove( obj );
+                        if ( cache.timeline.selecting is obj )
+                            cache.timeline.selecting = null;
+                        cache.updateLinesCache;
+                        window.mainWidget.handleAction( Action_ObjectRefresh );
+                        return true;
+                    }
+                    return false;
+
                 default: return false;
             }
         }
