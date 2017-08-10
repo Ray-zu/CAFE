@@ -24,6 +24,7 @@ abstract class Effect : PropertyKeepableObject
 
     public:
         bool propertiesOpened;
+        bool enable;
 
         @property string name ();
 
@@ -43,6 +44,7 @@ abstract class Effect : PropertyKeepableObject
         {
             props = new PropertyList( src.propertyList, f );
             propertiesOpened = src.propertiesOpened;
+            enable = src.enable;
         }
 
         this ( FrameLength f )
@@ -50,12 +52,14 @@ abstract class Effect : PropertyKeepableObject
             props = new PropertyList;
             initProperties(f);
             propertiesOpened = false;
+            enable = true;
         }
 
         this ( JSONValue j, FrameLength f )
         {
             props = new PropertyList( j["properties"], f );
             propertiesOpened = j["propertiesOpened"].type == JSON_TYPE.TRUE;
+            enable = j["enable"].type == JSON_TYPE.TRUE;
         }
 
         override void initProperties ( FrameLength )
@@ -69,6 +73,7 @@ abstract class Effect : PropertyKeepableObject
             j["name"]       = JSONValue(name);
             j["properties"] = JSONValue(propertyList.json);
             j["propertiesOpened"] = JSONValue( propertiesOpened );
+            j["enable"]     = JSONValue( enable );
             return j;
         }
 

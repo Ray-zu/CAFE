@@ -73,7 +73,9 @@ class EffectList
         /+ WorldクラスにEffectをかける +/
         World apply ( World w )
         {
-            effects.each!( x => w = x.apply( w ) );
+            effects
+                .filter!( x => x.enable )
+                .each!( x => w = x.apply( w ) );
             return w;
         }
 
