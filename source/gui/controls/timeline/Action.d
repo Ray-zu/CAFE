@@ -44,6 +44,6 @@ class Action_RmObject : Action {
     mixin PointAction!( TimelineActions.RmObject, "Timeline_RmObject", "quit" );
 }
 
-const Action_UpEffect   = new Action( cast(int) TimelineActions.LinesRefresh, "Timeline_UpEffect" );
-const Action_DownEffect = new Action( cast(int) TimelineActions.LinesRefresh, "Timeline_DownEffect" );
+const Action_UpEffect   = new Action( cast(int) TimelineActions.LinesRefresh, "Timeline_UpEffect", "up" );
+const Action_DownEffect = new Action( cast(int) TimelineActions.LinesRefresh, "Timeline_DownEffect", "down" );
 const Action_RmEffect   = new Action( cast(int) TimelineActions.LinesRefresh, "Timeline_RmEffect", "quit" );
