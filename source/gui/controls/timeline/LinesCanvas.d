@@ -146,7 +146,7 @@ class LinesCanvas : CanvasWidget
                 // 左クリック押し終わり
                 dragging   = false;
                 trans_ev   = !cache.operation.isHandled;
-                redraw_obj = cache.operation.isProcessing;
+                redraw_obj = cache.operation.isHandled;
                 cache.operation.release( f );
 
             } else if ( e.action == MouseAction.Move ) {
