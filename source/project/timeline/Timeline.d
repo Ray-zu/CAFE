@@ -70,7 +70,7 @@ class Timeline
         /+ objを削除 +/
         void remove ( PlaceableObject obj )
         {
-            objects.remove!( x => x is obj );
+            objs = objects.remove!( x => x is obj );
         }
 
         /+ this += obj : オブジェクトを追加 +/
