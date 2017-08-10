@@ -151,6 +151,17 @@ private class EffectGroupPanelFrame : GroupPanelFrame
                     el.down( e ); update;
                     return true;
                 };
+            childById("main").addChild( new ImageWidget( "", e.enable ? "visible" : "invisible" ) )
+                .alignment( Align.VCenter )
+                .clickable( true )
+                .click = delegate ( Widget w )
+                {
+                    e.enable = !e.enable;
+                    (cast(ImageWidget)w).drawableId =
+                        e.enable ? "visible" : "invisible";
+                    update;
+                    return true;
+                };
             // エフェクトプロパティ表示 or 非表示
             alignment( Align.VCenter )
                 .clickable( true )
