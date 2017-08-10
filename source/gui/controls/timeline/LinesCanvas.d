@@ -7,6 +7,7 @@
 module cafe.gui.controls.timeline.LinesCanvas;
 import cafe.gui.Action,
        cafe.gui.utils.Rect,
+       cafe.gui.controls.PropertyEditor,
        cafe.gui.controls.timeline.Action,
        cafe.gui.controls.timeline.Cache,
        cafe.gui.controls.timeline.ObjectChooser,
@@ -176,9 +177,20 @@ class LinesCanvas : CanvasWidget
         bool handleMenuAction ( const Action a )
         {
             switch ( a.id ) with ( TimelineActions ) {
+                case LinesRefresh:
+                    cache.updateLinesCache;
+                    window.mainWidget.handleAction( Action_ObjectRefresh );
+                    return true;
+
                 case Dlg_AddObject:
                     auto ev = cast(Action_Dlg_AddObject) a;
                     new ObjectChooser( ev.frame, ev.line, cache.timeline, window ).show;
+                    return true;
+
+                case Dlg_AddEffect:
+                    auto ev = cast(Action_Dlg_AddEffect) a;
+                    auto obj = cache.timeline[new FrameAt(ev.frame),new LayerId(ev.line)];
+                    if ( obj ) new EffectChooser( obj, window ).show;
                     return true;
 
                 case RmObject:

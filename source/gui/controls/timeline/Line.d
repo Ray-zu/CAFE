@@ -149,6 +149,7 @@ class LayerLine : Line
                 ( x => x.place.frame.isInRange( new FrameAt(f) ) );
             auto root = new MenuItem;
             if ( index >= 0 ? objs[index] : null ) {
+                root.add( new Action_Dlg_AddEffect( f, layerIndex ) );
                 root.add( new Action_RmObject( f, layerIndex ) );
             } else {
                 root.add( new Action_Dlg_AddObject( f, layerIndex ) );
@@ -233,6 +234,19 @@ class EffectLine : Line
     private:
         Effect effect;
 
+        MenuItem up, down, remove;
+        auto handleMenu ( MenuItem m )
+        {
+            if ( m is up )
+                cache.timeline.selecting.effectList.up( effect );
+            else if ( m is down )
+                cache.timeline.selecting.effectList.down( effect );
+            else if ( m is remove )
+                cache.timeline.selecting.effectList.remove( effect );
+            else return false;
+            return true;
+        }
+
     public:
         override @property float heightMag ()
         {
@@ -244,6 +258,10 @@ class EffectLine : Line
         {
             super( c, e.name );
             effect = e;
+
+            up     = new MenuItem( Action_UpEffect );
+            down   = new MenuItem( Action_DownEffect );
+            remove = new MenuItem( Action_RmEffect );
         }
 
         override void drawContent ( DrawBuf b, Rect r )
@@ -286,5 +304,21 @@ class EffectLine : Line
             auto est = cache.timeline.selecting.place.frame.start.value;
             auto eed = cache.timeline.selecting.place.frame.end.value;
             return (f >= est && f < eed) ? onHeaderLeftClicked : false;
+        }
+
+        override MenuItem contentMenu ( uint f )
+        {
+            auto est = cache.timeline.selecting.place.frame.start.value;
+            auto eed = cache.timeline.selecting.place.frame.end.value;
+            if ( f >= est && f < eed ) {
+                auto root = new MenuItem;
+                with ( root ) {
+                    add( up );
+                    add( down );
+                    add( remove );
+                    menuItemClick = &handleMenu;
+                }
+                return root;
+            } else return null;
         }
 }
