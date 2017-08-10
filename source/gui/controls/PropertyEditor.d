@@ -151,8 +151,8 @@ private class EffectGroupPanelFrame : GroupPanelFrame
                     el.down( e ); update;
                     return true;
                 };
-            childById("main").addChild( new ImageWidget( "", "shift_behind" ) )
-                .alignment( Align.VCenter )
+            // エフェクトプロパティ表示 or 非表示
+            alignment( Align.VCenter )
                 .clickable( true )
                 .click = delegate ( Widget w )
                 {
