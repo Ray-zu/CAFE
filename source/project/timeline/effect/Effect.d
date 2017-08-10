@@ -82,6 +82,8 @@ abstract class Effect : PropertyKeepableObject
             auto style = currentTheme.get( styleId );
             if ( style.backgroundDrawable )
                 style.backgroundDrawable.drawTo( b, r );
+            if ( !enable )
+                b.fillRect( r, style.customColor( "effect_disabled_color" ) );
         }
 
         /+ Worldクラスにエフェクトをかける +/
