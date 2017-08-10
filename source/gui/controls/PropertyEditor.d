@@ -11,6 +11,7 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.property.Property,
        cafe.project.timeline.property.PropertyList,
        cafe.project.timeline.effect.Effect,
+       cafe.project.timeline.effect.EffectList,
        cafe.gui.Action,
        cafe.gui.controls.Chooser;
 import std.algorithm,
@@ -64,7 +65,7 @@ class PropertyEditor : ScrollWidget
                 auto fat = new FrameAt( f.to!uint );
                 main.addChild( new GroupPanelFrame( obj.propertyList, obj.name, fat ) );
                 obj.effectList.effects.each!
-                    ( x => main.addChild( new GroupPanelFrame( x.propertyList, x.name, fat ) ) );
+                    ( x => main.addChild( new EffectGroupPanelFrame( x, obj.effectList, fat, window ) ) );
             }
             main.invalidate;
         }
@@ -91,16 +92,16 @@ private class GroupPanelFrame : VerticalLayout
 {
     enum HeaderLayout = q{
         HorizontalLayout {
+            id:main;
             layoutWidth:FILL_PARENT;
             styleId:PROPERTY_EDITOR_GROUP_HEADER;
             HSpacer {}
-            TextWidget { id:header; fontSize:16 }
+            TextWidget { id:header; fontSize:16; alignment:VCenter }
             HSpacer {}
-            ImageWidget { id:shrink; drawableId:move_behind; }
         }
     };
 
-    private:
+    protected:
         PropertyPanel panel;
 
     public:
@@ -114,15 +115,55 @@ private class GroupPanelFrame : VerticalLayout
             panel = cast(PropertyPanel)addChild( new PropertyPanel( l, f ) );
 
             childById( "header" ).text = title.to!dstring;
-            childById( "shrink" ).mouseEvent = delegate ( Widget w, MouseEvent e )
+        }
+}
+
+/+ エフェクト用外枠 +/
+private class EffectGroupPanelFrame : GroupPanelFrame
+{
+    public:
+        // イベント送信用にウィンドウも渡す
+        this ( Effect e, EffectList el, FrameAt f, Window w )
+        {
+            super( e.propertyList, e.name, f );
+
+            void update ( bool edit = true )
             {
-                if ( e.action == MouseAction.ButtonDown && e.button & MouseButton.Left ) {
-                    panel.visibility = panel.visibility == Visibility.Visible ?
-                        Visibility.Gone : Visibility.Visible;
-                    invalidate;
+                if ( edit )
+                    w.mainWidget.handleAction( Action_PreviewRefresh );
+                w.mainWidget.handleAction( Action_ObjectRefresh );
+                w.mainWidget.handleAction( Action_TimelineRefresh );
+            }
+
+            childById("main").addChild( new ImageWidget( "", "up" ) )
+                .alignment( Align.VCenter )
+                .clickable( true )
+                .click = delegate ( Widget w )
+                {
+                    el.up( e ); update;
                     return true;
-                } else return false;
-            };
+                };
+            childById("main").addChild( new ImageWidget( "", "down" ) )
+                .alignment( Align.VCenter )
+                .clickable( true )
+                .click = delegate ( Widget w )
+                {
+                    el.down( e ); update;
+                    return true;
+                };
+            childById("main").addChild( new ImageWidget( "", "shift_behind" ) )
+                .alignment( Align.VCenter )
+                .clickable( true )
+                .click = delegate ( Widget w )
+                {
+                    e.propertiesOpened = !e.propertiesOpened;
+                    panel.visibility = e.propertiesOpened ?
+                        Visibility.Visible : Visibility.Gone;
+                    update( false );
+                    return true;
+                };
+            panel.visibility = e.propertiesOpened ?
+                Visibility.Visible : Visibility.Gone;
         }
 }
 
