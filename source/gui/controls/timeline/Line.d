@@ -115,7 +115,7 @@ class LayerLine : Line
 
                     auto obj_r = Rect( r.left + (r_ost*ppf).to!int, r.top + pad.top,
                             r.left + (r_oed*ppf).to!int, r.bottom - pad.bottom );
-                    b.clipRect = obj_r.shrinkRect( b.clipRect );
+                    b.clipRect = obj_r.shrinkRect( r );
                     o.draw( b, obj_r );
                     b.drawFrame( obj_r, style.textColor,
                             o is sel ? Rect(2,2,2,2) : Rect(1,1,1,1) );
