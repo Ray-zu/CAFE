@@ -9,13 +9,15 @@
     "dependencies": {
         "dlangui": "~>0.9.56",
         "derelict-gl3": "~>1.0.23",
-        "derelict-al": "~>1.0.3"
+        "derelict-al": "~>1.0.3",
+        "derelict-glfw3": "~>4.0.0-beta.1"
     },
     "stringImportPaths": [
         "./views",
         "./views/themes",
         "./views/langs",
-        "./views/icons"
+        "./views/icons",
+        "./source/renderer/GLSL"
     ],
 
     "description": "Creator's Advanced Film Editor",
