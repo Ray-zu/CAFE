@@ -79,7 +79,8 @@ class ProjectConfigDialog : Dialog
                     childById("error").text = "Invalid Integer"d;
                     return false;
                 }
-                Cafe.instance.curProject = project;
+                if ( Cafe.instance.curProject !is project )
+                    Cafe.instance.curProject = project;
             }
             return super.handleAction( a );
         }
