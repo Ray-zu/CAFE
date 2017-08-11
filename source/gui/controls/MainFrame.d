@@ -175,6 +175,10 @@ class MainFrame : AppFrame
                         handleAction( Action_ObjectRefresh );
                         handleAction( Action_PreviewRefresh );
                         return true;
+                    case CompTreeOpen:
+                        timeline.addTab(
+                                tabs.componentTree.items.selectedItem.id );
+                        return true;
 
                     default:
                         return super.handleAction( a );

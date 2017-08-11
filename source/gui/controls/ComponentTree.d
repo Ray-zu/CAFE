@@ -33,10 +33,12 @@ class ComponentTree : TreeWidget
         override MenuItem onTreeItemPopupMenu ( TreeItems, TreeItem i )
         {
             MenuItem root = new MenuItem;
-            if ( i.id == "" ) {
+            if ( i.id != "" ) {
+                if ( i.id != ComponentList.RootId )
+                    root.add( Action_CompTreeDelete );
+                root.add( Action_CompTreeOpen );
+            } else {
                 root.add( Action_CompTreeAdd );
-            } else if (  i.id != ComponentList.RootId ) {
-                root.add( Action_CompTreeDelete );
             }
             root.add( Action_CompTreeConfig );
 
@@ -81,6 +83,9 @@ class ComponentTree : TreeWidget
                     project.componentList.del( items.selectedItem.id );
                     updateWidgets;
                     return true;
+
+                case CompTreeOpen:
+                    return window.mainWidget.handleAction( a );
 
                 default: return super.handleAction( a );
             }

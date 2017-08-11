@@ -34,7 +34,8 @@ enum EditorActions : int
 
     CompTreeAdd,
     CompTreeConfig,
-    CompTreeDelete
+    CompTreeDelete,
+    CompTreeOpen
 }
 
 const Action_ProjectNew    = new Action( cast(int)EditorActions.ProjectNew   , "ProjectNew"   , "new" );
@@ -62,3 +63,4 @@ const Action_ChangeFrame = new Action( cast(int)EditorActions.ChangeFrame, "Chan
 const Action_CompTreeAdd    = new Action( cast(int)EditorActions.CompTreeAdd   , "CompTreeAdd"    );
 const Action_CompTreeConfig = new Action( cast(int)EditorActions.CompTreeConfig, "CompTreeConfig" );
 const Action_CompTreeDelete = new Action( cast(int)EditorActions.CompTreeDelete, "CompTreeDelete" );
+const Action_CompTreeOpen   = new Action( cast(int)EditorActions.CompTreeOpen  , "CompTreeOpen"   );
