@@ -313,6 +313,10 @@
         backgroundColor="#00111111">
     </style>
 
+    <style id="COMPONENT_TREE"
+        backgroundColor="#00222222">
+    </style>
+
     <style id="PROPERTY_EDITOR"
         backgroundColor="#00222222">
     </style>

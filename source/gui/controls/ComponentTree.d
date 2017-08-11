@@ -14,6 +14,7 @@ import dlangui;
 /+ コンポーネント一覧 +/
 class ComponentTree : TreeWidget
 {
+    enum Style = "COMPONENT_TREE";
     private:
         Project pro;
 
@@ -58,6 +59,8 @@ class ComponentTree : TreeWidget
         this ( string id = "" )
         {
             super( id );
+            styleId = Style;
+
             pro  = null;
             root = items.newChild( "", "Project"d );
         }
