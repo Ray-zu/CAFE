@@ -60,7 +60,7 @@ const Action_TimelineRefresh = new Action( cast(int)EditorActions.TimelineRefres
 
 const Action_ChangeFrame = new Action( cast(int)EditorActions.ChangeFrame, "ChangeFrame" );
 
-const Action_CompTreeAdd    = new Action( cast(int)EditorActions.CompTreeAdd   , "CompTreeAdd"    );
+const Action_CompTreeAdd    = new Action( cast(int)EditorActions.CompTreeAdd   , "CompTreeAdd"   , "new"    );
 const Action_CompTreeConfig = new Action( cast(int)EditorActions.CompTreeConfig, "CompTreeConfig", "config" );
-const Action_CompTreeDelete = new Action( cast(int)EditorActions.CompTreeDelete, "CompTreeDelete" );
-const Action_CompTreeOpen   = new Action( cast(int)EditorActions.CompTreeOpen  , "CompTreeOpen"   );
+const Action_CompTreeDelete = new Action( cast(int)EditorActions.CompTreeDelete, "CompTreeDelete", "quit"   );
+const Action_CompTreeOpen   = new Action( cast(int)EditorActions.CompTreeOpen  , "CompTreeOpen"  , "open"   );
