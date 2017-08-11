@@ -175,8 +175,6 @@ class MainFrame : AppFrame
                         handleAction( Action_ObjectRefresh );
                         handleAction( Action_PreviewRefresh );
                         return true;
-                    case AddFrag:
-                        return fragexp.handleAction( a );
 
                     default:
                         return super.handleAction( a );

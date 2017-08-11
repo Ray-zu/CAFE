@@ -30,11 +30,7 @@ enum EditorActions : int
     CompTreeRefresh,
     TimelineRefresh,
 
-    ChangeFrame,
-
-    AddFrag,
-    AddFragDir,
-    RemoveFrag
+    ChangeFrame
 }
 
 const Action_ProjectNew    = new Action( cast(int)EditorActions.ProjectNew   , "ProjectNew"   , "new" );
@@ -58,7 +54,3 @@ const Action_CompTreeRefresh = new Action( cast(int)EditorActions.CompTreeRefres
 const Action_TimelineRefresh = new Action( cast(int)EditorActions.TimelineRefresh, "TimelineRefresh" );
 
 const Action_ChangeFrame = new Action( cast(int)EditorActions.ChangeFrame, "ChangeFrame" );
-
-const Action_AddFrag    = new Action( cast(int)EditorActions.AddFrag   , "AddFrag"    );
-const Action_AddFragDir = new Action( cast(int)EditorActions.AddFragDir, "AddFragDir" );
-const Action_RemoveFrag = new Action( cast(int)EditorActions.RemoveFrag, "RemoveFrag" );
