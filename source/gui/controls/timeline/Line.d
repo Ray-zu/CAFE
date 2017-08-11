@@ -233,7 +233,7 @@ class PropertyLine : Line
                 ( x => x.frame.start.value == f );
             if ( index >= 0 && index < property.middlePoints.length ) {
                 cache.operation.operatingProperty = property;
-                cache.operation.middlePointIndex  = index;
+                cache.operation.middlePointIndex  = index.to!uint;
                 cache.operation.clicking;
                 return true;
             } else return false;
