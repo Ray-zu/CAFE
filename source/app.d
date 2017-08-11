@@ -7,7 +7,9 @@
 module cafe.app;
 import cafe.project.Project,
        cafe.gui.Action,
-       cafe.gui.controls.MainFrame;
+       cafe.gui.controls.MainFrame,
+       cafe.gui.controls.BMPViewer,
+       cafe.renderer.custom.OpenGLRenderer;
 import dlangui;
 
 class Cafe
@@ -35,8 +37,14 @@ class Cafe
             Log.setStdoutLogger;
             Log.setLogLevel( LogLevel.Info );
 
-            auto window = Platform.instance.createWindow("Hello dlang!",null,WindowFlag.Resizable,800,500);
-            window.mainWidget = main_frame = new MainFrame;
+            auto bmp = (new OpenGLRenderer).renderTest;
+            auto window = Platform.instance.createWindow(
+                    "Hello dlang!",null,WindowFlag.Resizable,bmp.width,bmp.height);
+
+            auto view = new BMPViewer( "test" );
+            view.drawable( bmp );
+
+            window.mainWidget = view;
             window.windowOrContentResizeMode = WindowOrContentResizeMode.shrinkWidgets;
             window.show;
         }
@@ -48,7 +56,7 @@ class Cafe
         @property curProject ( Project p )
         {
             cur_project = p;
-            handleAction( Action_ProjectRefresh );
+            //handleAction( Action_ProjectRefresh );
         }
 
         this ( string[] args )
