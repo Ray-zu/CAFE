@@ -30,7 +30,11 @@ enum EditorActions : int
     CompTreeRefresh,
     TimelineRefresh,
 
-    ChangeFrame
+    ChangeFrame,
+
+    CompTreeAdd,
+    CompTreeConfig,
+    CompTreeDelete
 }
 
 const Action_ProjectNew    = new Action( cast(int)EditorActions.ProjectNew   , "ProjectNew"   , "new" );
@@ -54,3 +58,7 @@ const Action_CompTreeRefresh = new Action( cast(int)EditorActions.CompTreeRefres
 const Action_TimelineRefresh = new Action( cast(int)EditorActions.TimelineRefresh, "TimelineRefresh" );
 
 const Action_ChangeFrame = new Action( cast(int)EditorActions.ChangeFrame, "ChangeFrame" );
+
+const Action_CompTreeAdd    = new Action( cast(int)EditorActions.CompTreeAdd   , "CompTreeAdd"    );
+const Action_CompTreeConfig = new Action( cast(int)EditorActions.CompTreeConfig, "CompTreeConfig" );
+const Action_CompTreeDelete = new Action( cast(int)EditorActions.CompTreeDelete, "CompTreeDelete" );

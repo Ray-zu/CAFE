@@ -30,6 +30,21 @@ class ComponentTree : TreeWidget
             super.updateWidgets;
         }
 
+        override MenuItem onTreeItemPopupMenu ( TreeItems, TreeItem i )
+        {
+            MenuItem root = new MenuItem;
+            if ( i.id == "" ) {
+                root.add( Action_CompTreeAdd );
+            } else if (  i.id != ComponentList.RootId ) {
+                root.add( Action_CompTreeDelete );
+            }
+            root.add( Action_CompTreeConfig );
+
+            selectItem( i );
+            root.menuItemAction = &handleAction;
+            return root;
+        }
+
     public:
         @property project () { return pro; }
         @property project ( Project p )
@@ -51,6 +66,19 @@ class ComponentTree : TreeWidget
 
             switch ( a.id ) with( EditorActions ) {
                 case CompTreeRefresh:
+                    updateWidgets;
+                    return true;
+
+                case CompTreeAdd:
+                    updateWidgets;
+                    return true;
+
+                case CompTreeConfig:
+                    updateWidgets;
+                    return true;
+
+                case CompTreeDelete:
+                    project.componentList.del( items.selectedItem.id );
                     updateWidgets;
                     return true;
 
