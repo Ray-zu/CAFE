@@ -12,7 +12,8 @@ import cafe.project.Project,
        cafe.project.timeline.property.Property,
        cafe.gui.controls.timeline.Cache,
        cafe.gui.controls.timeline.Line,
-       cafe.gui.controls.timeline.ObjectEditor;
+       cafe.gui.controls.timeline.ObjectEditor,
+       cafe.gui.controls.timeline.PropertyEditor;
 import std.algorithm;
 import dlangui;
 
@@ -53,16 +54,16 @@ class Operation
 
         auto moveProp ( uint f, uint l )
         {
-            auto line = cache.lines[l];
             auto prop = operatingProperty;
-            // TODO
+            prop.moveMP( f, middlePointIndex );
         }
 
     public:
         PlaceableObject operatingObject   = null;
         Property        operatingProperty = null;
 
-        int frameOffset = 0;
+        int  frameOffset      = 0;
+        uint middlePointIndex = 0;
 
         /+ 編集操作中かどうか +/
         @property isProcessing ()

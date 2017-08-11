@@ -226,6 +226,18 @@ class PropertyLine : Line
             cache.operation.clicking;
             return true;
         }
+
+        override bool onContentLeftClicked ( uint f )
+        {
+            auto index = property.middlePoints.countUntil!
+                ( x => x.frame.start.value == f );
+            if ( index >= 0 && index < property.middlePoints.length ) {
+                cache.operation.operatingProperty = property;
+                cache.operation.middlePointIndex  = index;
+                cache.operation.clicking;
+                return true;
+            } else return false;
+        }
 }
 
 class EffectLine : Line
