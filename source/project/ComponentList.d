@@ -19,6 +19,7 @@ alias ComponentID = string;
 /+ コンポーネントのリスト +/
 class ComponentList
 {
+    enum RootId = "ROOT";
     private:
         Component[ComponentID] comps;
 
@@ -36,7 +37,7 @@ class ComponentList
 
         this ()
         {
-            comps["ROOT"] = new Component;
+            comps[RootId] = new Component;
         }
 
         this ( JSONValue j )
@@ -48,12 +49,13 @@ class ComponentList
         /+ ルートコンポーネントを返す +/
         @property root ()
         {
-            return this["ROOT"];
+            return this[RootId];
         }
 
         /+ コンポーネントの削除(参照から) +/
         void del ( Component c )
         {
+            if ( c is root ) return;
             comps.remove( components.keys[
                     components.values.countUntil!"a is b"( c )] );
         }
@@ -61,8 +63,17 @@ class ComponentList
         /+ コンポーネントの削除(IDから) +/
         void del ( ComponentID i )
         {
+            if ( i == "ROOT" ) return;
             enforce( i in components, "The component was not found." );
             comps.remove( i );
+        }
+
+        /+ コンポーネントのリネーム +/
+        void rename ( ComponentID from, ComponentID to )
+        {
+            if ( from == RootId || to == RootId ) return;
+            this[to] = this[from];
+            del( from );
         }
 
         /+ this[i] : コンポーネントの参照 +/

@@ -38,6 +38,7 @@ class Cafe
             auto window = Platform.instance.createWindow("Hello dlang!",null,WindowFlag.Resizable,800,500);
             window.mainWidget = main_frame = new MainFrame;
             window.windowOrContentResizeMode = WindowOrContentResizeMode.shrinkWidgets;
+            window.windowIcon = drawableCache.getImage( "cafe_logo" );
             window.show;
         }
 

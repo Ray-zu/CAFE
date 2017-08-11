@@ -34,5 +34,6 @@ class BMPViewer : ImageWidget
         this ( string id = "" )
         {
             super( id );
+            backgroundColor = 0x000000;
         }
 }

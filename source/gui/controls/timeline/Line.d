@@ -7,6 +7,7 @@
 module cafe.gui.controls.timeline.Line;
 import cafe.gui.utils.Font,
        cafe.gui.utils.Rect,
+       cafe.gui.controls.timeline.Action,
        cafe.gui.controls.timeline.Cache,
        cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.PlaceableObject,
@@ -61,6 +62,16 @@ abstract class Line
         {
             return false;
         }
+
+        MenuItem headerMenu  ()
+        {
+            return null;
+        }
+
+        MenuItem contentMenu ( uint )
+        {
+            return null;
+        }
 }
 
 class LayerLine : Line
@@ -93,6 +104,7 @@ class LayerLine : Line
             auto ppf = cache.pxPerFrame;
             auto pad = style.padding;
             auto sel = cache.timeline.selecting;
+            auto crc = b.clipRect;
 
             foreach ( o; objs ) {
                 auto ost = o.place.frame.start.value;
@@ -104,7 +116,7 @@ class LayerLine : Line
 
                     auto obj_r = Rect( r.left + (r_ost*ppf).to!int, r.top + pad.top,
                             r.left + (r_oed*ppf).to!int, r.bottom - pad.bottom );
-                    b.clipRect = obj_r.shrinkRect( b.clipRect );
+                    b.clipRect = obj_r.shrinkRect( crc );
                     o.draw( b, obj_r );
                     b.drawFrame( obj_r, style.textColor,
                             o is sel ? Rect(2,2,2,2) : Rect(1,1,1,1) );
@@ -130,6 +142,20 @@ class LayerLine : Line
                 cache.operation.clicking( state );
                 return true;
             } else return false;
+        }
+
+        override MenuItem contentMenu ( uint f )
+        {
+            auto index = objs.countUntil!
+                ( x => x.place.frame.isInRange( new FrameAt(f) ) );
+            auto root = new MenuItem;
+            if ( index >= 0 ? objs[index] : null ) {
+                root.add( new Action_Dlg_AddEffect( f, layerIndex ) );
+                root.add( new Action_RmObject( f, layerIndex ) );
+            } else {
+                root.add( new Action_Dlg_AddObject( f, layerIndex ) );
+            }
+            return root;
         }
 }
 
@@ -160,7 +186,7 @@ class PropertyLine : Line
             }
             property.middlePoints.each!
                 ( x => drawMiddlePoint( x.frame.start.value ) );
-            drawMiddlePoint( property.frame.value );
+            drawMiddlePoint( property.frame.value-1 );
         }
 
         void drawGraph ( DrawBuf b, Rect r )
@@ -200,6 +226,18 @@ class PropertyLine : Line
             cache.operation.clicking;
             return true;
         }
+
+        override bool onContentLeftClicked ( uint f )
+        {
+            auto index = property.middlePoints.countUntil!
+                ( x => x.frame.start.value == f );
+            if ( index >= 0 && index < property.middlePoints.length ) {
+                cache.operation.operatingProperty = property;
+                cache.operation.middlePointIndex  = index.to!uint;
+                cache.operation.clicking;
+                return true;
+            } else return false;
+        }
 }
 
 class EffectLine : Line
@@ -208,6 +246,19 @@ class EffectLine : Line
 
     private:
         Effect effect;
+
+        MenuItem up, down, remove;
+        auto handleMenu ( MenuItem m )
+        {
+            if ( m is up )
+                cache.timeline.selecting.effectList.up( effect );
+            else if ( m is down )
+                cache.timeline.selecting.effectList.down( effect );
+            else if ( m is remove )
+                cache.timeline.selecting.effectList.remove( effect );
+            else return false;
+            return true;
+        }
 
     public:
         override @property float heightMag ()
@@ -220,6 +271,10 @@ class EffectLine : Line
         {
             super( c, e.name );
             effect = e;
+
+            up     = new MenuItem( Action_UpEffect );
+            down   = new MenuItem( Action_DownEffect );
+            remove = new MenuItem( Action_RmEffect );
         }
 
         override void drawContent ( DrawBuf b, Rect r )
@@ -262,5 +317,21 @@ class EffectLine : Line
             auto est = cache.timeline.selecting.place.frame.start.value;
             auto eed = cache.timeline.selecting.place.frame.end.value;
             return (f >= est && f < eed) ? onHeaderLeftClicked : false;
+        }
+
+        override MenuItem contentMenu ( uint f )
+        {
+            auto est = cache.timeline.selecting.place.frame.start.value;
+            auto eed = cache.timeline.selecting.place.frame.end.value;
+            if ( f >= est && f < eed ) {
+                auto root = new MenuItem;
+                with ( root ) {
+                    add( up );
+                    add( down );
+                    add( remove );
+                    menuItemClick = &handleMenu;
+                }
+                return root;
+            } else return null;
         }
 }

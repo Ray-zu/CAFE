@@ -51,13 +51,14 @@ class MainFrame : AppFrame
         ConfigTabs        tabs;
         FragmentsExplorer fragexp;
 
-        /+ プロジェクトのインスタンスが変更された時に呼ばれる +/
+        /+ プロジェクトのインスタンスが変更された時 +/
         auto projectRefresh ()
         {
             auto p = Cafe.instance.curProject;
             preview.project = p;
             timeline.project = p;
             tabs.propertyEditor.project = p;
+            tabs.componentTree .project = p;
 
             if ( p ) {
             } else {
@@ -174,8 +175,10 @@ class MainFrame : AppFrame
                         handleAction( Action_ObjectRefresh );
                         handleAction( Action_PreviewRefresh );
                         return true;
-                    case AddFrag:
-                        return fragexp.handleAction( a );
+                    case CompTreeOpen:
+                        timeline.addTab(
+                                tabs.componentTree.items.selectedItem.id );
+                        return true;
 
                     default:
                         return super.handleAction( a );

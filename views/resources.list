@@ -5,6 +5,10 @@ themes/cafe_popup_window_background.9.png
 themes/cafe_tl_propline_mp.9.png
 themes/cafe_toolbar_host_background.9.png
 langs/en.ini
+icons/cafe_logo.png
+icons/config.png
+icons/down.png
+icons/invisible.png
 icons/move_ahead.png
 icons/move_behind.png
 icons/new.png
@@ -18,4 +22,6 @@ icons/shift_behind.png
 icons/play.png
 icons/quit.png
 icons/stop.png
+icons/up.png
+icons/visible.png
 icons/zoom.png

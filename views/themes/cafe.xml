@@ -310,6 +310,10 @@
     </style>
 
     <style id="FRAGS_EXPLORER"
+        backgroundColor="#00111111">
+    </style>
+
+    <style id="COMPONENT_TREE"
         backgroundColor="#00222222">
     </style>
 
@@ -366,6 +370,7 @@
         padding="5,5,5,5">
     </style>
 
+    <color id="effect_disabled_color" value="#99000000" />
     <style id="TIMELINE_UNCATEGORIZED_EFFECT"
         backgroundColor="#00447744">
     </style>

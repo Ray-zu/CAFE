@@ -62,6 +62,14 @@ class TimelineTabs : TabWidget
             super( id );
         }
 
+        void addTab ( string cid )
+        {
+            if ( !tab( cid ) )
+                addTab( cid, project.componentList[cid] );
+            else
+                selectTab( cid );
+        }
+
         void clearAllTabs ()
         {
             TabItem t;
