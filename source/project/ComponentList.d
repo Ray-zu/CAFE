@@ -65,6 +65,13 @@ class ComponentList
             comps.remove( i );
         }
 
+        /+ コンポーネントのリネーム +/
+        void rename ( ComponentID from, ComponentID to )
+        {
+            this[to] = this[from];
+            del( from );
+        }
+
         /+ this[i] : コンポーネントの参照 +/
         auto opIndex ( ComponentID i )
         {
