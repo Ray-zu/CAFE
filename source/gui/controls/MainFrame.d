@@ -51,13 +51,14 @@ class MainFrame : AppFrame
         ConfigTabs        tabs;
         FragmentsExplorer fragexp;
 
-        /+ プロジェクトのインスタンスが変更された時に呼ばれる +/
+        /+ プロジェクトのインスタンスが変更された時 +/
         auto projectRefresh ()
         {
             auto p = Cafe.instance.curProject;
             preview.project = p;
             timeline.project = p;
             tabs.propertyEditor.project = p;
+            tabs.componentTree .project = p;
 
             if ( p ) {
             } else {
