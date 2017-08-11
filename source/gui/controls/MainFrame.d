@@ -8,6 +8,7 @@ module cafe.gui.controls.MainFrame;
 import cafe.app,
        cafe.gui.Action,
        cafe.gui.controls.BMPViewer,
+       cafe.gui.controls.ConfigDialogs,
        cafe.gui.controls.ConfigTabs,
        cafe.gui.controls.PreviewPlayer,
        cafe.gui.controls.FragmentsExplorer,
@@ -159,7 +160,7 @@ class MainFrame : AppFrame
             if ( a ) {
                 switch ( a.id ) with( EditorActions ) {
                     case ProjectNew:
-                        new ProjectCreationPanel( window );
+                        new ProjectConfigDialog( true, window ).show;
                         return true;
                     case ProjectRefresh:
                         return projectRefresh;
