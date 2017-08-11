@@ -5,8 +5,7 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.PreviewPlayer;
-import cafe.app,
-       cafe.gui.Action,
+import cafe.gui.Action,
        cafe.gui.BitmapLight,
        cafe.gui.controls.BMPViewer,
        cafe.project.Project,
@@ -57,12 +56,10 @@ class PreviewPlayer : VerticalLayout
         void frameChanged ()
         {
             if ( !project ) return;
-            Cafe.instance.setStatus( "Rendering..." );
             render_th.create( delegate () {
                 auto r = project.render;
                 synchronized {
                     preview.drawable = r.bitmap;
-                    Cafe.instance.setStatus( "Rendered..." );
                     window.invalidate;
                 }
             } );
