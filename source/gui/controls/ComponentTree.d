@@ -6,6 +6,7 @@
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.ComponentTree;
 import cafe.gui.Action,
+       cafe.gui.controls.ConfigDialogs,
        cafe.project.Project,
        cafe.project.ComponentList,
        cafe.project.Component;
@@ -79,7 +80,8 @@ class ComponentTree : TreeWidget
                     return true;
 
                 case CompTreeConfig:
-                    updateWidgets;
+                    if ( items.selectedItem.id == "" )
+                        new ProjectConfigDialog( false, window ).show;
                     return true;
 
                 case CompTreeDelete:
