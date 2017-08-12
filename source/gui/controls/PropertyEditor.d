@@ -63,21 +63,11 @@ class PropertyEditor : ScrollWidget
                 f = min( obj.place.frame.length.value.to!int-1, max( 0, f ) );
 
                 auto fat = new FrameAt( f.to!uint );
-                main.addChild( new GroupPanelFrame( obj.propertyList, obj.name, fat ) );
+                main.addChild( new ObjectGroupPanelFrame( obj, fat, window ) );
                 obj.effectList.effects.each!
                     ( x => main.addChild( new EffectGroupPanelFrame( x, obj.effectList, fat, window ) ) );
             }
             main.invalidate;
-        }
-
-        override bool onMouseEvent ( MouseEvent e )
-        {
-            auto result = false;
-            auto obj    = project.selectingObject;
-            if ( e.button == MouseButton.Right && e.action == MouseAction.ButtonDown ) {
-                if ( obj ) (new EffectChooser( obj , window )).show;
-            }
-            return super.onMouseEvent( e ) || result;
         }
 
         override void measure ( int w, int h )
@@ -88,7 +78,7 @@ class PropertyEditor : ScrollWidget
 }
 
 /+ 一つのグループの外枠 +/
-private class GroupPanelFrame : VerticalLayout
+private abstract class GroupPanelFrame : VerticalLayout
 {
     enum HeaderLayout = q{
         HorizontalLayout {
@@ -100,6 +90,16 @@ private class GroupPanelFrame : VerticalLayout
             HSpacer {}
         }
     };
+
+    class CustomButton : ImageButton
+    {
+        this ( string icon )
+        {
+            super( "", icon );
+            alignment = Align.VCenter;
+            styleId = "PROPERTY_EDITOR_HEADER_BUTTON";
+        }
+    }
 
     protected:
         PropertyPanel panel;
@@ -115,6 +115,22 @@ private class GroupPanelFrame : VerticalLayout
             panel = cast(PropertyPanel)addChild( new PropertyPanel( l, f ) );
 
             childById( "header" ).text = title.to!dstring;
+        }
+}
+
+/+ オブジェクト用外枠 +/
+private class ObjectGroupPanelFrame : GroupPanelFrame
+{
+    public:
+        this ( PlaceableObject o, FrameAt f, Window w )
+        {
+            super( o.propertyList, o.name, f );
+            childById("main").addChild( new CustomButton( "new" ) )
+                .click = delegate ( Widget w )
+                {
+                    new EffectChooser( o , window ).show;
+                    return true;
+                };
         }
 }
 
@@ -134,31 +150,33 @@ private class EffectGroupPanelFrame : GroupPanelFrame
                 w.mainWidget.handleAction( Action_ObjectRefresh );
                 w.mainWidget.handleAction( Action_TimelineRefresh );
             }
+            auto main = childById( "main" );
 
-            childById("main").addChild( new ImageWidget( "", "up" ) )
-                .alignment( Align.VCenter )
-                .clickable( true )
+            main.addChild( new CustomButton( "up" ) )
                 .click = delegate ( Widget w )
                 {
                     el.up( e ); update;
                     return true;
                 };
-            childById("main").addChild( new ImageWidget( "", "down" ) )
-                .alignment( Align.VCenter )
-                .clickable( true )
+            main.addChild( new CustomButton( "down" ) )
                 .click = delegate ( Widget w )
                 {
                     el.down( e ); update;
                     return true;
                 };
-            childById("main").addChild( new ImageWidget( "", e.enable ? "visible" : "invisible" ) )
-                .alignment( Align.VCenter )
-                .clickable( true )
+            main.addChild( new CustomButton( e.enable ? "visible" : "invisible" ) )
                 .click = delegate ( Widget w )
                 {
                     e.enable = !e.enable;
                     (cast(ImageWidget)w).drawableId =
                         e.enable ? "visible" : "invisible";
+                    update;
+                    return true;
+                };
+            main.addChild( new CustomButton( "quit" ) )
+                .click = delegate ( Widget w )
+                {
+                    el.remove( e );
                     update;
                     return true;
                 };
