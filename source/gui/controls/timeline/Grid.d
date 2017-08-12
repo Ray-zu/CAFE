@@ -36,6 +36,12 @@ class TimelineGrid : CanvasWidget
             else cache = c;
         }
 
+        override void measure ( int w, int h )
+        {
+            measuredContent( w, h, w-cache.headerWidth, 50 );
+            cache.updateGridCache( pos );
+        }
+
         override void onDraw ( DrawBuf b )
         {
             super.onDraw( b );
