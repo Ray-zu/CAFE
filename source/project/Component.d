@@ -27,6 +27,8 @@ class Component
         uint size_width, size_height;
 
     public:
+        string author;
+
         @property timeline () { return tl; }
         @property width    () { return size_width; }
         @property height   () { return size_height; }
@@ -46,6 +48,7 @@ class Component
         this ( JSONValue j )
         {
             tl = new Timeline( j["timeline"] );
+            author = j["author"].str;
             size_width  = j["width"] .getUInteger;
             size_height = j["height"].getUInteger;
         }
@@ -89,6 +92,7 @@ class Component
         {
             JSONValue j;
             j["timeline"] = JSONValue(timeline.json);
+            j["author"]   = JSONValue(author);
             j["width"]    = JSONValue(width);
             j["height"]   = JSONValue(height);
             return j;

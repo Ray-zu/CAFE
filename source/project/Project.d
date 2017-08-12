@@ -26,8 +26,8 @@ class Project
     public:
         string author;
         string copyright;
-        uint   samplingRate;
-        uint   fps;
+        uint   samplingRate = DefaultSamplingRate;
+        uint   fps          = DefaultFPS;
 
         @property componentList () { return component_list; }
 

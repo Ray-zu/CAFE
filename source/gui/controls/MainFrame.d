@@ -225,13 +225,17 @@ class MainFrame : AppFrame
                     case ObjectRefresh:
                         tabs.propertyEditor.updateWidgets;
                         return true;
+                    case CompTreeRefresh:
+                        return tabs.componentTree.handleAction( a );
                     case TimelineRefresh:
                         timeline.updateWidgets;
                         return true;
+
                     case ChangeFrame:
                         handleAction( Action_ObjectRefresh );
                         handleAction( Action_PreviewRefresh );
                         return true;
+
                     case CompTreeOpen:
                         timeline.addTab(
                                 tabs.componentTree.items.selectedItem.id );

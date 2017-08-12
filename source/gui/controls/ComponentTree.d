@@ -76,12 +76,14 @@ class ComponentTree : TreeWidget
                     return true;
 
                 case CompTreeAdd:
-                    updateWidgets;
+                    new ComponentConfigDialog( pro, "", window ).show;
                     return true;
 
                 case CompTreeConfig:
-                    if ( items.selectedItem.id == "" )
+                    auto id = items.selectedItem.id;
+                    if ( id == "" )
                         new ProjectConfigDialog( false, window ).show;
+                    else new ComponentConfigDialog( pro, id, window ).show;
                     return true;
 
                 case CompTreeDelete:
