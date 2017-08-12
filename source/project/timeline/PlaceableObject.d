@@ -64,8 +64,8 @@ abstract class PlaceableObject : PropertyKeepableObject
         this ( JSONValue j, FrameLength f )
         {
             opi   = new ObjectPlacingInfo( j["place"], f );
-            props = new PropertyList( j["properties"], f );
-            effs  = new EffectList( j["effects"], f );
+            props = new PropertyList( j["properties"], place.frame.length );
+            effs  = new EffectList( j["effects"], place.frame.length );
         }
 
         override void initProperties ( FrameLength f )
