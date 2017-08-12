@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.project.timeline.property.Property;
-import cafe.project.ObjectPlacingInfo,
+import cafe.json,
+       cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.property.Easing,
        cafe.project.timeline.property.MiddlePoint,
        cafe.project.timeline.property.LimitedProperty,
@@ -70,7 +71,7 @@ interface Property
                 case "int":
                     return new PropertyBase!int( mps, f, value.integer.to!int );
                 case "float":
-                    return new PropertyBase!float( mps, f, value.floating );
+                    return new PropertyBase!float( mps, f, value.getFloating );
                 case "string":
                     return new PropertyBase!string( mps, f, value.str );
                 case "bool":
@@ -80,8 +81,8 @@ interface Property
                     return new LimitedProperty!int( mps, f, value.integer.to!int,
                             j["max"].integer.to!int, j["min"].integer.to!int );
                 case "float/LimitedProperty":
-                    return new LimitedProperty!float( mps, f, value.floating,
-                            j["max"].floating, j["min"].floating );
+                    return new LimitedProperty!float( mps, f, value.getFloating,
+                            j["max"].getFloating, j["min"].getFloating );
 
                 case "Renderer":
                     return new RendererProperty( mps, f, value.str );

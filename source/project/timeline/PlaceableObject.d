@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.project.timeline.PlaceableObject;
-import cafe.project.ObjectPlacingInfo,
+import cafe.json,
+       cafe.project.ObjectPlacingInfo,
        cafe.project.RenderingInfo,
        cafe.project.timeline.PropertyKeepableObject,
        cafe.project.timeline.effect.EffectList,

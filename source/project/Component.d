@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.project.Component;
-import cafe.project.timeline.Timeline,
+import cafe.json,
+       cafe.project.timeline.Timeline,
        cafe.project.ObjectPlacingInfo,
        cafe.project.RenderingInfo,
        cafe.renderer.graphics.Bitmap,
@@ -45,8 +46,8 @@ class Component
         this ( JSONValue j )
         {
             tl = new Timeline( j["timeline"] );
-            size_width  = j["width"] .uinteger.to!uint;
-            size_height = j["height"].uinteger.to!uint;
+            size_width  = j["width"] .getUInteger;
+            size_height = j["height"].getUInteger;
         }
 
         /+ コンポーネントの画像リサイズ +/

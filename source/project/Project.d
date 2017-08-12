@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.project.Project;
-import cafe.project.ObjectPlacingInfo,
+import cafe.json,
+       cafe.project.ObjectPlacingInfo,
        cafe.project.ComponentList,
        cafe.renderer.custom.OpenGLRenderer;
 import std.conv,
@@ -45,8 +46,8 @@ class Project
             component_list = new ComponentList( j["components"] );
             author = j["author"].str;
             copyright = j["copyright"].str;
-            samplingRate = j["samplingRate"].uinteger.to!uint;
-            fps = j["fps"].uinteger.to!uint;
+            samplingRate = j["samplingRate"].getUInteger;
+            fps = j["fps"].getUInteger;
         }
 
         @property selectingObject ()
