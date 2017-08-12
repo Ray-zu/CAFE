@@ -43,9 +43,6 @@ interface MiddlePoint
                 case "bool":
                     return new MiddlePointBase!bool( value.type==JSON_TYPE.TRUE, frame );
 
-                case "RendererType":
-                    return new MiddlePointBase!RendererType( value.str.to!RendererType, frame );
-
                 default: 
                     throw new Exception( "Undefined Type." );
             }

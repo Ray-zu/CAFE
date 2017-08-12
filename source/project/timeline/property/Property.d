@@ -84,7 +84,7 @@ interface Property
                             j["max"].floating, j["min"].floating );
 
                 case "Renderer":
-                    return new RendererProperty( mps, f, value.str.to!RendererType );
+                    return new RendererProperty( mps, f, value.str );
 
                 default: throw new Exception( "The type is not supported." );
             }
