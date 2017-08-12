@@ -221,11 +221,24 @@ private class PropertyPanel : VerticalLayout
             else {
                 input.padding = Rect( 2,2,2,2 );
             }
-
             input.text = p.getString( frame ).to!dstring;
+
+            input.focusChange = delegate ( Widget w, bool f )
+            {
+                auto new_text = p.getString( frame ).to!dstring;
+                if ( input.text != new_text ) input.text = new_text;
+                return true;
+            };
             input.contentChange = delegate ( EditableContent e )
             {
-                p.setString( frame, e.text.to!string );
+                auto new_text = input.text.to!string;
+                auto now_text = p.getString( frame );
+                try {
+                    if ( new_text != now_text )
+                        p.setString( frame, new_text );
+                } catch ( Exception e ) {
+                    input.text = now_text.to!dstring;
+                }
             };
         }
 
