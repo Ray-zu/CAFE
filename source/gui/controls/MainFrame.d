@@ -13,10 +13,15 @@ import cafe.app,
        cafe.gui.controls.PreviewPlayer,
        cafe.gui.controls.FragmentsExplorer,
        cafe.gui.controls.StartPanel,
-       cafe.gui.controls.TimelineTabs;
+       cafe.gui.controls.TimelineTabs,
+       cafe.project.Project;
 import std.conv,
-       std.format;
-import dlangui;
+       std.file,
+       std.format,
+       std.json;
+import dlangui,
+       dlangui.dialogs.dialog,
+       dlangui.dialogs.filedlg;
 
 class MainFrame : AppFrame
 {
@@ -51,6 +56,46 @@ class MainFrame : AppFrame
         TimelineTabs      timeline;
         ConfigTabs        tabs;
         FragmentsExplorer fragexp;
+
+        string last_saved_file;
+
+        auto open ()
+        {
+            auto dlg = new FileDialog( UIString.fromRaw("Open project"),
+                    window, null, FileDialogFlag.FileMustExist | FileDialogFlag.Open );
+            dlg.dialogResult = delegate ( Dialog d, const Action a )
+            {
+                if ( a.id != ACTION_OPEN.id ) return;
+                auto file = dlg.filename;
+                auto text = file.readText;
+                Cafe.instance.curProject = new Project( parseJSON(text) );
+                last_saved_file = file;
+            };
+            dlg.show;
+        }
+
+        auto save ()
+        {
+            if ( last_saved_file.exists ) {
+                auto text = Cafe.instance.curProject.json.to!string;
+                last_saved_file.write( text );
+            } else saveAs;
+        }
+
+        auto saveAs ()
+        {
+            auto dlg = new FileDialog( UIString.fromRaw("Save project"),
+                    window, null, FileDialogFlag.ConfirmOverwrite | FileDialogFlag.Save );
+            dlg.dialogResult = delegate ( Dialog d, const Action a )
+            {
+                if ( a.id != ACTION_SAVE.id ) return;
+                auto file = dlg.filename;
+                auto text = Cafe.instance.curProject.json.to!string;
+                file.write( text );
+                last_saved_file = file;
+            };
+            dlg.show;
+        }
 
         /+ プロジェクトのインスタンスが変更された時 +/
         auto projectRefresh ()
@@ -144,6 +189,7 @@ class MainFrame : AppFrame
         {
             super();
             statusLine.setStatusText( i18n.get( "Status_Boot" ) );
+            last_saved_file = "";
         }
 
         override void measure ( int w, int h )
@@ -162,6 +208,16 @@ class MainFrame : AppFrame
                     case ProjectNew:
                         new ProjectConfigDialog( true, window ).show;
                         return true;
+                    case ProjectOpen:
+                        open;
+                        return true;
+                    case ProjectSave:
+                        save;
+                        return true;
+                    case ProjectSaveAs:
+                        saveAs;
+                        return true;
+
                     case ProjectRefresh:
                         return projectRefresh;
                     case PreviewRefresh:
