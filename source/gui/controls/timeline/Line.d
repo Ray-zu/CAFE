@@ -186,7 +186,6 @@ class PropertyLine : Line
             }
             property.middlePoints.each!
                 ( x => drawMiddlePoint( x.frame.start.value ) );
-            drawMiddlePoint( property.frame.value-1 );
         }
 
         void drawGraph ( DrawBuf b, Rect r )
