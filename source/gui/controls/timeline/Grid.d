@@ -39,13 +39,13 @@ class TimelineGrid : CanvasWidget
         override void measure ( int w, int h )
         {
             measuredContent( w, h, w-cache.headerWidth, 50 );
-            cache.updateGridCache( pos );
         }
 
         override void onDraw ( DrawBuf b )
         {
             super.onDraw( b );
             if ( !cache.timeline || pos.width < 0 ) return;
+            cache.updateGridCache( pos );
 
             auto left  = cache.timeline.leftFrame;
             auto right = cache.timeline.rightFrame;
