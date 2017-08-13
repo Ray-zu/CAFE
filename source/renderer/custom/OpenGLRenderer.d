@@ -25,8 +25,12 @@ debug = 1;
 /+ OpenGLを利用したレンダラ +/
 class OpenGLRenderer : Renderer
 {
+    mixin register!OpenGLRenderer;
+
     private:
     public:
+        static @property name () { return "OpenGLRenderer"; }
+
         this () {}
 
         override PCM soundRender ( SoundList w )
