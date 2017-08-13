@@ -11,6 +11,7 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.property.Property,
        cafe.project.timeline.property.PropertyList,
        cafe.project.timeline.effect.Effect,
+       cafe.project.timeline.effect.EffectList,
        cafe.gui.Action,
        cafe.gui.controls.Chooser;
 import std.algorithm,
@@ -62,21 +63,11 @@ class PropertyEditor : ScrollWidget
                 f = min( obj.place.frame.length.value.to!int-1, max( 0, f ) );
 
                 auto fat = new FrameAt( f.to!uint );
-                main.addChild( new GroupPanelFrame( obj.propertyList, obj.name, fat ) );
+                main.addChild( new ObjectGroupPanelFrame( obj, fat, window ) );
                 obj.effectList.effects.each!
-                    ( x => main.addChild( new GroupPanelFrame( x.propertyList, x.name, fat ) ) );
+                    ( x => main.addChild( new EffectGroupPanelFrame( x, obj.effectList, fat, window ) ) );
             }
             main.invalidate;
-        }
-
-        override bool onMouseEvent ( MouseEvent e )
-        {
-            auto result = false;
-            auto obj    = project.selectingObject;
-            if ( e.button == MouseButton.Right && e.action == MouseAction.ButtonDown ) {
-                if ( obj ) (new EffectChooser( obj , window )).show;
-            }
-            return super.onMouseEvent( e ) || result;
         }
 
         override void measure ( int w, int h )
@@ -87,20 +78,30 @@ class PropertyEditor : ScrollWidget
 }
 
 /+ 一つのグループの外枠 +/
-private class GroupPanelFrame : VerticalLayout
+private abstract class GroupPanelFrame : VerticalLayout
 {
     enum HeaderLayout = q{
         HorizontalLayout {
+            id:main;
             layoutWidth:FILL_PARENT;
             styleId:PROPERTY_EDITOR_GROUP_HEADER;
             HSpacer {}
-            TextWidget { id:header; fontSize:16 }
+            TextWidget { id:header; fontSize:16; alignment:VCenter }
             HSpacer {}
-            ImageWidget { id:shrink; drawableId:move_behind; }
         }
     };
 
-    private:
+    class CustomButton : ImageButton
+    {
+        this ( string icon )
+        {
+            super( "", icon );
+            alignment = Align.VCenter;
+            styleId = "PROPERTY_EDITOR_HEADER_BUTTON";
+        }
+    }
+
+    protected:
         PropertyPanel panel;
 
     public:
@@ -114,15 +115,84 @@ private class GroupPanelFrame : VerticalLayout
             panel = cast(PropertyPanel)addChild( new PropertyPanel( l, f ) );
 
             childById( "header" ).text = title.to!dstring;
-            childById( "shrink" ).mouseEvent = delegate ( Widget w, MouseEvent e )
-            {
-                if ( e.action == MouseAction.ButtonDown && e.button & MouseButton.Left ) {
-                    panel.visibility = panel.visibility == Visibility.Visible ?
-                        Visibility.Gone : Visibility.Visible;
-                    invalidate;
+        }
+}
+
+/+ オブジェクト用外枠 +/
+private class ObjectGroupPanelFrame : GroupPanelFrame
+{
+    public:
+        this ( PlaceableObject o, FrameAt f, Window w )
+        {
+            super( o.propertyList, o.name, f );
+            childById("main").addChild( new CustomButton( "new" ) )
+                .click = delegate ( Widget w )
+                {
+                    new EffectChooser( o , window ).show;
                     return true;
-                } else return false;
-            };
+                };
+        }
+}
+
+/+ エフェクト用外枠 +/
+private class EffectGroupPanelFrame : GroupPanelFrame
+{
+    public:
+        // イベント送信用にウィンドウも渡す
+        this ( Effect e, EffectList el, FrameAt f, Window w )
+        {
+            super( e.propertyList, e.name, f );
+
+            void update ( bool edit = true )
+            {
+                if ( edit )
+                    w.mainWidget.handleAction( Action_PreviewRefresh );
+                w.mainWidget.handleAction( Action_ObjectRefresh );
+                w.mainWidget.handleAction( Action_TimelineRefresh );
+            }
+            auto main = childById( "main" );
+
+            main.addChild( new CustomButton( "up" ) )
+                .click = delegate ( Widget w )
+                {
+                    el.up( e ); update;
+                    return true;
+                };
+            main.addChild( new CustomButton( "down" ) )
+                .click = delegate ( Widget w )
+                {
+                    el.down( e ); update;
+                    return true;
+                };
+            main.addChild( new CustomButton( e.enable ? "visible" : "invisible" ) )
+                .click = delegate ( Widget w )
+                {
+                    e.enable = !e.enable;
+                    (cast(ImageWidget)w).drawableId =
+                        e.enable ? "visible" : "invisible";
+                    update;
+                    return true;
+                };
+            main.addChild( new CustomButton( "quit" ) )
+                .click = delegate ( Widget w )
+                {
+                    el.remove( e );
+                    update;
+                    return true;
+                };
+            // エフェクトプロパティ表示 or 非表示
+            alignment( Align.VCenter )
+                .clickable( true )
+                .click = delegate ( Widget w )
+                {
+                    e.propertiesOpened = !e.propertiesOpened;
+                    panel.visibility = e.propertiesOpened ?
+                        Visibility.Visible : Visibility.Gone;
+                    update( false );
+                    return true;
+                };
+            panel.visibility = e.propertiesOpened ?
+                Visibility.Visible : Visibility.Gone;
         }
 }
 
@@ -151,11 +221,24 @@ private class PropertyPanel : VerticalLayout
             else {
                 input.padding = Rect( 2,2,2,2 );
             }
-
             input.text = p.getString( frame ).to!dstring;
+
+            input.focusChange = delegate ( Widget w, bool f )
+            {
+                auto new_text = p.getString( frame ).to!dstring;
+                if ( input.text != new_text ) input.text = new_text;
+                return true;
+            };
             input.contentChange = delegate ( EditableContent e )
             {
-                p.setString( frame, e.text.to!string );
+                auto new_text = input.text.to!string;
+                auto now_text = p.getString( frame );
+                try {
+                    if ( new_text != now_text )
+                        p.setString( frame, new_text );
+                } catch ( Exception e ) {
+                    input.text = now_text.to!dstring;
+                }
             };
         }
 

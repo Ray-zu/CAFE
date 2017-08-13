@@ -39,6 +39,30 @@ class EffectList
             j.array.each!( x => effs ~= Effect.create( x, f ) );
         }
 
+        void remove ( Effect e )
+        {
+            effs = effects.remove!( x => x is e );
+        }
+
+        void swap ( Effect l, Effect r )
+        {
+            effects.swapAt( effects.countUntil(l), effects.countUntil(r) );
+        }
+
+        void up ( Effect e )
+        {
+            auto i = effects.countUntil( e );
+            if ( i >= 0 && 0 <= i-1 )
+                effects.swapAt( i, i-1 );
+        }
+
+        void down ( Effect e )
+        {
+            auto i = effects.countUntil( e );
+            if ( i >= 0 && effects.length > i+1 )
+                effects.swapAt( i, i+1 );
+        }
+
         @property json ()
         {
             JSONValue[] j;
@@ -49,7 +73,9 @@ class EffectList
         /+ WorldクラスにEffectをかける +/
         World apply ( World w )
         {
-            effects.each!( x => w = x.apply( w ) );
+            effects
+                .filter!( x => x.enable )
+                .each!( x => w = x.apply( w ) );
             return w;
         }
 

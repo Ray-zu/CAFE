@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.project.timeline.property.PropertyList;
-import cafe.project.timeline.property.Property,
+import cafe.json,
+       cafe.project.timeline.property.Property,
        cafe.project.ObjectPlacingInfo;
 import std.json,
        std.exception;

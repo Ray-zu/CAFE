@@ -27,13 +27,15 @@ enum EditorActions : int
     ProjectRefresh,
     PreviewRefresh,
     ObjectRefresh,
+    CompTreeRefresh,
     TimelineRefresh,
 
     ChangeFrame,
 
-    AddFrag,
-    AddFragDir,
-    RemoveFrag
+    CompTreeAdd,
+    CompTreeConfig,
+    CompTreeDelete,
+    CompTreeOpen
 }
 
 const Action_ProjectNew    = new Action( cast(int)EditorActions.ProjectNew   , "ProjectNew"   , "new" );
@@ -53,10 +55,12 @@ const Action_ShiftAHead  = new Action( cast(int)EditorActions.ShiftAHead , "Shif
 const Action_ProjectRefresh  = new Action( cast(int)EditorActions.ProjectRefresh , "ProjectRefresh"  );
 const Action_PreviewRefresh  = new Action( cast(int)EditorActions.PreviewRefresh , "PreviewRefresh"  );
 const Action_ObjectRefresh   = new Action( cast(int)EditorActions.ObjectRefresh  , "ObjectRefresh"   );
+const Action_CompTreeRefresh = new Action( cast(int)EditorActions.CompTreeRefresh, "CompTreeRefresh" );
 const Action_TimelineRefresh = new Action( cast(int)EditorActions.TimelineRefresh, "TimelineRefresh" );
 
 const Action_ChangeFrame = new Action( cast(int)EditorActions.ChangeFrame, "ChangeFrame" );
 
-const Action_AddFrag    = new Action( cast(int)EditorActions.AddFrag   , "AddFrag"    );
-const Action_AddFragDir = new Action( cast(int)EditorActions.AddFragDir, "AddFragDir" );
-const Action_RemoveFrag = new Action( cast(int)EditorActions.RemoveFrag, "RemoveFrag" );
+const Action_CompTreeAdd    = new Action( cast(int)EditorActions.CompTreeAdd   , "CompTreeAdd"   , "new"    );
+const Action_CompTreeConfig = new Action( cast(int)EditorActions.CompTreeConfig, "CompTreeConfig", "config" );
+const Action_CompTreeDelete = new Action( cast(int)EditorActions.CompTreeDelete, "CompTreeDelete", "quit"   );
+const Action_CompTreeOpen   = new Action( cast(int)EditorActions.CompTreeOpen  , "CompTreeOpen"  , "open"   );

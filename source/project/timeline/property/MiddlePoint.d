@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.project.timeline.property.MiddlePoint;
-import cafe.project.ObjectPlacingInfo,
+import cafe.json,
+       cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.property.Easing,
        cafe.project.timeline.property.RendererProperty;
 import std.conv,
@@ -37,14 +38,11 @@ interface MiddlePoint
                     return new MiddlePointBase!int(
                             value.integer.to!int, frame, easing );
                 case "float":
-                    return new MiddlePointBase!float( value.floating, frame, easing );
+                    return new MiddlePointBase!float( value.getFloating, frame, easing );
                 case "string":
                     return new MiddlePointBase!string( value.str, frame );
                 case "bool":
                     return new MiddlePointBase!bool( value.type==JSON_TYPE.TRUE, frame );
-
-                case "RendererType":
-                    return new MiddlePointBase!RendererType( value.str.to!RendererType, frame );
 
                 default: 
                     throw new Exception( "Undefined Type." );

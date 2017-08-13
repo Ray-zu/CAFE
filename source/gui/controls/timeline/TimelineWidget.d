@@ -27,7 +27,9 @@ class TimelineWidget : VerticalLayout
         HorizontalLayout {
             layoutWidth:FILL_PARENT;
             VerticalLayout {
+                layoutHeight:FILL_PARENT;
                 HorizontalLayout {
+                    layoutWidth:FILL_PARENT;
                     HSpacer { id:grid_spacer }
                     TimelineGrid { id:grid }
                 }
@@ -72,6 +74,7 @@ class TimelineWidget : VerticalLayout
             layoutHeight = FILL_PARENT;
 
             cache = new Cache( p, t );
+            cache.headerWidth = 150;
 
             addChild( parseML( HScrollLayout ) );
             addChild( parseML( MainLayout ) );
@@ -95,25 +98,7 @@ class TimelineWidget : VerticalLayout
 
         void updateCache ()
         {
+            cache.updateGridCache( grid.pos );
             cache.updateLinesCache;
-        }
-
-        override void invalidate ()
-        {
-            super.invalidate;
-            cache.updateGridCache( grid.pos );
-            grid.invalidate;
-        }
-
-        override void measure ( int w, int h )
-        {
-            childById("grid_spacer").minWidth = 150;
-            grid.minHeight = 50;
-            grid.minWidth  = w - 150;
-            canvas.minHeight = h;
-
-            super.measure( w, h );
-            cache.updateGridCache( grid.pos );
-            cache.headerWidth = childById("grid_spacer").width;
         }
 }

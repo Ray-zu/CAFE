@@ -30,6 +30,7 @@ class OpenGLRenderer : Renderer
     private:
     public:
         static @property name () { return "OpenGLRenderer"; }
+        override @property string nameStr () { return name; }
 
         this () {}
 
