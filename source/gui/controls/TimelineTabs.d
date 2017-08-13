@@ -45,6 +45,12 @@ class TimelineTabs : TabWidget
             updateWidgets;
         }
 
+        override void onTabClose ( string n )
+        {
+            if ( !project ) return;
+            removeTab( n );
+        }
+
     public:
         @property project () { return pro; }
         @property project ( Project p )
