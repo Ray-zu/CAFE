@@ -45,7 +45,7 @@ class MainFrame : AppFrame
     private:
         struct LayoutInfo
         {
-            int preview_height = 500;
+            int preview_height = 350;
             int config_width   = 400;
         }
         LayoutInfo layout_info;
