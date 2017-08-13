@@ -23,8 +23,12 @@ class Cafe
         {
             import derelict.opengl3.gl3;
             import derelict.openal.al;
+            import derelict.glfw3.glfw3;
             DerelictGL3.load();
+            DerelictGLFW3.load();
             DerelictAL.load();
+            glfwInit();
+            glfwWindowHint( GLFW_VISIBLE, GL_FALSE );
         }
 
         void setupGUI ()
