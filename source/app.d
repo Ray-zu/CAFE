@@ -50,6 +50,7 @@ class Cafe
 
             window.mainWidget = view;
             window.windowOrContentResizeMode = WindowOrContentResizeMode.shrinkWidgets;
+            window.windowIcon = drawableCache.getImage( "cafe_logo" );
             window.show;
         }
 

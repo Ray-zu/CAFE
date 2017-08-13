@@ -7,7 +7,11 @@
 		"derelict-glfw3": "4.0.0-beta.1",
 		"derelict-sdl2": "2.0.2",
 		"derelict-util": "2.0.6",
+<<<<<<< HEAD
 		"dlangui": "0.9.88",
+=======
+		"dlangui": "0.9.87",
+>>>>>>> Fork_Source/OpenGLRenderer
 		"dsfml": "2.1.1",
 		"x11": "1.0.16"
 	}

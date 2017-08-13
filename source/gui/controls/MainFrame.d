@@ -8,14 +8,20 @@ module cafe.gui.controls.MainFrame;
 import cafe.app,
        cafe.gui.Action,
        cafe.gui.controls.BMPViewer,
+       cafe.gui.controls.ConfigDialogs,
        cafe.gui.controls.ConfigTabs,
        cafe.gui.controls.PreviewPlayer,
        cafe.gui.controls.FragmentsExplorer,
        cafe.gui.controls.StartPanel,
-       cafe.gui.controls.TimelineTabs;
+       cafe.gui.controls.TimelineTabs,
+       cafe.project.Project;
 import std.conv,
-       std.format;
-import dlangui;
+       std.file,
+       std.format,
+       std.json;
+import dlangui,
+       dlangui.dialogs.dialog,
+       dlangui.dialogs.filedlg;
 
 class MainFrame : AppFrame
 {
@@ -39,7 +45,7 @@ class MainFrame : AppFrame
     private:
         struct LayoutInfo
         {
-            int preview_height = 500;
+            int preview_height = 350;
             int config_width   = 400;
         }
         LayoutInfo layout_info;
@@ -51,13 +57,54 @@ class MainFrame : AppFrame
         ConfigTabs        tabs;
         FragmentsExplorer fragexp;
 
-        /+ プロジェクトのインスタンスが変更された時に呼ばれる +/
+        string last_saved_file;
+
+        auto open ()
+        {
+            auto dlg = new FileDialog( UIString.fromRaw("Open project"),
+                    window, null, FileDialogFlag.FileMustExist | FileDialogFlag.Open );
+            dlg.dialogResult = delegate ( Dialog d, const Action a )
+            {
+                if ( a.id != ACTION_OPEN.id ) return;
+                auto file = dlg.filename;
+                auto text = file.readText;
+                Cafe.instance.curProject = new Project( parseJSON(text) );
+                last_saved_file = file;
+            };
+            dlg.show;
+        }
+
+        auto save ()
+        {
+            if ( last_saved_file.exists ) {
+                auto text = Cafe.instance.curProject.json.to!string;
+                last_saved_file.write( text );
+            } else saveAs;
+        }
+
+        auto saveAs ()
+        {
+            auto dlg = new FileDialog( UIString.fromRaw("Save project"),
+                    window, null, FileDialogFlag.ConfirmOverwrite | FileDialogFlag.Save );
+            dlg.dialogResult = delegate ( Dialog d, const Action a )
+            {
+                if ( a.id != ACTION_SAVE.id ) return;
+                auto file = dlg.filename;
+                auto text = Cafe.instance.curProject.json.to!string;
+                file.write( text );
+                last_saved_file = file;
+            };
+            dlg.show;
+        }
+
+        /+ プロジェクトのインスタンスが変更された時 +/
         auto projectRefresh ()
         {
             auto p = Cafe.instance.curProject;
             preview.project = p;
             timeline.project = p;
             tabs.propertyEditor.project = p;
+            tabs.componentTree .project = p;
 
             if ( p ) {
             } else {
@@ -142,6 +189,7 @@ class MainFrame : AppFrame
         {
             super();
             statusLine.setStatusText( i18n.get( "Status_Boot" ) );
+            last_saved_file = "";
         }
 
         override void measure ( int w, int h )
@@ -158,8 +206,18 @@ class MainFrame : AppFrame
             if ( a ) {
                 switch ( a.id ) with( EditorActions ) {
                     case ProjectNew:
-                        new ProjectCreationPanel( window );
+                        new ProjectConfigDialog( true, window ).show;
                         return true;
+                    case ProjectOpen:
+                        open;
+                        return true;
+                    case ProjectSave:
+                        save;
+                        return true;
+                    case ProjectSaveAs:
+                        saveAs;
+                        return true;
+
                     case ProjectRefresh:
                         return projectRefresh;
                     case PreviewRefresh:
@@ -167,15 +225,21 @@ class MainFrame : AppFrame
                     case ObjectRefresh:
                         tabs.propertyEditor.updateWidgets;
                         return true;
+                    case CompTreeRefresh:
+                        return tabs.componentTree.handleAction( a );
                     case TimelineRefresh:
                         timeline.updateWidgets;
                         return true;
+
                     case ChangeFrame:
                         handleAction( Action_ObjectRefresh );
                         handleAction( Action_PreviewRefresh );
                         return true;
-                    case AddFrag:
-                        return fragexp.handleAction( a );
+
+                    case CompTreeOpen:
+                        timeline.addTab(
+                                tabs.componentTree.items.selectedItem.id );
+                        return true;
 
                     default:
                         return super.handleAction( a );

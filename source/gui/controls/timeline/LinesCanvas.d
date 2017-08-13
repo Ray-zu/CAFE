@@ -7,6 +7,8 @@
 module cafe.gui.controls.timeline.LinesCanvas;
 import cafe.gui.Action,
        cafe.gui.utils.Rect,
+       cafe.gui.controls.PropertyEditor,
+       cafe.gui.controls.timeline.Action,
        cafe.gui.controls.timeline.Cache,
        cafe.gui.controls.timeline.ObjectChooser,
        cafe.project.ObjectPlacingInfo;
@@ -58,6 +60,11 @@ class LinesCanvas : CanvasWidget
             if ( cache )
                 throw new Exception( "Can't redefine cache." );
             cache = c;
+        }
+
+        override void measure ( int w, int h )
+        {
+            measuredContent( w, h, w, h );
         }
 
         override void onDraw ( DrawBuf b )
@@ -144,7 +151,7 @@ class LinesCanvas : CanvasWidget
                 // 左クリック押し終わり
                 dragging   = false;
                 trans_ev   = !cache.operation.isHandled;
-                redraw_obj = cache.operation.isProcessing;
+                redraw_obj = cache.operation.isHandled;
                 cache.operation.release( f );
 
             } else if ( e.action == MouseAction.Move ) {
@@ -155,9 +162,14 @@ class LinesCanvas : CanvasWidget
 
             } else if ( right && e.action == MouseAction.ButtonDown ) {
                 // 右クリック押し始め
-                auto layer = line.layerIndex;
-                if ( !header && layer >= 0 && !cache.timeline[new FrameAt(f), new LayerId(layer)] )
-                    (new ObjectChooser( f, layer, cache.timeline, window )).show;
+                MenuItem menu = header ? line.headerMenu : line.contentMenu( f );
+                if ( menu ) {
+                    auto popup_menu = new PopupMenu( menu );
+                    auto popup      = window.showPopup( popup_menu, this,
+                            PopupAlign.Point | PopupAlign.Right, e.x, e.y );
+                    popup_menu.menuItemAction = &handleMenuAction;
+                    popup.flags = PopupFlags.CloseOnClickOutside;
+                }
             }
             if ( trans_ev ) parent.childById( "grid" ).onMouseEvent( e );
 
@@ -165,5 +177,41 @@ class LinesCanvas : CanvasWidget
 
             super.onMouseEvent( e );
             return true;
+        }
+
+        bool handleMenuAction ( const Action a )
+        {
+            switch ( a.id ) with ( TimelineActions ) {
+                case LinesRefresh:
+                    cache.updateLinesCache;
+                    window.mainWidget.handleAction( Action_ObjectRefresh );
+                    return true;
+
+                case Dlg_AddObject:
+                    auto ev = cast(Action_Dlg_AddObject) a;
+                    new ObjectChooser( ev.frame, ev.line, cache.timeline, window ).show;
+                    return true;
+
+                case Dlg_AddEffect:
+                    auto ev = cast(Action_Dlg_AddEffect) a;
+                    auto obj = cache.timeline[new FrameAt(ev.frame),new LayerId(ev.line)];
+                    if ( obj ) new EffectChooser( obj, window ).show;
+                    return true;
+
+                case RmObject:
+                    auto ev  = cast(Action_RmObject) a;
+                    auto obj = cache.timeline[new FrameAt(ev.frame),new LayerId(ev.line)];
+                    if ( obj ) {
+                        cache.timeline.remove( obj );
+                        if ( cache.timeline.selecting is obj )
+                            cache.timeline.selecting = null;
+                        cache.updateLinesCache;
+                        window.mainWidget.handleAction( Action_ObjectRefresh );
+                        return true;
+                    }
+                    return false;
+
+                default: return false;
+            }
         }
 }

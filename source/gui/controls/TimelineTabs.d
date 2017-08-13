@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.TimelineTabs;
-import cafe.project.Project,
+import cafe.gui.Action,
+       cafe.project.Project,
        cafe.project.Component,
        cafe.gui.controls.timeline.TimelineWidget;
 import std.algorithm;
@@ -42,7 +43,15 @@ class TimelineTabs : TabWidget
             project.componentList.selecting =
                 n in project.componentList.components ?
                 project.componentList[n] : null;
-            updateWidgets;
+            window.mainWidget.handleAction( Action_PreviewRefresh );
+            window.mainWidget.handleAction( Action_ObjectRefresh );
+            window.mainWidget.handleAction( Action_TimelineRefresh );
+        }
+
+        override void onTabClose ( string n )
+        {
+            if ( !project ) return;
+            removeTab( n );
         }
 
     public:
@@ -60,6 +69,14 @@ class TimelineTabs : TabWidget
         this ( string id = "" )
         {
             super( id );
+        }
+
+        void addTab ( string cid )
+        {
+            if ( !tab( cid ) )
+                addTab( cid, project.componentList[cid] );
+            else
+                selectTab( cid );
         }
 
         void clearAllTabs ()

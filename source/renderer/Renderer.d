@@ -10,6 +10,7 @@ import cafe.renderer.Camera,
        cafe.renderer.graphics.Bitmap,
        cafe.renderer.sound.PCM,
        cafe.renderer.sound.SoundList;
+import std.algorithm;
 
 /+ レンダリングの結果 +/
 class RenderingResult
@@ -26,11 +27,13 @@ class RenderingResult
 }
 
 
-/+ レンダラーインターフェース                      +
+/+ レンダラ                                        +
  + WorldクラスをCameraクラスを元にBMPに変換します。+/
-interface Renderer
+abstract class Renderer
 {
     public:
+        @property string nameStr ();
+
         PCM soundRender ( SoundList );
         BMP bmpRender   ( World, Camera, uint, uint );
 
@@ -39,5 +42,35 @@ interface Renderer
             auto bmp = bmpRender( w, c, wi, he );
             auto pcm = soundRender( w.soundList );
             return new RenderingResult( bmp, pcm );
+        }
+
+        /+ 登録情報 +/
+        struct RegisteredRenderer
+        {
+            string name;
+            Renderer delegate () create;
+        }
+        static RegisteredRenderer[] registeredRenderers;
+
+        template register (T)
+        {
+            static this ()
+            {
+                RegisteredRenderer r;
+                r.name = T.name;
+                r.create = delegate ()
+                {
+                    return new T;
+                };
+                registeredRenderers ~= r;
+            }
+        }
+
+        static final create ( string name )
+        {
+            auto i = registeredRenderers.countUntil!
+                ( x => x.name == name );
+            if ( i == -1 ) throw new Exception( "Unregistered Renderer" );
+            return registeredRenderers[i].create();
         }
 }

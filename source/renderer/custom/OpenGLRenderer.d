@@ -29,6 +29,8 @@ debug = 1;
 /+ OpenGLを利用したレンダラ +/
 class OpenGLRenderer : Renderer
 {
+    mixin register!OpenGLRenderer;
+
     private:
     uint framebuffer;
     uint Renderbuffer;
@@ -36,8 +38,10 @@ class OpenGLRenderer : Renderer
     uint BufferHeight;
     int ProgramID;
     public:
-        this (uint wi, uint he) {
+        static @property name () { return "OpenGLRenderer"; }
+        override @property string nameStr () { return name; }
 
+        this (uint wi, uint he) {
             glfwWindowHint(GLFW_SAMPLES, 4);
             GLFWwindow *Invisible_Window = glfwCreateWindow( 1280, 720, "Invisible Window", null, null );
             glfwMakeContextCurrent( Invisible_Window );

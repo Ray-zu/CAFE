@@ -5,6 +5,7 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.project.ObjectPlacingInfo;
+import cafe.json;
 import std.algorithm,
        std.conv,
        std.exception,
@@ -105,8 +106,8 @@ class FramePeriod
 
         this ( JSONValue j, FrameLength p )
         {
-            start_frame  = new FrameAt    ( j["start"] .uinteger.to!uint );
-            frame_length = new FrameLength( j["length"].uinteger.to!uint );
+            start_frame  = new FrameAt    ( j["start"] .getUInteger );
+            frame_length = new FrameLength( j["length"].getUInteger );
             parent_length = p;
         }
 
@@ -231,7 +232,7 @@ class ObjectPlacingInfo
 
         this ( JSONValue j, FrameLength f )
         {
-            layer_id     = new LayerId( j["layer"].uinteger.to!uint );
+            layer_id     = new LayerId( j["layer"].getUInteger );
             frame_period = new FramePeriod( j["frame"], f );
         }
 
