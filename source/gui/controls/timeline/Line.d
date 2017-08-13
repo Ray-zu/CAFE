@@ -63,6 +63,11 @@ abstract class Line
             return false;
         }
 
+        CursorType cursor ( uint )
+        {
+            return CursorType.Arrow;
+        }
+
         MenuItem headerMenu  ()
         {
             return null;
@@ -259,6 +264,13 @@ class EffectLine : Line
             return true;
         }
 
+        @property isInRange ( uint f )
+        {
+            auto est = cache.timeline.selecting.place.frame.start.value;
+            auto eed = cache.timeline.selecting.place.frame.end.value;
+            return (f >= est && f < eed);
+        }
+
     public:
         override @property float heightMag ()
         {
@@ -313,16 +325,17 @@ class EffectLine : Line
 
         override bool onContentLeftClicked ( uint f )
         {
-            auto est = cache.timeline.selecting.place.frame.start.value;
-            auto eed = cache.timeline.selecting.place.frame.end.value;
-            return (f >= est && f < eed) ? onHeaderLeftClicked : false;
+            return isInRange(f) ? onHeaderLeftClicked : false;
+        }
+
+        override CursorType cursor ( uint f )
+        {
+            return isInRange(f) ? CursorType.Hand : CursorType.Arrow;
         }
 
         override MenuItem contentMenu ( uint f )
         {
-            auto est = cache.timeline.selecting.place.frame.start.value;
-            auto eed = cache.timeline.selecting.place.frame.end.value;
-            if ( f >= est && f < eed ) {
+            if ( isInRange(f) ) {
                 auto root = new MenuItem;
                 with ( root ) {
                     add( up );

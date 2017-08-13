@@ -39,6 +39,24 @@ class LinesCanvas : CanvasWidget
             return (cache.lines[index].heightMag*baseLineHeight*fraction).to!int;
         }
 
+        @property yToLineId ( int y )
+        {
+            auto ry = y - pos.top;
+            auto i  = cache.timeline.topLineIndex.to!int;
+            auto h  = -topHiddenPx;
+            while ( h < ry && i < cache.lines.length )
+                h += (cache.lines[i++].heightMag * baseLineHeight).to!int;
+            return max( 0, min( cache.lines.length, h < ry ? -1 : i-1 ) );
+        }
+
+        @property xToFrame ( int x )
+        {
+            auto st      = cache.timeline.leftFrame.to!int;
+            auto ppf     = cache.pxPerFrame;
+            auto f       = st + ((x-pos.left-cache.headerWidth.to!int)/ppf).to!int;
+            return max( 0, min( f, cache.timeline.length.value-1 ) );
+        }
+
     public:
         @property baseLineHeight () { return base_line_height; }
         @property baseLineHeight ( uint blh )
@@ -60,6 +78,15 @@ class LinesCanvas : CanvasWidget
             if ( cache )
                 throw new Exception( "Can't redefine cache." );
             cache = c;
+        }
+
+        override uint getCursorType ( int x, int y )
+        {
+            auto header  = (x-pos.left) < cache.headerWidth;
+            auto f = xToFrame( x );
+            auto l = yToLineId( y );
+            return cast(uint) header ?
+                CursorType.Arrow : cache.lines[l].cursor( f );
         }
 
         override void measure ( int w, int h )
@@ -115,23 +142,12 @@ class LinesCanvas : CanvasWidget
         override bool onMouseEvent ( MouseEvent e )
         {
             /+ 関連データ取得 +/
-            auto line_id = delegate ()
-            {
-                auto ry = e.y - pos.top;
-                auto i  = cache.timeline.topLineIndex.to!int;
-                auto h  = -topHiddenPx;
-                while ( h < ry && i < cache.lines.length )
-                    h += (cache.lines[i++].heightMag * baseLineHeight).to!int;
-                return max( 0, min( cache.lines.length, h < ry ? -1 : i-1 ) );
-            }();
-            auto header = (e.x-pos.left) < cache.headerWidth;
-            auto line   = cache.lines[line_id];
-            auto st     = cache.timeline.leftFrame.to!int;
-            auto ppf    = cache.pxPerFrame;
-            auto left   = e.button == MouseButton.Left;
-            auto right  = e.button == MouseButton.Right;
-            auto f      = st + ((e.x-pos.left-cache.headerWidth.to!int)/ppf).to!int;
-            f = max( 0, min( f, cache.timeline.length.value-1 ) );
+            auto line_id = yToLineId( e.y );
+            auto line    = cache.lines[line_id];
+            auto header  = (e.x-pos.left) < cache.headerWidth;
+            auto left    = e.button == MouseButton.Left;
+            auto right   = e.button == MouseButton.Right;
+            auto f       = xToFrame( e.x );
 
             auto trans_ev   = dragging;
             auto redraw_obj = false;
