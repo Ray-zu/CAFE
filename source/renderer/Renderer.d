@@ -32,6 +32,8 @@ class RenderingResult
 abstract class Renderer
 {
     public:
+        @property string nameStr ();
+
         PCM soundRender ( SoundList );
         BMP bmpRender   ( World, Camera, uint, uint );
 

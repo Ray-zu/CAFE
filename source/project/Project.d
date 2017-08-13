@@ -7,8 +7,7 @@
 module cafe.project.Project;
 import cafe.json,
        cafe.project.ObjectPlacingInfo,
-       cafe.project.ComponentList,
-       cafe.renderer.custom.OpenGLRenderer;
+       cafe.project.ComponentList;
 import std.conv,
        std.json;
 
@@ -63,7 +62,7 @@ class Project
             auto frame = f ? f : new FrameAt( root.timeline.frame );
             auto w = root.width;
             auto h = root.height;
-            return componentList.root.render( frame, new OpenGLRenderer );
+            return componentList.root.render( frame );
         }
 
         /+ JSON出力 +/

@@ -22,9 +22,14 @@ debug = 0;
  + AULでいうシーン                      +/
 class Component
 {
+    enum DefaultWidth    = 1920;
+    enum DefaultHeight   = 1080;
+    enum DefaultRenderer = "OpenGLRenderer";
     private:
         Timeline tl;
         uint size_width, size_height;
+
+        Renderer renderer;
 
     public:
         string author;
@@ -33,16 +38,24 @@ class Component
         @property width    () { return size_width; }
         @property height   () { return size_height; }
 
+        @property rendererName () { return renderer.nameStr; }
+        @property rendererName ( string n )
+        {
+            renderer = Renderer.create( n );
+        }
+
         this ( Component src )
         {
             tl = new Timeline( src.timeline );
             resize( src.width, src.height );
+            rendererName = src.rendererName;
         }
 
-        this ( uint w = 1920, uint h = 1080, uint f = 30 )
+        this ( uint w = DefaultWidth, uint h = DefaultHeight )
         {
             tl = new Timeline;
             resize( w, h );
+            rendererName = DefaultRenderer;
         }
 
         this ( JSONValue j )
@@ -51,6 +64,7 @@ class Component
             author = j["author"].str;
             size_width  = j["width"] .getUInteger;
             size_height = j["height"].getUInteger;
+            rendererName = j["renderer"].str;
         }
 
         /+ コンポーネントの画像リサイズ +/
@@ -80,10 +94,10 @@ class Component
         }
 
         /+ レンダリング +/
-        RenderingResult render ( FrameAt f, Renderer r )
+        RenderingResult render ( FrameAt f )
         {
             auto rinfo = generate(f);
-            return r.render( rinfo.renderingStage, rinfo.camera,
+            return renderer.render( rinfo.renderingStage, rinfo.camera,
                    rinfo.width, rinfo.height );
         }
 
@@ -95,6 +109,7 @@ class Component
             j["author"]   = JSONValue(author);
             j["width"]    = JSONValue(width);
             j["height"]   = JSONValue(height);
+            j["renderer"] = JSONValue(rendererName);
             return j;
         }
 
