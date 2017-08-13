@@ -55,6 +55,7 @@ class Operation
         auto moveProp ( uint f, uint l )
         {
             auto prop = operatingProperty;
+            f -= cache.timeline.selecting.place.frame.start.value;
             prop.moveMP( f, middlePointIndex );
         }
 

@@ -174,11 +174,16 @@ class PropertyLine : Line
         Style    style;
         Property property;
 
+        @property parentObjectStartFrame ()
+        {
+            return cache.timeline.selecting.place.frame.start.value.to!int;
+        }
+
         void drawNormal ( DrawBuf b, Rect r )
         {
             auto st     = cache.timeline.leftFrame;
             auto ppf    = cache.pxPerFrame;
-            auto parent = cache.timeline.selecting.place.frame.start.value.to!int;
+            auto parent = parentObjectStartFrame;
 
             auto drawMiddlePoint ( uint f )
             {
@@ -233,6 +238,7 @@ class PropertyLine : Line
 
         override bool onContentLeftClicked ( uint f )
         {
+            f -= parentObjectStartFrame;
             auto index = property.middlePoints.countUntil!
                 ( x => x.frame.start.value == f );
             if ( index >= 0 && index < property.middlePoints.length ) {
@@ -245,6 +251,7 @@ class PropertyLine : Line
 
         override CursorType cursor ( uint f )
         {
+            f -= parentObjectStartFrame;
             auto index = property.middlePoints.countUntil!
                 ( x => x.frame.start.value == f );
             return ( index > 0 ) ? CursorType.SizeWE : CursorType.Arrow;
