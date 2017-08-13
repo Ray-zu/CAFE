@@ -41,7 +41,8 @@ class Component
         @property rendererName () { return renderer.nameStr; }
         @property rendererName ( string n )
         {
-            renderer = Renderer.create( n );
+            if ( !renderer || n != rendererName )
+                renderer = Renderer.create( n );
         }
 
         this ( Component src )
@@ -55,6 +56,7 @@ class Component
         {
             tl = new Timeline;
             resize( w, h );
+            renderer = null;
             rendererName = DefaultRenderer;
         }
 
