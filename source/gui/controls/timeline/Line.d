@@ -242,6 +242,13 @@ class PropertyLine : Line
                 return true;
             } else return false;
         }
+
+        override CursorType cursor ( uint f )
+        {
+            auto index = property.middlePoints.countUntil!
+                ( x => x.frame.start.value == f );
+            return ( index > 0 ) ? CursorType.SizeWE : CursorType.Arrow;
+        }
 }
 
 class EffectLine : Line
