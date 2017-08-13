@@ -325,6 +325,11 @@
         backgroundColor="#00333333">
     </style>
 
+    <style id="PROPERTY_EDITOR_HEADER_BUTTON"
+        backgroundImageId="cafe_property_editor_header_button"
+        padding="3,3,3,3">
+    </style>
+
     <style id="PROPERTY_EDITOR_INPUT"
         backgroundColor="#00444444">
     </style>

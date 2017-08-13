@@ -19,7 +19,7 @@ mixin( registerWidgets!FragmentsExplorer );
 class FragmentsExplorer : TextWidget
 {
     enum Style = "FRAGS_EXPLORER";
-    private:
+    public:
         this ( string id = "" )
         {
             super( id, "Not Implemented"d );

@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.project.timeline.property.Easing;
-import cafe.project.ObjectPlacingInfo;
+import cafe.json,
+       cafe.project.ObjectPlacingInfo;
 import std.conv;
 
 debug = 0;

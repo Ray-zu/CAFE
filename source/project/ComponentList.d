@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.project.ComponentList;
-import cafe.project.Component;
+import cafe.json,
+       cafe.project.Component;
 import std.algorithm,
        std.conv,
        std.exception,

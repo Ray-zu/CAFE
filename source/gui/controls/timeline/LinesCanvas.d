@@ -62,6 +62,11 @@ class LinesCanvas : CanvasWidget
             cache = c;
         }
 
+        override void measure ( int w, int h )
+        {
+            measuredContent( w, h, w, h );
+        }
+
         override void onDraw ( DrawBuf b )
         {
             super.onDraw( b );

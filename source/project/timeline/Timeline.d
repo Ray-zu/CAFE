@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.project.timeline.Timeline;
-import cafe.project.ObjectPlacingInfo,
+import cafe.json,
+       cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.PlaceableObject;
 import std.algorithm,
        std.array,
@@ -49,13 +50,13 @@ class Timeline
 
         this ( JSONValue j )
         {
-            frame_len = new FrameLength( j["length"].uinteger.to!uint );
+            frame_len = new FrameLength( j["length"].getUInteger );
             j["objects"].array.each!
                 ( x => objs ~= PlaceableObject.create( x, frame_len ) );
-            current_frame = new FrameAt( j["frame"].uinteger.to!uint );
-            leftFrame  = j["leftFrame" ].uinteger.to!uint;
-            rightFrame = j["rightFrame"].uinteger.to!uint;
-            topLineIndex = j["topLineIndex"].floating;
+            current_frame = new FrameAt( j["frame"].getUInteger );
+            leftFrame  = j["leftFrame" ].getUInteger;
+            rightFrame = j["rightFrame"].getUInteger;
+            topLineIndex = j["topLineIndex"].getFloating;
         }
 
         /+ オブジェクトの配置されている最大のレイヤ数を返す +/

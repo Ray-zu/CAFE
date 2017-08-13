@@ -12,21 +12,9 @@ import std.json;
 
 debug = 0;
 
-/+ レンダラの種類 +/
-enum RendererType
-{
-    NoRendering = "NoRendering"     // レンダリングをせずポリゴン集合体をそのまま返す
-}
-
 /+ レンダリングプロパティ +/
-class RendererProperty : PropertyBase!RendererType
+class RendererProperty : PropertyBase!string
 {
-    public:
-        override @property string typeToString ()
-        {
-            return "RendererType";
-        }
-
     public:
         override @property Property copy ( FrameLength f )
         {
@@ -38,12 +26,12 @@ class RendererProperty : PropertyBase!RendererType
             super( src, f );
         }
 
-        this ( FrameLength f, RendererType r = RendererType.NoRendering )
+        this ( FrameLength f, string r = "NoRendering" )
         {
             super( f, r );
         }
 
-        this ( JSONValue[] j, FrameLength f, RendererType r = RendererType.NoRendering )
+        this ( JSONValue[] j, FrameLength f, string r = "NoRendering" )
         {
             super( j, f, r );
         }
@@ -54,7 +42,7 @@ class RendererProperty : PropertyBase!RendererType
             auto ev = get(f);
             switch ( ev )
             {
-                case RendererType.NoRendering:
+                case "NoRendering":
                     return null;
 
                 default: throw new Exception( "Unknown Renderer" );

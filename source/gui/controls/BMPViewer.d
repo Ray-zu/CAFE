@@ -19,13 +19,9 @@ class BMPViewer : ImageWidget
         BitmapLight buf = null;
 
     public:
-        bool f = false;
         @property void drawable ( BMP b )
         {
             buf = new BitmapLight( b );
-
-            if ( f ) buf.fill( 0x00ffff );
-            f = !f;
 
             DrawBufRef bmp = buf;
             super.drawable = new ImageDrawable( bmp );
