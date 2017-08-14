@@ -58,6 +58,8 @@ class SnapCorrector
 
         auto correct ( float f )
         {
+            if ( f == 0 ) return 0;
+
             auto ppf = cache.pxPerFrame;
 
             auto cur_index = 0;
