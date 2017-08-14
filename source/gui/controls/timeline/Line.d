@@ -9,6 +9,7 @@ import cafe.gui.utils.Font,
        cafe.gui.utils.Rect,
        cafe.gui.controls.timeline.Action,
        cafe.gui.controls.timeline.Cache,
+       cafe.gui.controls.timeline.SnapCorrector,
        cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.property.Property,
@@ -58,12 +59,12 @@ abstract class Line
             return false;
         }
 
-        bool onContentLeftClicked ( uint )
+        bool onContentLeftClicked ( float )
         {
             return false;
         }
 
-        CursorType cursor ( uint )
+        CursorType cursor ( float )
         {
             return CursorType.Arrow;
         }
@@ -73,7 +74,7 @@ abstract class Line
             return null;
         }
 
-        MenuItem contentMenu ( uint )
+        MenuItem contentMenu ( float )
         {
             return null;
         }
@@ -129,19 +130,20 @@ class LayerLine : Line
             }
         }
 
-        override bool onContentLeftClicked ( uint f )
+        override bool onContentLeftClicked ( float f )
         {
+            auto vf = cache.correct( f );
             auto index = objs.countUntil!
-                ( x => x.place.frame.isInRange( new FrameAt(f) ) );
+                ( x => x.place.frame.isInRange( new FrameAt(vf) ) );
             auto obj = (index >= 0 ? objs[index] : null);
             if ( obj ) {
                 cache.operation.operatingObject = obj;
-                cache.operation.frameOffset = f - obj.place.frame.start.value;
+                cache.operation.frameOffset = vf - obj.place.frame.start.value;
 
                 auto state = cache.operation.State.Clicking;
-                if ( f == obj.place.frame.start.value )
+                if ( vf == obj.place.frame.start.value )
                     state = cache.operation.State.ResizingStart;
-                if ( f == obj.place.frame.end.value-1 )
+                if ( vf == obj.place.frame.end.value-1 )
                     state = cache.operation.State.ResizingEnd;
 
                 cache.operation.clicking( state );
@@ -149,16 +151,17 @@ class LayerLine : Line
             } else return false;
         }
 
-        override MenuItem contentMenu ( uint f )
+        override MenuItem contentMenu ( float f )
         {
+            auto vf = cache.correct( f );
             auto index = objs.countUntil!
-                ( x => x.place.frame.isInRange( new FrameAt(f) ) );
+                ( x => x.place.frame.isInRange( new FrameAt(vf) ) );
             auto root = new MenuItem;
             if ( index >= 0 ? objs[index] : null ) {
-                root.add( new Action_Dlg_AddEffect( f, layerIndex ) );
-                root.add( new Action_RmObject( f, layerIndex ) );
+                root.add( new Action_Dlg_AddEffect( vf, layerIndex ) );
+                root.add( new Action_RmObject( vf, layerIndex ) );
             } else {
-                root.add( new Action_Dlg_AddObject( f, layerIndex ) );
+                root.add( new Action_Dlg_AddObject( vf, layerIndex ) );
             }
             return root;
         }
@@ -236,11 +239,12 @@ class PropertyLine : Line
             return true;
         }
 
-        override bool onContentLeftClicked ( uint f )
+        override bool onContentLeftClicked ( float f )
         {
-            f -= parentObjectStartFrame;
+            auto vf = cache.correct( f ).to!int;
+            vf -= parentObjectStartFrame;
             auto index = property.middlePoints.countUntil!
-                ( x => x.frame.start.value == f );
+                ( x => x.frame.start.value == vf );
             if ( index >= 0 && index < property.middlePoints.length ) {
                 cache.operation.operatingProperty = property;
                 cache.operation.middlePointIndex  = index.to!uint;
@@ -249,11 +253,12 @@ class PropertyLine : Line
             } else return false;
         }
 
-        override CursorType cursor ( uint f )
+        override CursorType cursor ( float f )
         {
-            f -= parentObjectStartFrame;
+            auto vf = cache.correct( f ).to!int;
+            vf -= parentObjectStartFrame;
             auto index = property.middlePoints.countUntil!
-                ( x => x.frame.start.value == f );
+                ( x => x.frame.start.value == vf );
             return ( index > 0 ) ? CursorType.SizeWE : CursorType.Arrow;
         }
 }
@@ -337,19 +342,19 @@ class EffectLine : Line
             return true;
         }
 
-        override bool onContentLeftClicked ( uint f )
+        override bool onContentLeftClicked ( float f )
         {
-            return isInRange(f) ? onHeaderLeftClicked : false;
+            return isInRange(f.to!int) ? onHeaderLeftClicked : false;
         }
 
-        override CursorType cursor ( uint f )
+        override CursorType cursor ( float f )
         {
-            return isInRange(f) ? CursorType.Hand : CursorType.Arrow;
+            return isInRange(f.to!int) ? CursorType.Hand : CursorType.Arrow;
         }
 
-        override MenuItem contentMenu ( uint f )
+        override MenuItem contentMenu ( float f )
         {
-            if ( isInRange(f) ) {
+            if ( isInRange(f.to!int) ) {
                 auto root = new MenuItem;
                 with ( root ) {
                     add( up );

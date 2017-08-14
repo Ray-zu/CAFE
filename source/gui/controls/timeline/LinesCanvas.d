@@ -11,6 +11,7 @@ import cafe.gui.Action,
        cafe.gui.controls.timeline.Action,
        cafe.gui.controls.timeline.Cache,
        cafe.gui.controls.timeline.ObjectChooser,
+       cafe.gui.controls.timeline.SnapCorrector,
        cafe.project.ObjectPlacingInfo;
 import std.algorithm,
        std.conv,
@@ -53,7 +54,7 @@ class LinesCanvas : CanvasWidget
         {
             auto st      = cache.timeline.leftFrame.to!int;
             auto ppf     = cache.pxPerFrame;
-            auto f       = st + ((x-pos.left-cache.headerWidth.to!int)/ppf).to!int;
+            auto f       = st + ((x-pos.left-cache.headerWidth.to!int)/ppf);
             return max( 0, min( f, cache.timeline.length.value-1 ) );
         }
 
@@ -168,11 +169,11 @@ class LinesCanvas : CanvasWidget
                 dragging   = false;
                 trans_ev   = !cache.operation.isHandled;
                 redraw_obj = cache.operation.isHandled;
-                cache.operation.release( f );
+                cache.operation.release( cache.correct(f) );
 
             } else if ( e.action == MouseAction.Move ) {
                 // カーソル動いた
-                cache.operation.move( f, line_id );
+                cache.operation.move( cache.correct(f), line_id );
                 trans_ev   = !cache.operation.isHandled && dragging;
                 redraw_obj = cache.operation.isProcessing;
 

@@ -23,7 +23,7 @@ import std.algorithm,
 /+ タイムラインのスナップポイントを算出＆位置補正 +/
 class SnapCorrector
 {
-    enum MaxCorrectDistancePx = 5;
+    enum MaxCorrectDistancePx = 10;
 
     private:
         Cache  cache;
@@ -61,11 +61,14 @@ class SnapCorrector
             auto ppf = cache.pxPerFrame;
 
             auto cur_index = 0;
-            auto min_score = uint.max;
+            auto min_score = uint.max.to!float;
 
             foreach ( i,v; snap_frames ) {
                 auto score = ( v - f ).abs;
-                if ( score <= min_score ) cur_index = i;
+                if ( score <= min_score ) {
+                    min_score = score;
+                    cur_index = i;
+                }
             }
             auto dist_px = min_score*ppf;
             if ( dist_px < MaxCorrectDistancePx )
