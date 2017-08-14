@@ -134,7 +134,7 @@ class LayerLine : Line
         {
             auto vf = cache.correct( f );
             auto index = objs.countUntil!
-                ( x => x.place.frame.isInRange( new FrameAt(vf) ) );
+                ( x => x.place.frame.isInRange( new FrameAt(vf) ) || x.place.frame.end.value == vf );
             auto obj = (index >= 0 ? objs[index] : null);
             if ( obj ) {
                 cache.operation.operatingObject = obj;
@@ -143,7 +143,7 @@ class LayerLine : Line
                 auto state = cache.operation.State.Clicking;
                 if ( vf == obj.place.frame.start.value )
                     state = cache.operation.State.ResizingStart;
-                if ( vf == obj.place.frame.end.value-1 )
+                if ( vf == obj.place.frame.end.value )
                     state = cache.operation.State.ResizingEnd;
 
                 cache.operation.clicking( state );
