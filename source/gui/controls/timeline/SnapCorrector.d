@@ -31,6 +31,7 @@ class SnapCorrector
 
         void fromProperty ( Property p, uint st )
         {
+            if ( cache.operation.operatingProperty is p ) return;
             p.middlePoints.each
                 !( x => snap_frames ~= x.frame.start.value + st );
         }
@@ -42,6 +43,7 @@ class SnapCorrector
 
         void fromObject ( PlaceableObject o )
         {
+            if ( cache.operation.operatingObject is o ) return;
             auto st = o.place.frame.start.value;
             fromPropertyList( o.propertyList, st );
             o.effectList.effects.each
