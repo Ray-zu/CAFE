@@ -272,38 +272,3 @@ private class PropertyPanel : VerticalLayout
             invalidate;
         }
 }
-
-/+ エフェクト追加 +/
-class EffectChooser : Chooser
-{
-    private:
-        PlaceableObject obj;
-
-    protected:
-        override void updateSearchResult ( EditableContent = null )
-        {
-            super.updateSearchResult;
-            auto word = search.text;
-            list.removeAllChildren;
-            foreach ( i; Effect.registeredEffects ) {
-                if ( word != "" && i.name.indexOf( word ) == -1 ) continue;
-
-                auto item = list.addChild( new ChooserItem( i.name, i.icon ) );
-                item.click = delegate ( Widget w )
-                {
-                    obj.effectList += i.createNew( obj.place.frame.length );
-                    window.mainWidget.handleAction( Action_ObjectRefresh );
-                    window.mainWidget.handleAction( Action_TimelineRefresh );
-                    close( null );
-                    return true;
-                };
-            }
-        }
-
-    public:
-        this ( PlaceableObject o, Window w = null )
-        {
-            obj = o;
-            super( UIString.fromRaw("Choose Effect"), w );
-        }
-}

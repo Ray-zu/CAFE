@@ -266,7 +266,8 @@ class PropertyLine : Line
         {
             auto vf = cache.correct( f ).to!int;
             vf -= parentObjectStartFrame;
-            if ( vf <  )
+            if ( vf < 0 || vf > property.frame.value ) return null;
+
             auto index = property.middlePoints.countUntil!
                 ( x => x.frame.isInRange( new FrameAt(vf) ) );
             if ( index >= 0 ) {

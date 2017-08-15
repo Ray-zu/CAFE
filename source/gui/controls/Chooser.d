@@ -5,6 +5,12 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.Chooser;
+import cafe.project.ObjectPlacingInfo,
+       cafe.project.timeline.Timeline,
+       cafe.project.timeline.PlaceableObject,
+       cafe.project.timeline.effect.Effect,
+       cafe.gui.Action;
+import std.string;
 import dlangui,
        dlangui.dialogs.dialog;
 
@@ -106,5 +112,81 @@ class ChooserItem : VerticalLayout
         override uint getCursorType ( int x, int y )
         {
             return CursorType.Hand;
+        }
+}
+
+/+ オブジェクト選択ダイアログ +/
+class ObjectChooser : Chooser
+{
+    private:
+        Timeline          timeline;
+        ObjectPlacingInfo opi;
+
+    protected:
+        override void updateSearchResult ( EditableContent = null )
+        {
+            super.updateSearchResult;
+            auto word = search.text;
+            foreach ( i; PlaceableObject.registeredObjects ) {
+                if ( i.name != "" && i.name.indexOf( word ) == -1 ) continue;
+
+                auto item = list.addChild( new ChooserItem(i.name, i.icon) );
+                item.click = delegate ( Widget w )
+                {
+                    timeline += i.createAt(opi);
+                    window.mainWidget.handleAction( Action_ObjectRefresh );
+                    window.mainWidget.handleAction( Action_TimelineRefresh );
+                    close( null );
+                    return true;
+                };
+            }
+        }
+
+    public:
+        this ( uint f, uint l, Timeline t, Window w = null )
+        {
+            timeline = t;
+
+            auto layer  = new LayerId( l );
+            auto frame  = new FrameAt( f );
+            auto length = new FrameLength( 1 );
+            opi = new ObjectPlacingInfo( layer,
+                    new FramePeriod( timeline.length, frame, length ) );
+            super( UIString.fromRaw("Choose Object"), w );
+        }
+}
+
+/+ エフェクト追加 +/
+class EffectChooser : Chooser
+{
+    private:
+        PlaceableObject obj;
+
+    protected:
+        override void updateSearchResult ( EditableContent = null )
+        {
+            super.updateSearchResult;
+            auto word = search.text;
+            list.removeAllChildren;
+            foreach ( i; Effect.registeredEffects ) {
+                if ( word != "" && i.name.indexOf( word ) == -1 ) continue;
+
+                auto item = list.addChild( new ChooserItem( i.name, i.icon ) );
+                item.click = delegate ( Widget w )
+                {
+                    obj.effectList += i.createNew( obj.place.frame.length );
+                    window.mainWidget.handleAction( Action_ObjectRefresh );
+                    window.mainWidget.handleAction( Action_TimelineRefresh );
+                    close( null );
+                    return true;
+                };
+            }
+        }
+
+    public:
+        this ( PlaceableObject o, Window w = null )
+        {
+            obj = o;
+            super( UIString.fromRaw("Choose Effect"), w );
         }
 }

@@ -7,10 +7,10 @@
 module cafe.gui.controls.timeline.LinesCanvas;
 import cafe.gui.Action,
        cafe.gui.utils.Rect,
+       cafe.gui.controls.Chooser,
        cafe.gui.controls.PropertyEditor,
        cafe.gui.controls.timeline.Action,
        cafe.gui.controls.timeline.Cache,
-       cafe.gui.controls.timeline.ObjectChooser,
        cafe.gui.controls.timeline.SnapCorrector,
        cafe.project.ObjectPlacingInfo;
 import std.algorithm,
