@@ -331,7 +331,8 @@
     </style>
 
     <style id="PROPERTY_EDITOR_SWITCH"
-        parent="SWITCH">
+        parent="SWITCH"
+        backgroundImageId="cafe_switch">
     </style>
 
     <style id="PROPERTY_EDITOR_INPUT_SL"
