@@ -270,8 +270,6 @@ class PropertyBase (T) : Property
             static if ( !isNumeric!T ) return st;
             else {
                 auto easing_type = mp.easing;
-                if ( easing_type == EasingType.None ) return st;
-
                 auto ed = nextValue(mp);
                 auto easing = EasingFunction.create( easing_type, st.to!float, ed.to!float,
                         mp.frame.length );
