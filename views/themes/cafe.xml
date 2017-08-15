@@ -330,6 +330,10 @@
         padding="3,3,3,3">
     </style>
 
+    <style id="PROPERTY_EDITOR_SWITCH"
+        parent="SWITCH">
+    </style>
+
     <style id="PROPERTY_EDITOR_INPUT_SL"
         backgroundColor="#00444444"
         padding="2,2,2,2"
