@@ -9,6 +9,8 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.Timeline,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.effect.Effect,
+       cafe.project.timeline.property.MiddlePoint,
+       cafe.project.timeline.property.Easing,
        cafe.gui.Action;
 import std.string;
 import dlangui,
@@ -188,5 +190,40 @@ class EffectChooser : Chooser
         {
             obj = o;
             super( UIString.fromRaw("Choose Effect"), w );
+        }
+}
+
+/+ イージング設定 +/
+class EasingChooser : Chooser
+{
+    private:
+        MiddlePoint mp;
+
+    protected:
+        override void updateSearchResult ( EditableContent = null )
+        {
+            super.updateSearchResult;
+            auto word = search.text;
+            list.removeAllChildren;
+            foreach ( i; EasingFunction.registeredEasings ) {
+                if ( word != "" && i.name.indexOf( word ) == -1 ) continue;
+
+                auto item = list.addChild( new ChooserItem( i.name, i.icon ) );
+                item.click = delegate ( Widget w )
+                {
+                    mp.easing = i.name;
+                    window.mainWidget.handleAction( Action_ObjectRefresh );
+                    window.mainWidget.handleAction( Action_TimelineRefresh );
+                    close( null );
+                    return true;
+                };
+            }
+        }
+
+    public:
+        this ( MiddlePoint m, Window w = null )
+        {
+            mp = m;
+            super( UIString.fromRaw("Choose Easing"), w );
         }
 }

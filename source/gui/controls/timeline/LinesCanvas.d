@@ -217,7 +217,9 @@ class LinesCanvas : CanvasWidget
 
                 case Dlg_EaseMiddlePoint:
                     auto ev = cast(Action_Dlg_EaseMiddlePoint) a;
-                    // TODO
+                    auto mp = ev.property.middlePoints[ev.mpIndex];
+                    if ( ev.property.increasable )
+                        new EasingChooser( mp, window ).show;
                     return true;
 
                 case RmObject:
