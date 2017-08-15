@@ -106,9 +106,18 @@ class LinearEasing : EasingFunction
             auto c = current.value;
             return slope*c + start;
         }
+}
 
-        debug (1) unittest {
-            auto hoge = new LinearEasing( 0, 75, new FrameLength(20) );
-            assert( hoge.at( new FrameAt(10) ) == 37.5 );
+/+ quadratic easing in +/
+class QuadraticEasingIn : EasingFunction
+{
+    mixin register!QuadraticEasingIn;
+    mixin EasingFunctionConstructor!("QuadraticIn","obj_ctg_others");
+    public:
+        override float at ( FrameAt current )
+        {
+            auto c = current.value;
+            auto t = c/duration.value.to!float;
+            return changeInValue*t*t + start;
         }
 }
