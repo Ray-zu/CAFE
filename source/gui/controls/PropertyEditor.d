@@ -213,6 +213,11 @@ private class PropertyPanel : VerticalLayout
                     auto w = new SwitchButton;
                     w.styleId = SwitchStyle;
                     w.checked = p.getString( frame ).to!bool;
+                    w.checkChange = delegate ( Widget w, bool f )
+                    {
+                        p.setString( frame, f.to!string );
+                        return true;
+                    };
                     return w;
                 default:
                     auto w     = p.allowMultiline ? new EditBox   : new EditLine;
