@@ -215,6 +215,11 @@ class LinesCanvas : CanvasWidget
                     if ( obj ) new EffectChooser( obj, window ).show;
                     return true;
 
+                case Dlg_EaseMiddlePoint:
+                    auto ev = cast(Action_Dlg_EaseMiddlePoint) a;
+                    // TODO
+                    return true;
+
                 case RmObject:
                     auto ev  = cast(Action_RmObject) a;
                     auto obj = cache.timeline[new FrameAt(ev.frame),new LayerId(ev.line)];
@@ -227,6 +232,11 @@ class LinesCanvas : CanvasWidget
                         return true;
                     }
                     return false;
+
+                case RmMiddlePoint:
+                    auto ev = cast(Action_RmMiddlePoint) a;
+                    // TODO
+                    return true;
 
                 default: return false;
             }

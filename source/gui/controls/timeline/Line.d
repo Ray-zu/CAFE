@@ -261,6 +261,24 @@ class PropertyLine : Line
                 ( x => x.frame.start.value == vf );
             return ( index > 0 ) ? CursorType.SizeWE : CursorType.Arrow;
         }
+
+        override MenuItem contentMenu ( float f )
+        {
+            auto vf = cache.correct( f ).to!int;
+            vf -= parentObjectStartFrame;
+            if ( vf <  )
+            auto index = property.middlePoints.countUntil!
+                ( x => x.frame.isInRange( new FrameAt(vf) ) );
+            if ( index >= 0 ) {
+                auto root = new MenuItem;
+                with ( root ) {
+                    add( new Action_Dlg_EaseMiddlePoint( property, index ) );
+                    if ( index > 0 )
+                        add( new Action_RmMiddlePoint( property, index ) );
+                }
+                return root;
+            } else return null;
+        }
 }
 
 class EffectLine : Line
