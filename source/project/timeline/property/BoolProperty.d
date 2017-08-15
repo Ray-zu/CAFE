@@ -18,13 +18,12 @@ debug = 0;
 /+ Bool型のプロパティ +/
 class BoolProperty : PropertyBase!bool
 {
-    protected:
+    public:
         override @property string typeToString ()
         {
             return "bool";
         }
 
-    public:
         override @property Property copy ( FrameLength f )
         {
             return new BoolProperty( this, f );

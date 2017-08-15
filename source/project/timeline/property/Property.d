@@ -24,6 +24,8 @@ debug = 0;
 interface Property
 {
     public:
+        @property string typeToString ();
+
         @property Property copy ( FrameLength );
 
         @property FrameLength   frame        ();
@@ -137,9 +139,9 @@ class PropertyBase (T) : Property
             middle_points.insertInPlace( middle_points.countUntil(w)+1, mp );
         }
 
-    protected:
+    public:
         /+ 型名を文字列へ +/
-        @property string typeToString ()
+        override @property string typeToString ()
         {
             static if ( is(T == int) )
                 return "int";
@@ -150,7 +152,6 @@ class PropertyBase (T) : Property
             else throw new Exception( "The type is not supported." );
         }
 
-    public:
         override @property Property copy ( FrameLength f )
         {
             return new PropertyBase!T( this, f );

@@ -199,47 +199,55 @@ private class EffectGroupPanelFrame : GroupPanelFrame
 /+ プロパティ編集 +/
 private class PropertyPanel : VerticalLayout
 {
+    enum SwitchStyle   = "PROPERTY_EDITOR_SWITCH";
+    enum InputStyle_SL = "PROPERTY_EDITOR_INPUT_SL";
+    enum InputStyle_ML = "PROPERTY_EDITOR_INPUT_ML";
     private:
         PropertyList props;
         FrameAt frame;
 
+        Widget createWidget ( Property p )
+        {
+            switch ( p.typeToString ) {
+                case "bool":
+                    auto w = new SwitchButton;
+                    w.styleId = SwitchStyle;
+                    w.checked = p.getString( frame ).to!bool;
+                    return w;
+                default:
+                    auto w     = p.allowMultiline ? new EditBox   : new EditLine;
+                    w.styleId  = p.allowMultiline ? InputStyle_ML : InputStyle_SL;
+
+                    w.text = p.getString( frame ).to!dstring;
+                    w.focusChange = delegate ( Widget w, bool f )
+                    {
+                        auto new_text = p.getString( frame ).to!dstring;
+                        if ( w.text != new_text ) w.text = new_text;
+                        return true;
+                    };
+                    w.contentChange = delegate ( EditableContent e )
+                    {
+                        auto new_text = w.text.to!string;
+                        auto now_text = p.getString( frame );
+                        try {
+                            if ( new_text != now_text )
+                                p.setString( frame, new_text );
+                        } catch ( Exception e ) {
+                            w.text = now_text.to!dstring;
+                        }
+                    };
+                    return w;
+            }
+        }
+
         void addProperty ( Property p, string name )
         {
             addChild( new TextWidget( "", name.to!dstring ) );
-
-            auto l = addChild( new HorizontalLayout );
-            l.layoutWidth = FILL_PARENT;
-            l.addChild( new HSpacer );
-            auto input = cast(EditWidgetBase)l.addChild( p.allowMultiline ?
-                    new EditBox( name ) : new EditLine( name ) );
-            l.addChild( new HSpacer );
-
-            input.styleId  = "PROPERTY_EDITOR_INPUT";
-            input.minWidth = 200;
-            if ( p.allowMultiline )
-                input.minHeight = 100;
-            else {
-                input.padding = Rect( 2,2,2,2 );
+            with ( addChild( new HorizontalLayout ).layoutWidth( FILL_PARENT ) ) {
+                addChild( new HSpacer );
+                addChild( createWidget( p ) );
+                addChild( new HSpacer );
             }
-            input.text = p.getString( frame ).to!dstring;
-
-            input.focusChange = delegate ( Widget w, bool f )
-            {
-                auto new_text = p.getString( frame ).to!dstring;
-                if ( input.text != new_text ) input.text = new_text;
-                return true;
-            };
-            input.contentChange = delegate ( EditableContent e )
-            {
-                auto new_text = input.text.to!string;
-                auto now_text = p.getString( frame );
-                try {
-                    if ( new_text != now_text )
-                        p.setString( frame, new_text );
-                } catch ( Exception e ) {
-                    input.text = now_text.to!dstring;
-                }
-            };
         }
 
     public:

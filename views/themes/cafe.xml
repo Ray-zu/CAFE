@@ -330,8 +330,16 @@
         padding="3,3,3,3">
     </style>
 
-    <style id="PROPERTY_EDITOR_INPUT"
-        backgroundColor="#00444444">
+    <style id="PROPERTY_EDITOR_INPUT_SL"
+        backgroundColor="#00444444"
+        padding="2,2,2,2"
+        minWidth="150">
+    </style>
+
+    <style id="PROPERTY_EDITOR_INPUT_ML"
+        backgroundColor="#00444444"
+        minWidth="200"
+        minHeight="100">
     </style>
 
     <style id="TIMELINE"
