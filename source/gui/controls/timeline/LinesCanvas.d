@@ -199,8 +199,7 @@ class LinesCanvas : CanvasWidget
                 invalidate;
             }
 
-            super.onMouseEvent( e );
-            return true;
+            return super.onMouseEvent( e ) || trans_ev || redraw_obj;
         }
 
         bool handleMenuAction ( const Action a )
