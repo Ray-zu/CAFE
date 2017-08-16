@@ -16,6 +16,7 @@ import dlangui;
 /+ タイムラインウィジェット +/
 class TimelineWidget : VerticalLayout
 {
+    enum WheelMag = 2.0;
     enum VScrollMag = 10.0;
 
     enum HScrollLayout = q{
@@ -77,24 +78,25 @@ class TimelineWidget : VerticalLayout
     protected:
         override bool onMouseEvent ( MouseEvent e )
         {
+            auto delta = (-e.wheelDelta * WheelMag).to!int;
             void frameWheel ()
             {
-                hscroll.position = hscroll.position + e.wheelDelta;
+                hscroll.position = hscroll.position + delta;
                 hscrolled;
             }
             void lineWheel ()
             {
-                vscroll.position = vscroll.position + e.wheelDelta;
+                vscroll.position = vscroll.position + delta;
                 vscrolled;
             }
             void frameZoom ()
             {
-                hscroll.pageSize = hscroll.pageSize + e.wheelDelta;
+                hscroll.pageSize = hscroll.pageSize + delta;
                 hscrolled;
             }
             void lineZoom ()
             {
-                vscroll.pageSize = vscroll.pageSize + e.wheelDelta;
+                vscroll.pageSize = vscroll.pageSize + delta;
                 vscrolled;
             }
 
