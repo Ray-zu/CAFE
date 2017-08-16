@@ -237,7 +237,7 @@ class PropertyBase (T) : Property
 
         override void removeMiddlePoint ( MiddlePoint mp )
         {
-            removeMiddlePoint( middlePoints.countUntil!( x => x is mp ) );
+            removeMiddlePoint( middlePoints.countUntil!( x => x is mp ).to!uint );
         }
 
         override void moveMP ( uint f, uint n )

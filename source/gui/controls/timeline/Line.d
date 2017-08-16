@@ -273,9 +273,9 @@ class PropertyLine : Line
             if ( index >= 0 ) {
                 auto root = new MenuItem;
                 with ( root ) {
-                    add( new Action_Dlg_EaseMiddlePoint( property, index ) );
+                    add( new Action_Dlg_EaseMiddlePoint( property, index.to!uint ) );
                     if ( index > 0 )
-                        add( new Action_RmMiddlePoint( property, index ) );
+                        add( new Action_RmMiddlePoint( property, index.to!uint ) );
                 }
                 return root;
             } else return null;

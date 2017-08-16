@@ -71,7 +71,7 @@ class SnapCorrector
                 auto score = ( v - f ).abs;
                 if ( score <= min_score ) {
                     min_score = score;
-                    cur_index = i;
+                    cur_index = i.to!int;
                 }
             }
             auto dist_px = min_score*ppf;
