@@ -151,6 +151,14 @@ class LayerLine : Line
             } else return false;
         }
 
+        override CursorType cursor ( float f )
+        {
+            auto vf = cache.correct( f );
+            auto index = objs.countUntil!
+                ( x => x.place.frame.start.value == vf || x.place.frame.end.value == vf );
+            return ( index >= 0 ) ? CursorType.SizeWE : CursorType.Arrow;
+        }
+
         override MenuItem contentMenu ( float f )
         {
             auto vf = cache.correct( f );
