@@ -236,7 +236,7 @@ class PropertyBase (T) : Property
             auto left = middlePoints[i-1];
             left.frame.length.value = next_mp - left.frame.start.value;
 
-            middle_points.remove( i );
+            middle_points = middle_points.remove( i );
         }
 
         override void removeMiddlePoint ( MiddlePoint mp )
