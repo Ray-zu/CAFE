@@ -17,15 +17,17 @@ import cafe.renderer.Renderer,
        cafe.renderer.polygon.Vertex,
        cafe.renderer.sound.PCM,
        cafe.renderer.sound.Sound,
-       cafe.renderer.sound.SoundList;
+       cafe.renderer.sound.SoundList,
+       cafe.renderer.polygon.Ngon;
 import derelict.opengl3.gl3;
 import derelict.glfw3.glfw3;
+import gl3n.linalg,
+       gl3n.math;
 import std.stdio;
 import std.string;
 import std.conv;
 
 debug = 1;
-
 /+ OpenGLを利用したレンダラ +/
 class OpenGLRenderer : Renderer
 {
@@ -34,6 +36,7 @@ class OpenGLRenderer : Renderer
     private:
     uint framebuffer;
     uint Renderbuffer;
+    uint mtexid;
     uint BufferWidth;
     uint BufferHeight;
     int ProgramID;
@@ -42,7 +45,8 @@ class OpenGLRenderer : Renderer
         override @property string nameStr () { return name; }
 
         this (uint wi, uint he) {
-            glfwWindowHint(GLFW_SAMPLES, 4);
+            glfwWindowHint(GLFW_SAMPLES, 32);
+            glEnable(GL_MULTISAMPLE);
             GLFWwindow *Invisible_Window = glfwCreateWindow( 1280, 720, "Invisible Window", null, null );
             glfwMakeContextCurrent( Invisible_Window );
 
@@ -50,7 +54,7 @@ class OpenGLRenderer : Renderer
 
             glGenRenderbuffers(1, &Renderbuffer);
             glBindRenderbuffer(GL_RENDERBUFFER, Renderbuffer);
-            glNamedRenderbufferStorage(Renderbuffer, GL_RGBA, wi, he);
+            glRenderbufferStorageMultisample(GL_RENDERBUFFER, 64, GL_RGBA, wi, he);
 
             glGenFramebuffers(1, &framebuffer);
             glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -82,6 +86,9 @@ class OpenGLRenderer : Renderer
             // 最後にリンクして使える状態にするよ
             glLinkProgram(ProgramID);
 
+            glDrawBuffer(GL_COLOR_ATTACHMENT0);
+            glBindBuffer(GL_FRAMEBUFFER, 0);
+
         }
 
         this () {
@@ -95,7 +102,6 @@ class OpenGLRenderer : Renderer
 
         override BMP bmpRender ( World w, Camera c, uint wi, uint he )
         {
-
             BMP ResultImage = new BMP(wi, he);
             glViewport(0, 0, wi, he);
             if (BufferWidth!=wi||BufferHeight!=he) {
@@ -112,34 +118,44 @@ class OpenGLRenderer : Renderer
         attloc[1] = glGetAttribLocation(ProgramID, "color");
         float[] position = [
             -0.5f, -0.5f,
-            0.5f, -0.5f,
-            0.0f, 0.5f
+             0.5f, -0.5f,
+             0.0f,  0.5f
         ];
 
         float[] color = [
             1.0, 0.0, 0.0,1.0,
-            0.0, 1.0, 0.0,0.5,
-            0.0, 0.0, 1.0,0.0,
-            0.0, 1.0, 1.0,1.0
+            0.0, 1.0, 0.0,1.0,
+            0.0, 0.0, 1.0,1.0,
+            1.0, 1.0, 0.0,1.0
         ];
         glClear(GL_COLOR_BUFFER_BIT);
 
-        writeln(typeid(typeof(color)));
+        writeln(w.polygons[0].position[0].sizeof);
+        writeln(1);
 
-        //VBOを作成
-        GLuint[2] vbo;
-        glGenBuffers(1, &vbo[0]);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-        glNamedBufferData(vbo[0], position.length*float.sizeof, position.ptr, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(attloc[0]);
-        glVertexAttribPointer(attloc[0], 2, GL_FLOAT, GL_FALSE, 0, null);
+        for(uint n = 0;n<w.polygons.length;n++){
+            Polygon Polyobj = w.polygons[n];
+            vec3[] pos;
+            for(uint vn = 0;vn<Polyobj.vindex.length;vn++){
+                pos ~= Polyobj.position[Polyobj.vindex[vn]];
+            }
 
-        glGenBuffers(1, &vbo[1]);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-        glNamedBufferData(vbo[1], color.length*float.sizeof, color.ptr, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(attloc[1]);
-        glVertexAttribPointer(attloc[1], 4, GL_FLOAT, GL_FALSE, 0, null);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+            //VBOを作成
+            GLuint[2] vbo;
+            glGenBuffers(1, &vbo[0]);
+            glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+            glNamedBufferData(vbo[0], pos.length*vec3.sizeof, pos.ptr, GL_STATIC_DRAW);
+            glEnableVertexAttribArray(attloc[0]);
+            glVertexAttribPointer(attloc[0], 3, GL_FLOAT, GL_FALSE, 0, null);
+
+            glGenBuffers(1, &vbo[1]);
+            glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+            glNamedBufferData(vbo[1], color.length*float.sizeof, color.ptr, GL_STATIC_DRAW);
+            glEnableVertexAttribArray(attloc[1]);
+            glVertexAttribPointer(attloc[1], 4, GL_FLOAT, GL_FALSE, 0, null);
+            glDrawArrays(Polyobj.drawmode, 0, Polyobj.vindex.length);
+
+        }
 
         glReadBuffer(GL_COLOR_ATTACHMENT0);
         GLubyte[] bufferpixel = new GLubyte[wi*he*4];
@@ -159,6 +175,7 @@ class OpenGLRenderer : Renderer
                 ResultImage[x/4,y] = col;
             }
         }
+        writeln("RGBA : "~(RGBA.sizeof.to!string));
 
             glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 
@@ -172,11 +189,19 @@ class OpenGLRenderer : Renderer
             auto white_bmp = new BMP(1,1);
             white_bmp[0,0] = RGBA( 255, 255, 255 );
             auto polygon = new Polygon( white_bmp, [
-                    Vertex( Vector3D(-50,-50,0), Vector2D(0,0) ),
-                    Vertex( Vector3D( 50,-50,0), Vector2D(1,0) ),
-                    Vertex( Vector3D( 50, 50,0), Vector2D(1,1) ),
-                    Vertex( Vector3D(-50, 50,0), Vector2D(0,1) )
+                    vec3(-0.5,  0.5, 0),
+                    vec3( 0.5,  0.5, 0),
+                    vec3( 0.5, -0.5, 0),
+                    vec3(-0.5, -0.5, 0)
+                ], [
+                    0,3,1,2
+                ], [
+                    vec2(0,0),
+                    vec2(1,0),
+                    vec2(1,1),
+                    vec2(0,1)
                 ] );
-            return render( new World([polygon]), new Camera, 640, 480 ).bitmap;
+            Ngon h = new Ngon(6, 0.5, white_bmp);
+            return render( new World([h]), new Camera, 720, 720 ).bitmap;
         }
 }
