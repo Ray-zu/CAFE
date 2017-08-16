@@ -241,7 +241,7 @@ class LinesCanvas : CanvasWidget
 
                 case RmMiddlePoint:
                     auto ev = cast(Action_RmMiddlePoint) a;
-                    // TODO
+                    ev.property.removeMiddlePoint( ev.mpIndex );
                     return true;
 
                 default: return false;
