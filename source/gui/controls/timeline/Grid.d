@@ -96,7 +96,9 @@ class TimelineGrid : CanvasWidget
                 auto f = cache.xToFrame( e.x - pos.left );
                 cache.timeline.frame.value = f;
 
-                if ( temp != f ) window.mainWidget.handleAction( Action_ChangeFrame );
+                if ( temp != f )
+                    window.mainWidget.handleAction( Action_ChangeFrame );
+                invalidate;
             }
             return super.onMouseEvent( e );
         }

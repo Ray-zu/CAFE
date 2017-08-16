@@ -194,7 +194,10 @@ class LinesCanvas : CanvasWidget
             }
             if ( trans_ev ) parent.childById( "grid" ).onMouseEvent( e );
 
-            if ( redraw_obj ) window.mainWidget.handleAction( Action_ObjectRefresh );
+            if ( redraw_obj ) {
+                window.mainWidget.handleAction( Action_ObjectRefresh );
+                invalidate;
+            }
 
             super.onMouseEvent( e );
             return true;
