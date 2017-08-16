@@ -10,7 +10,6 @@ import cafe.json,
        cafe.project.timeline.property.Easing,
        cafe.project.timeline.property.MiddlePoint,
        cafe.project.timeline.property.LimitedProperty,
-       cafe.project.timeline.property.RendererProperty,
        cafe.project.timeline.property.BoolProperty;
 import std.algorithm,
        std.array,
@@ -92,9 +91,6 @@ interface Property
                 case "float/LimitedProperty":
                     return new LimitedProperty!float( mps, f, value.getFloating,
                             j["max"].getFloating, j["min"].getFloating );
-
-                case "Renderer":
-                    return new RendererProperty( mps, f, value.str );
 
                 default: throw new Exception( "The type is not supported." );
             }

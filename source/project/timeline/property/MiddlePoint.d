@@ -7,8 +7,7 @@
 module cafe.project.timeline.property.MiddlePoint;
 import cafe.json,
        cafe.project.ObjectPlacingInfo,
-       cafe.project.timeline.property.Easing,
-       cafe.project.timeline.property.RendererProperty;
+       cafe.project.timeline.property.Easing;
 import std.conv,
        std.traits,
        std.json;
