@@ -47,7 +47,7 @@ class LinesCanvas : CanvasWidget
             auto h  = -topHiddenPx;
             while ( h < ry && i < cache.lines.length )
                 h += (cache.lines[i++].heightMag * baseLineHeight).to!int;
-            return  h < ry ? -1 : i-1;
+            return max( 0, i-1 );
         }
 
         @property xToFrame ( int x )
@@ -145,7 +145,7 @@ class LinesCanvas : CanvasWidget
         override bool onMouseEvent ( MouseEvent e )
         {
             auto line_id = yToLineId( e.y );
-            if ( line_id < 0 || line_id >= cache.lines.length ) return false;
+            if ( line_id >= cache.lines.length ) return false;
 
             /+ 関連データ取得 +/
             auto line    = cache.lines[line_id];
