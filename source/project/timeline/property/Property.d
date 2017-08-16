@@ -40,7 +40,7 @@ interface Property
         MiddlePoint middlePointAtFrame ( FrameAt );
 
         /+ 中間点を削除 +/
-        void removeMiddlePoint ( int );
+        void removeMiddlePoint ( uint );
         void removeMiddlePoint ( MiddlePoint );
 
         /+ 指定した中間点を指定フレームに近づける +/
@@ -223,21 +223,32 @@ class PropertyBase (T) : Property
             throw new Exception( "MiddlePoint(frame:%d) Not Found".format( f.value ) );
         }
 
-        override void removeMiddlePoint ( int i )
+        override void removeMiddlePoint ( uint i )
         {
-            middle_points = middle_points.remove( i );
+            if ( i >= middlePoints.length )
+                throw new Exception( "MiddlePoint(index:%d) Undefined".format(i) );
+            if ( i == 0 )
+                throw new Exception( "Cannot Remove First Middle Point" );
+
+            auto next_mp = frame.value;
+            if ( i < middlePoints.length-1 )
+                next_mp = middlePoints[i+1].frame.start.value;
+            auto left = middlePoints[i-1];
+            left.frame.length.value = next_mp - left.frame.start.value;
+
+            middle_points.remove( i );
         }
 
         override void removeMiddlePoint ( MiddlePoint mp )
         {
-            middle_points = middle_points.remove!( x => x is mp );
+            removeMiddlePoint( middlePoints.countUntil!( x => x is mp ) );
         }
 
         override void moveMP ( uint f, uint n )
         {
             auto mps = middlePoints;
             if ( n >= mps.length )
-                throw new Exception( "The MiddlePoint(index:%d) Undefined".format(n) );
+                throw new Exception( "MiddlePoint(index:%d) Undefined".format(n) );
 
             if ( n == 0 ) return;   // 0番目の中間点は動かせない
 
@@ -276,8 +287,7 @@ class PropertyBase (T) : Property
             // cut_mp以降の中間点を削除
             if ( cut_mp >= 0 ) {
                 if ( cut_mp == 0 ) cut_mp = 1;
-                foreach ( i; cut_mp .. middlePoints.length )
-                    removeMiddlePoint( middlePoints[$-1] );
+                middle_points = middle_points[ 0 .. cut_mp ];
             }
         }
 
