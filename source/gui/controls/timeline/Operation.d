@@ -12,8 +12,7 @@ import cafe.project.Project,
        cafe.project.timeline.property.Property,
        cafe.gui.controls.timeline.Cache,
        cafe.gui.controls.timeline.Line,
-       cafe.gui.controls.timeline.ObjectEditor,
-       cafe.gui.controls.timeline.PropertyEditor;
+       cafe.gui.controls.timeline.ObjectEditor;
 import std.algorithm;
 import dlangui;
 

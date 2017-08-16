@@ -10,8 +10,7 @@ import cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.property.PropertyList,
        cafe.project.timeline.property.Property,
-       cafe.project.timeline.property.MiddlePoint,
-       cafe.gui.controls.timeline.PropertyEditor;
+       cafe.project.timeline.property.MiddlePoint;
 import std.algorithm,
        std.conv,
        std.exception;
