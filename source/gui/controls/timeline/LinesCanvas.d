@@ -47,7 +47,7 @@ class LinesCanvas : CanvasWidget
             auto h  = -topHiddenPx;
             while ( h < ry && i < cache.lines.length )
                 h += (cache.lines[i++].heightMag * baseLineHeight).to!int;
-            return max( 0, min( cache.lines.length, h < ry ? -1 : i-1 ) );
+            return  h < ry ? -1 : i-1;
         }
 
         @property xToFrame ( int x )
@@ -86,7 +86,9 @@ class LinesCanvas : CanvasWidget
             auto header  = (x-pos.left) < cache.headerWidth;
             auto f = xToFrame( x );
             auto l = yToLineId( y );
-            return cast(uint) header ?
+            if ( l < -1 || l >= cache.lines.length )
+                return cast(uint) CursorType.Arrow;
+            else return cast(uint) header ?
                 CursorType.Arrow : cache.lines[l].cursor( f );
         }
 
@@ -142,8 +144,10 @@ class LinesCanvas : CanvasWidget
 
         override bool onMouseEvent ( MouseEvent e )
         {
-            /+ 関連データ取得 +/
             auto line_id = yToLineId( e.y );
+            if ( line_id < 0 || line_id >= cache.lines.length ) return false;
+
+            /+ 関連データ取得 +/
             auto line    = cache.lines[line_id];
             auto header  = (e.x-pos.left) < cache.headerWidth;
             auto left    = e.button == MouseButton.Left;
