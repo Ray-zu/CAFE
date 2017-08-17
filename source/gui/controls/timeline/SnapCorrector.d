@@ -77,6 +77,6 @@ class SnapCorrector
             auto dist_px = min_score*ppf;
             if ( dist_px < MaxCorrectDistancePx )
                 return snap_frames[cur_index];
-            else return f.round.to!uint;
+            else return max( f, 0 ).round.to!uint;
         }
 }
