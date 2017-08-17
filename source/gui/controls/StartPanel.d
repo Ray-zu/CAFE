@@ -77,7 +77,7 @@ class StartPanel : Dialog
             childById( "create" ).click = delegate ( Widget w )
             {
                 close( null );
-                Cafe.instance.handleAction( Action_ProjectNew );
+                window.mainWidget.handleAction( Action_ProjectNew );
                 return true;
             };
             childById( "close" ).click = delegate ( Widget w )

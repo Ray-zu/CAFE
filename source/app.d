@@ -49,23 +49,13 @@ class Cafe
         @property curProject ( Project p )
         {
             cur_project = p;
-            handleAction( Action_ProjectRefresh );
+            mainFrame.handleAction( Action_ProjectRefresh );
         }
 
         this ( string[] args )
         {
             loadLibraries;
             setupGUI;
-        }
-
-        @property void setStatus ( dstring v )
-        {
-            mainFrame.statusLine.setStatusText( v );
-        }
-
-        @property bool handleAction ( const Action a )
-        {
-            return mainFrame.handleAction( a );
         }
 }
 
