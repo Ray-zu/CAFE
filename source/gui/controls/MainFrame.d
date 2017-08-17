@@ -159,6 +159,12 @@ class MainFrame : AppFrame
             }
             top_menu.add( menu );
 
+            with ( menu = new MenuItem( new Action( 1, "TopMenu_Info" ) ) ) {
+                add( Action_VersionDlg );
+                add( Action_HomePage   );
+            }
+            top_menu.add( menu );
+
             return new MainMenu( top_menu );
         }
 
