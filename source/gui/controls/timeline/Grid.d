@@ -125,8 +125,9 @@ class TimelineGrid : CanvasWidget
             switch ( a.id ) with ( TimelineActions ) {
                 case SetLastFrame:
                     auto ev = cast(Action_SetLastFrame) a;
-                    auto vf = cache.timeline.objects.maxElement
-                        !( x => x.place.frame.end.value ).place.frame.end.value;
+                    auto vf = cache.timeline.objects.length > 0 ?
+                        cache.timeline.objects.maxElement
+                            !( x => x.place.frame.end.value ).place.frame.end.value : 0;
                     vf = max( vf, ev.frame, 1 );
                     cache.timeline.length.value = vf;
                     return true;
