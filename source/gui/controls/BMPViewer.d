@@ -45,7 +45,6 @@ class BMPViewer : ImageWidget
 
                 w = (w * zoom).to!int;
                 h = (h * zoom).to!int;
-                import std.format;Log.i( "%d:%d".format(w,h) );
                 measuredContent( pw, ph, w, h );
             } else super.measure( pw, ph );
         }
