@@ -16,6 +16,8 @@ enum TimelineActions : int
     Dlg_AddEffect,
     Dlg_EaseMiddlePoint,
 
+    SetLastFrame,
+
     RmObject,
 
     RmMiddlePoint
@@ -61,6 +63,10 @@ class Action_Dlg_AddEffect : Action {
 
 class Action_Dlg_EaseMiddlePoint : Action {
     mixin PropertyAction!( TimelineActions.Dlg_EaseMiddlePoint, "Timeline_EaseMiddlePoint", "config" );
+}
+
+class Action_SetLastFrame : Action {
+    mixin PointAction!( TimelineActions.SetLastFrame, "Timeline_SetLastFrame", "shift_ahead" );
 }
 
 class Action_RmObject : Action {
