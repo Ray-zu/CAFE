@@ -54,7 +54,7 @@ class LinesCanvas : CanvasWidget
             auto st      = cache.timeline.leftFrame.to!int;
             auto ppf     = cache.pxPerFrame;
             auto f       = st + ((x-pos.left-cache.headerWidth.to!int)/ppf);
-            return max( 0, min( f, cache.timeline.length.value-1 ) );
+            return max( 0, f );
         }
 
     public:
@@ -132,13 +132,16 @@ class LinesCanvas : CanvasWidget
             auto st  = cache.timeline.leftFrame;
             auto ed  = cache.timeline.rightFrame;
             auto ppf = cache.pxPerFrame;
-            auto cf  = cache.timeline.frame.value;
-
-            if ( cf >= st && cf < ed ) {
-                auto x = pos.left + cache.headerWidth + ((cf-st)*ppf).to!int;
-                auto col = style.customColor( "timeline_line_canvas_current_frame" );
-                b.drawLine( Point(x,pos.top), Point(x,pos.bottom), col );
+            void drawLine ( uint f, string coln )
+            {
+                if ( f >= st && f < ed ) {
+                    auto x = pos.left + cache.headerWidth + ((f-st)*ppf).to!int;
+                    auto col = style.customColor( coln );
+                    b.drawLine( Point(x,pos.top), Point(x,pos.bottom), col );
+                }
             }
+            drawLine( cache.timeline.frame .value, "timeline_line_canvas_current_frame" );
+            drawLine( cache.timeline.length.value, "timeline_line_canvas_last_frame"    );
         }
 
         override bool onMouseEvent ( MouseEvent e )

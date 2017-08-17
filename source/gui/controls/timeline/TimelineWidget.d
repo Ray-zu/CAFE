@@ -19,6 +19,8 @@ class TimelineWidget : VerticalLayout
     enum WheelMag = 2.0;
     enum VScrollMag = 10.0;
 
+    enum FrameRemnant = 0.3;
+
     enum HScrollLayout = q{
         ScrollBar {
             id:hscroll;
@@ -57,7 +59,7 @@ class TimelineWidget : VerticalLayout
         auto hscrolled ( AbstractSlider = null, ScrollEvent e = null )
         {
             if ( !cache.timeline ) return false;
-            hscroll.setRange( 0, cache.timeline.length.value );
+            hscroll.setRange( 0, (cache.timeline.length.value+(hscroll.pageSize*FrameRemnant)).to!int );
             correctScroll( hscroll );
             cache.timeline.leftFrame  = hscroll.position;
             cache.timeline.rightFrame = cache.timeline.leftFrame + hscroll.pageSize;
