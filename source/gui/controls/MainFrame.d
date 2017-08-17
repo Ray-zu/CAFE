@@ -188,7 +188,7 @@ class MainFrame : AppFrame
         this ()
         {
             super();
-            statusLine.setStatusText( i18n.get( "Status_Boot" ) );
+            handleAction( new Action_UpdateStatus( "Status_Boot" ) );
             last_saved_file = "";
         }
 
@@ -202,49 +202,52 @@ class MainFrame : AppFrame
 
         override bool handleAction ( const Action a )
         {
+            if ( !a ) return false;
+
             import cafe.gui.Action;
-            if ( a ) {
-                switch ( a.id ) with( EditorActions ) {
-                    case ProjectNew:
-                        new ProjectConfigDialog( true, window ).show;
-                        return true;
-                    case ProjectOpen:
-                        open;
-                        return true;
-                    case ProjectSave:
-                        save;
-                        return true;
-                    case ProjectSaveAs:
-                        saveAs;
-                        return true;
+            switch ( a.id ) with( EditorActions ) {
+                case UpdateStatus:
+                    statusLine.setStatusText( a.label );
+                    return true;
 
-                    case ProjectRefresh:
-                        return projectRefresh;
-                    case PreviewRefresh:
-                        return preview.handleAction( a );
-                    case ObjectRefresh:
-                        tabs.propertyEditor.updateWidgets;
-                        return true;
-                    case CompTreeRefresh:
-                        return tabs.componentTree.handleAction( a );
-                    case TimelineRefresh:
-                        timeline.updateWidgets;
-                        return true;
+                case ProjectNew:
+                    new ProjectConfigDialog( true, window ).show;
+                    return true;
+                case ProjectOpen:
+                    open;
+                    return true;
+                case ProjectSave:
+                    save;
+                    return true;
+                case ProjectSaveAs:
+                    saveAs;
+                    return true;
 
-                    case ChangeFrame:
-                        handleAction( Action_ObjectRefresh );
-                        handleAction( Action_PreviewRefresh );
-                        return true;
+                case ProjectRefresh:
+                    return projectRefresh;
+                case PreviewRefresh:
+                    return preview.handleAction( a );
+                case ObjectRefresh:
+                    tabs.propertyEditor.updateWidgets;
+                    return true;
+                case CompTreeRefresh:
+                    return tabs.componentTree.handleAction( a );
+                case TimelineRefresh:
+                    timeline.updateWidgets;
+                    return true;
 
-                    case CompTreeOpen:
-                        timeline.addTab(
-                                tabs.componentTree.items.selectedItem.id );
-                        return true;
+                case ChangeFrame:
+                    handleAction( Action_ObjectRefresh );
+                    handleAction( Action_PreviewRefresh );
+                    return true;
 
-                    default:
-                        return super.handleAction( a );
-                }
+                case CompTreeOpen:
+                    timeline.addTab(
+                            tabs.componentTree.items.selectedItem.id );
+                    return true;
+
+                default:
+                    return super.handleAction( a );
             }
-            return false;
         }
 }

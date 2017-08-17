@@ -9,7 +9,9 @@ import dlangui;
 
 enum EditorActions : int
 {
-    ProjectNew = 10000,
+    UpdateStatus = 10000,
+
+    ProjectNew,
     ProjectOpen,
     ProjectSave,
     ProjectSaveAs,
@@ -36,6 +38,15 @@ enum EditorActions : int
     CompTreeConfig,
     CompTreeDelete,
     CompTreeOpen
+}
+
+class Action_UpdateStatus : Action
+{
+    public:
+        this ( T ) ( T t )
+        {
+            super( cast(int)EditorActions.UpdateStatus, t );
+        }
 }
 
 const Action_ProjectNew    = new Action( cast(int)EditorActions.ProjectNew   , "ProjectNew"   , "new" );
