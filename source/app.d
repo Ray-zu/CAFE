@@ -33,7 +33,6 @@ class Cafe
             Platform.instance.uiTheme="cafe";
 
             Log.setStdoutLogger;
-            Log.setLogLevel( LogLevel.Info );
 
             auto window = Platform.instance.createWindow("Hello dlang!",null,WindowFlag.Resizable,800,500);
             window.mainWidget = main_frame = new MainFrame;
