@@ -28,13 +28,14 @@ class Timeline
          + rfにはカーソルのフレーム位置を指定する。                 +/
         FrameAt reserveSpace ( PlaceableObject o, FrameAt f, LayerId i, int rf )
         {
-            const fv   = f.value;
-            const lv   = o.place.frame.length.value;
-            auto  objs = this[i].sort
+            auto fv   = f.value;
+            auto lv   = o.place.frame.length.value;
+            auto objs = this[i].sort
                 !( (a,b) => a.place.frame.start.value < b.place.frame.start.value )
                 .remove!( x => x is o ).array;
 
-            auto coll = this[f,o.place.frame.length,i].remove!( x => x is o );
+            auto coll = this[new FrameAt(fv),new FrameLength(lv),i]
+                .remove!( x => x is o );
             if ( coll.length == 0 && fv+lv <= length.value ) {
                 return f;
             }
