@@ -120,7 +120,7 @@ class MainFrame : AppFrame
         override void initialize ()
         {
             super.initialize();
-            _appName = AppText;
+            _appName = AppName;
             CafeConf.load( settingsDir~"/config.json" );
         }
 
