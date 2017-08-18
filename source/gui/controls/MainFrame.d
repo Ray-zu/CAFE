@@ -121,7 +121,7 @@ class MainFrame : AppFrame
         {
             super.initialize();
             _appName = AppName;
-            CafeConf.load( settingsDir~"/config.json" );
+            Config.instance.load( settingsDir~"/config.json" );
         }
 
         override Widget createBody ()
@@ -203,7 +203,7 @@ class MainFrame : AppFrame
         /+ ウィンドウ破棄リクエストを受理するかどうか +/
         auto canClose ()
         {
-            CafeConf.save;
+            Config.instance.save;
             return true;
         }
 

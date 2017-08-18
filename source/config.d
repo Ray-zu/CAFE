@@ -17,4 +17,4 @@ class Config : SettingsFile
             super();
         }
 }
-alias CafeConf = Config.instance;
+alias CafeConf = Config.instance.setting;
