@@ -68,3 +68,18 @@ class Quadrangle : Polygon
         super( Tex, vertpos, index, uvpos, GL_TRIANGLE_FAN );
     }
 }
+
+class Rectangle : Quadrangle
+{
+    public:
+    this ( vec2 size, BMP Tex, vec2[] uv = null )
+    {
+        vec3[] vertpos = [
+            vec3( -size.x,  size.y, 0 ),
+            vec3(  size.x,  size.y, 0 ),
+            vec3(  size.x, -size.y, 0 ),
+            vec3( -size.x, -size.y, 0 )
+        ];
+        super( vertpos, Tex, uv );
+    }
+}
