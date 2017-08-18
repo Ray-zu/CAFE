@@ -38,6 +38,7 @@ class Cafe
             window.mainWidget = main_frame = new MainFrame;
             window.windowOrContentResizeMode = WindowOrContentResizeMode.shrinkWidgets;
             window.windowIcon = drawableCache.getImage( "cafe_logo" );
+            window.onCanClose = &mainFrame.canClose;
             window.show;
         }
 

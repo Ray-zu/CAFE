@@ -6,6 +6,7 @@
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.MainFrame;
 import cafe.app,
+       cafe.config,
        cafe.gui.Action,
        cafe.gui.controls.BMPViewer,
        cafe.gui.controls.ConfigDialogs,
@@ -118,8 +119,9 @@ class MainFrame : AppFrame
     protected:
         override void initialize ()
         {
-            _appName = AppText;
             super.initialize();
+            _appName = AppText;
+            CafeConf.load( settingsDir~"/config.json" );
         }
 
         override Widget createBody ()
@@ -196,6 +198,13 @@ class MainFrame : AppFrame
             super();
             handleAction( new Action_UpdateStatus( "Status_Boot" ) );
             last_saved_file = "";
+        }
+
+        /+ ウィンドウ破棄リクエストを受理するかどうか +/
+        auto canClose ()
+        {
+            CafeConf.save;
+            return true;
         }
 
         override void measure ( int w, int h )
