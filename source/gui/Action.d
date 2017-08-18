@@ -39,6 +39,7 @@ enum EditorActions : int
     CompTreeDelete,
     CompTreeOpen,
 
+    Configure,
     VersionDlg,
     HomePage
 }
@@ -79,5 +80,6 @@ const Action_CompTreeConfig = new Action( cast(int)EditorActions.CompTreeConfig,
 const Action_CompTreeDelete = new Action( cast(int)EditorActions.CompTreeDelete, "CompTreeDelete", "quit"   );
 const Action_CompTreeOpen   = new Action( cast(int)EditorActions.CompTreeOpen  , "CompTreeOpen"  , "open"   );
 
+const Action_Configure  = new Action( cast(int)EditorActions.Configure , "Configure" );
 const Action_VersionDlg = new Action( cast(int)EditorActions.VersionDlg, "VersionDialog" );
 const Action_HomePage   = new Action( cast(int)EditorActions.HomePage  , "HomePage" );

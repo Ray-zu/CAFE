@@ -22,7 +22,8 @@ import std.conv,
        std.json;
 import dlangui,
        dlangui.dialogs.dialog,
-       dlangui.dialogs.filedlg;
+       dlangui.dialogs.filedlg,
+       dlangui.dialogs.settingsdialog;
 
 class MainFrame : AppFrame
 {
@@ -164,6 +165,7 @@ class MainFrame : AppFrame
             top_menu.add( menu );
 
             with ( menu = new MenuItem( new Action( 1, "TopMenu_Info" ) ) ) {
+                add( Action_Configure  );
                 add( Action_VersionDlg );
                 add( Action_HomePage   );
             }
@@ -261,6 +263,9 @@ class MainFrame : AppFrame
                 case CompTreeOpen:
                     timeline.addTab(
                             tabs.componentTree.items.selectedItem.id );
+                    return true;
+
+                case Configure:
                     return true;
 
                 default:
