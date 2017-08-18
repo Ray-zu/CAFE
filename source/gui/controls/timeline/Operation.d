@@ -44,8 +44,8 @@ class Operation
                 moveObj( f, l+1 );
             else {
                 auto rf = cache.correct( f.to!int - frameOffset );
-                obj.place.frame.move( new FrameAt( rf ) );
-                obj.place.layer.value = line.layerIndex;
+                cache.timeline.move( obj,
+                        new FrameAt(rf), new LayerId(line.layerIndex), f.to!int );
                 cache.updateLinesCache;
             }
         }

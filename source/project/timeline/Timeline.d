@@ -11,6 +11,7 @@ import cafe.json,
 import std.algorithm,
        std.array,
        std.conv,
+       std.math,
        std.json;
 
 debug = 0;
@@ -21,6 +22,59 @@ class Timeline
     private:
         PlaceableObject[] objs;
         FrameLength frame_len;
+
+        /+ fに最も近く、oオブジェクトの長さ分のスペースがある部分の +
+         + 最初のフレーム数を返す                                   +
+         + rfにはカーソルのフレーム位置を指定する。                 +/
+        FrameAt reserveSpace ( PlaceableObject o, FrameAt f, LayerId i, int rf )
+        {
+            const fv   = f.value;
+            const lv   = o.place.frame.length.value;
+            auto  objs = this[i].sort
+                !( (a,b) => a.place.frame.start.value < b.place.frame.start.value )
+                .remove!( x => x is o ).array;
+
+            auto coll = this[f,o.place.frame.length,i].remove!( x => x is o );
+            if ( coll.length == 0 && fv+lv <= length.value ) {
+                return f;
+            }
+
+            auto prev_frame = 0;
+            auto result     = 0;
+            auto rscore     = uint.max;
+
+            auto score ( uint st, uint ed )
+            {
+                auto st_score = abs( st.to!int - rf );
+                auto ed_score = abs( ed.to!int - rf );
+                return min( st_score, ed_score );
+            }
+            auto scoreCheck ( uint st )
+            {
+                if ( st+lv > length.value ) return;
+
+                auto cscore = score( st, st+lv );
+                if ( cscore < rscore ) {
+                    result = st;
+                    rscore = cscore;
+                }
+            }
+            foreach ( obj; objs ) {
+                auto st = obj.place.frame.start.value;
+                if ( st.to!int - prev_frame.to!int >= lv.to!int )
+                    scoreCheck( prev_frame );
+                if ( st.to!int - lv.to!int >= prev_frame.to!int )
+                    scoreCheck( st - lv );
+                prev_frame = obj.place.frame.end.value;
+            }
+            scoreCheck( prev_frame );
+            if ( length.value - prev_frame >= lv )
+                scoreCheck( length.value - lv );
+
+            if ( rscore == uint.max || result+lv > length.value )
+                throw new Exception( "No Space To Move" );
+            else return new FrameAt( result );
+        }
 
         /+ 編集情報 +/
         FrameAt current_frame;
@@ -66,6 +120,19 @@ class Timeline
                 objects.maxElement!"a.place.layer.value".place.layer.value+1:
                 0;
             return r;
+        }
+
+        /+ オブジェクトを移動 +/
+        void move ( PlaceableObject obj, FrameAt f, LayerId i, int rf )
+        {
+            FrameAt vf;
+            try {
+              vf = reserveSpace( obj, f, i, rf );
+            } catch ( Exception e ) {
+                return;
+            }
+            obj.place.frame.move( vf );
+            obj.place.layer.value = i.value;
         }
 
         /+ objを削除 +/
