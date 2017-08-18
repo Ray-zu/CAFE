@@ -25,4 +25,12 @@ struct Transform
             tm.translate(Translate);
             return tm;
         }
+
+        this( vec3 t, vec3 r, vec3 s )
+        {
+            Translate = t;
+            Rotate = r;
+            Scale = s;
+        }
+        this() {}
 }
