@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.SnapCorrector;
-import cafe.gui.controls.timeline.Cache,
+import cafe.config,
+       cafe.gui.controls.timeline.Cache,
        cafe.project.timeline.Timeline,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.property.Property,
@@ -23,7 +24,10 @@ import std.algorithm,
 /+ タイムラインのスナップポイントを算出＆位置補正 +/
 class SnapCorrector
 {
-    enum MaxCorrectDistancePx = 10;
+    static @property MaxCorrectDistancePx ()
+    {
+        return config( "behaviour/timeline/CorrectableDistancePx" ).uintegerDef( 10 ).to!int;
+    }
 
     private:
         Cache  cache;

@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.TimelineWidget;
-import cafe.project.Project,
+import cafe.config,
+       cafe.project.Project,
        cafe.project.timeline.Timeline,
        cafe.gui.controls.timeline.Cache,
        cafe.gui.controls.timeline.Grid,
@@ -16,11 +17,6 @@ import dlangui;
 /+ タイムラインウィジェット +/
 class TimelineWidget : VerticalLayout
 {
-    enum WheelMag = 2.0;
-    enum VScrollMag = 10.0;
-
-    enum FrameRemnant = 0.3;
-
     enum HScrollLayout = q{
         ScrollBar {
             id:hscroll;
@@ -42,6 +38,19 @@ class TimelineWidget : VerticalLayout
             ScrollBar { id:vscroll; orientation:Vertical }
         }
     };
+
+    static @property WheelMag ()
+    {
+        return config( "behaviour/timeline/WheelMagnification" ).floatingDef( 2.0 );
+    }
+    static @property VScrollMag ()
+    {
+        return config( "behaviour/timeline/VScrollMagnification" ).floatingDef( 10.0 );
+    }
+    static @property FrameRemnant ()
+    {
+        return config( "behaviour/timeline/FrameRemnant" ).floatingDef( 0.3 );
+    }
 
     private:
         Cache cache;

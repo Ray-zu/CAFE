@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.Cache;
-import cafe.project.Project,
+import cafe.config,
+       cafe.project.Project,
        cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.Timeline,
        cafe.project.timeline.PlaceableObject,
@@ -19,7 +20,11 @@ import dlangui;
 /+ タイムライン描画時のデータ受け渡しクラス +/
 class Cache
 {
-    enum MinimumGridInterval = 5;
+    static @property MinimumGridInterval ()
+    {
+        return config( "layout/timeline/MinimumGridInterval" ).uintegerDef( 5 ).to!int;
+    }
+
     private:
         Project  pro;
         Timeline tl;

@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.Line;
-import cafe.gui.utils.Font,
+import cafe.config,
+       cafe.gui.utils.Font,
        cafe.gui.utils.Rect,
        cafe.gui.controls.timeline.Action,
        cafe.gui.controls.timeline.Cache,
@@ -82,8 +83,11 @@ abstract class Line
 
 class LayerLine : Line
 {
-    enum TitleFormat = "Layer %d";
     enum ContentStyle = "TIMELINE_LAYER_LINE";
+    static @property TitleFormat ()
+    {
+        return config( "text/timeline/LayerTitle" ).strDef( "Layer %d" );
+    }
 
     private:
         int lindex;
@@ -179,7 +183,11 @@ class PropertyLine : Line
 {
     enum ContentStyle = "TIMELINE_PROPERTY_LINE";
     enum MPDrawable = "tl_propline_mp";
-    enum MPSize = 12;
+
+    static @property MPSize ()
+    {
+        return config( "layout/timeline/MiddlePointSize" ).uintegerDef( 12 ).to!int;
+    }
 
     private:
         Style    style;
@@ -198,7 +206,7 @@ class PropertyLine : Line
 
             auto drawMiddlePoint ( uint f )
             {
-                enum sz = MPSize/2;
+                auto sz = MPSize/2;
                 auto rf = f.to!int + parent - st.to!int;
                 auto x  = r.left + (rf * ppf).to!int;
                 auto y  = r.top + (r.bottom-r.top)/2;

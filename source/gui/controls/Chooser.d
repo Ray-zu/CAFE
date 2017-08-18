@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.Chooser;
-import cafe.project.ObjectPlacingInfo,
+import cafe.config,
+       cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.Timeline,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.effect.Effect,
@@ -18,10 +19,7 @@ import dlangui,
 
 class Chooser : Dialog
 {
-    enum DlgWidth  = 400;
-    enum DlgHeight = 600;
     enum DlgFlag = DialogFlag.Popup;
-
     enum SearchLayout = q{
        HorizontalLayout {
            ImageWidget {
@@ -33,6 +31,15 @@ class Chooser : Dialog
            EditLine { id:search }
        }
     };
+
+    static @property DlgWidth ()
+    {
+        return config( "layout/chooser_dialog/Width" ).uintegerDef( 400 ).to!int;
+    }
+    static @property DlgHeight ()
+    {
+        return config( "layout/chooser_dialog/Height" ).uintegerDef( 600 ).to!int;
+    }
 
     protected:
         ImageWidget search_icon;
@@ -80,10 +87,17 @@ class Chooser : Dialog
 class ChooserItem : VerticalLayout
 {
     enum Style  = "CHOOSER_ITEM";
-    enum Width  = 100;
-    enum Height = 100;
+    static @property Width ()
+    {
+        return config( "layout/chooser_dialog/ItemWidth" ).uintegerDef( 100 ).to!int;
+    }
+    static @property Height ()
+    {
+        return config( "layout/chooser_dialog/ItemHeight" ).uintegerDef( 100 ).to!int;
+    }
 
     private:
+
         ImageWidget icon;
         TextWidget  name;
 

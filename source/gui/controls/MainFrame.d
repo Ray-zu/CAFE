@@ -43,14 +43,16 @@ class MainFrame : AppFrame
         }
     };
 
-    private:
-        struct LayoutInfo
-        {
-            int preview_height = 350;
-            int config_width   = 400;
-        }
-        LayoutInfo layout_info;
+    static @property PreviewHeight ()
+    {
+        return config( "layout/main/PreviewHeight" ).uintegerDef( 350 ).to!int;
+    }
+    static @property ConfigWidth ()
+    {
+        return config( "layout/main/ConfigWidth" ).uintegerDef( 400 ).to!int;
+    }
 
+    private:
         MenuItem top_menu;
 
         PreviewPlayer     preview;
@@ -121,7 +123,7 @@ class MainFrame : AppFrame
         {
             super.initialize();
             _appName = AppName;
-            Config.instance.load( settingsDir~"/config.json" );
+            CafeConf.load( settingsDir~"/config.json" );
         }
 
         override Widget createBody ()
@@ -203,15 +205,15 @@ class MainFrame : AppFrame
         /+ ウィンドウ破棄リクエストを受理するかどうか +/
         auto canClose ()
         {
-            Config.instance.save;
+            CafeConf.save;
             return true;
         }
 
         override void measure ( int w, int h )
         {
-            preview.minHeight  = layout_info.preview_height;
+            preview.minHeight  = PreviewHeight;
             timeline.maxHeight = h - preview.minHeight;
-            tabs.minWidth      = layout_info.config_width;
+            tabs.minWidth      = ConfigWidth;
             super.measure( w, h );
         }
 
