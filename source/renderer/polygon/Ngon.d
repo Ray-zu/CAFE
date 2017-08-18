@@ -45,3 +45,26 @@ class Ngon : Polygon
         super(Tex, vertpos, index, uvpos, GL_TRIANGLE_FAN);
     }
 }
+
+class Quadrangle : Polygon
+{
+    public:
+    this ( vec3[] pos, BMP Tex, vec2[] uv = null )
+    {
+        uint[] index = [ 0, 3, 2 ,1 ];
+        vec2[] uvpos;
+        vec3[] vertpos = pos[0..4];
+        if(uv==null)
+        {
+            uvpos = [
+                vec2( 0.0, 0.0 ),
+                vec2( 1.0, 0.0 ),
+                vec2( 1.0, 1.0 ),
+                vec2( 0.0, 1.0 )
+            ];
+        }else{
+            uvpos = uv[0..4];
+        }
+        super( Tex, vertpos, index, uvpos, GL_TRIANGLE_FAN );
+    }
+}
