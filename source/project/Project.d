@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.project.Project;
-import cafe.json,
+import cafe.config,
+       cafe.json,
        cafe.project.ObjectPlacingInfo,
        cafe.project.ComponentList;
 import std.conv,
@@ -42,6 +43,8 @@ class Project
 
         this ( JSONValue j )
         {
+            if ( j["app"].str != AppName || j["ver"].str != AppVer )
+                throw new Exception( "Imcompatible Project Version" );
             component_list = new ComponentList( j["components"] );
             author = j["author"].str;
             copyright = j["copyright"].str;
@@ -69,11 +72,13 @@ class Project
         @property json ()
         {
             JSONValue j;
+            j["app"] = JSONValue(AppName);
+            j["ver"] = JSONValue(AppVer);
             j["components"]   = JSONValue(componentList.json);
             j["author"]       = JSONValue(author);
             j["copyright"]    = JSONValue(copyright);
             j["samplingRate"] = JSONValue(samplingRate);
-            j["fps"]          = JSONValue( fps );
+            j["fps"]          = JSONValue(fps);
             return j;
         }
 
