@@ -16,6 +16,10 @@ import dlangui.core.settings;
 enum AppName = "CAFEditor";
 enum AppVer  = "0.0.1 Pre-Alpha";
 enum AppText = "%s %s".format( AppName, AppVer );
+enum AppURL  = "https://aoitofu.github.io/CAFE";
+
+enum License    = "GNU General Public License 3.0";
+enum LicenseURL = "https://github.com/aoitofu/CAFE/blob/master/LICENSE";
 
 class Config : SettingsFile
 {

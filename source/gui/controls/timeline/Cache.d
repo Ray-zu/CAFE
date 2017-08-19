@@ -22,7 +22,7 @@ class Cache
 {
     static @property MinimumGridInterval ()
     {
-        return config( "layout/timeline/MinimumGridInterval" ).uintegerDef( 5 ).to!int;
+        return config( "layout/timeline/MinimumGridInterval" ).uintegerDef( 10 ).to!int;
     }
 
     private:

@@ -8,7 +8,9 @@ module cafe.gui.controls.MainFrame;
 import cafe.app,
        cafe.config,
        cafe.gui.Action,
+       cafe.gui.controls.AppInfoPanel,
        cafe.gui.controls.BMPViewer,
+       cafe.gui.controls.CafeConfDialog,
        cafe.gui.controls.ConfigDialogs,
        cafe.gui.controls.ConfigTabs,
        cafe.gui.controls.PreviewPlayer,
@@ -237,6 +239,9 @@ class MainFrame : AppFrame
                 case ProjectSaveAs:
                     saveAs;
                     return true;
+                case ProjectClose:
+                    Cafe.instance.curProject = null;
+                    return true;
 
                 case ProjectRefresh:
                     return projectRefresh;
@@ -262,6 +267,13 @@ class MainFrame : AppFrame
                     return true;
 
                 case Configure:
+                    new CafeConfDialog( window ).show;
+                    return true;
+                case VersionDlg:
+                    new AppInfoPanel( window ).show;
+                    return true;
+                case HomePage:
+                    Platform.instance.openURL( AppURL );
                     return true;
 
                 default:
