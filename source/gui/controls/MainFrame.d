@@ -27,10 +27,6 @@ import dlangui,
 
 class MainFrame : AppFrame
 {
-    enum AppName = "CAFEditor";
-    enum AppVer  = "0.99 beta";
-    enum AppText = "%s %s".format( AppName, AppVer );
-
     enum Layout = q{
         HorizontalLayout {
             VerticalLayout {

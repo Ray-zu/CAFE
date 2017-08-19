@@ -6,6 +6,7 @@
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.StartPanel;
 import cafe.app,
+       cafe.config,
        cafe.gui.Action,
        cafe.gui.controls.MainFrame,
        cafe.project.Project;
@@ -57,7 +58,7 @@ class StartPanel : Dialog
         override void initialize ()
         {
             addChild( parseML(Layout) );
-            childById( "header" ).text = MainFrame.AppText;
+            childById( "header" ).text = AppText;
             childById( "releaseNote" ).text = import( "releaseNote.txt" );
             childById( "test" ).click = delegate ( Widget w )
             {
