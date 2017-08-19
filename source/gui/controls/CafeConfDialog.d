@@ -98,7 +98,7 @@ class FloatEditItem : SettingsItem {
         EditLine ed = new EditLine(_id ~ "-edit", _label);
         ed.minWidth = 100;
         Setting setting = settings.settingByPath(_id, SettingType.FLOAT);
-        float n = cast(int)setting.floatingDef(_defaultValue);
+        float n = setting.floatingDef(_defaultValue);
         if (n < _minValue) n = _minValue;
         if (n > _maxValue) n = _maxValue;
         setting.floating = n;
