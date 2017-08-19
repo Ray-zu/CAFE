@@ -263,6 +263,9 @@ class MainFrame : AppFrame
 
                 case Configure:
                     return true;
+                case HomePage:
+                    Platform.instance.openURL( AppURL );
+                    return true;
 
                 default:
                     return super.handleAction( a );
