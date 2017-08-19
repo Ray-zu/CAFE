@@ -239,6 +239,9 @@ class MainFrame : AppFrame
                 case ProjectSaveAs:
                     saveAs;
                     return true;
+                case ProjectClose:
+                    Cafe.instance.curProject = null;
+                    return true;
 
                 case ProjectRefresh:
                     return projectRefresh;
