@@ -15,6 +15,7 @@ import cafe.app,
        cafe.gui.controls.ConfigTabs,
        cafe.gui.controls.PreviewPlayer,
        cafe.gui.controls.FragmentsExplorer,
+       cafe.gui.controls.FileDialogs,
        cafe.gui.controls.StartPanel,
        cafe.gui.controls.TimelineTabs,
        cafe.project.Project;
@@ -23,9 +24,7 @@ import std.conv,
        std.format,
        std.json;
 import dlangui,
-       dlangui.dialogs.dialog,
-       dlangui.dialogs.filedlg,
-       dlangui.dialogs.settingsdialog;
+       dlangui.dialogs.dialog;
 
 class MainFrame : AppFrame
 {
@@ -63,8 +62,7 @@ class MainFrame : AppFrame
 
         auto open ()
         {
-            auto dlg = new FileDialog( UIString.fromRaw("Open project"),
-                    window, null, FileDialogFlag.FileMustExist | FileDialogFlag.Open );
+            auto dlg = new FileOpenDialog( UIString.fromRaw("Open project"), window );
             dlg.dialogResult = delegate ( Dialog d, const Action a )
             {
                 if ( a.id != ACTION_OPEN.id ) return;
@@ -86,8 +84,7 @@ class MainFrame : AppFrame
 
         auto saveAs ()
         {
-            auto dlg = new FileDialog( UIString.fromRaw("Save project"),
-                    window, null, FileDialogFlag.ConfirmOverwrite | FileDialogFlag.Save );
+            auto dlg = new FileSaveDialog( UIString.fromRaw("Save project"), window );
             dlg.dialogResult = delegate ( Dialog d, const Action a )
             {
                 if ( a.id != ACTION_SAVE.id ) return;

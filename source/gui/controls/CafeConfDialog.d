@@ -10,6 +10,7 @@ import std.algorithm,
        std.format,
        std.range;
 import dlangui,
+       dlangui.dialogs.dialog,
        dlangui.dialogs.settingsdialog;
 
 private @property uistr ( string v, string c = "" )
@@ -78,6 +79,7 @@ class CafeConfDialog : SettingsDialog
         {
             super( UIString.fromRaw("Configure"),
                     w, CafeConf.setting, createPage );
+            _flags = DialogFlag.Popup;
         }
 }
 
