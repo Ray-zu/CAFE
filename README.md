@@ -11,12 +11,24 @@ CAFE(Creator's Advanced Film Editor)は、AviUtlの後継として考案され�
 
 ## Requirement
 
-* dmd 2.075.0
-* dub 1.0.0
+### OS
+
+動作確認済みOS
+
+* Windows 7 Professional
+* Ubuntu 14.04 LTS (Unity)
+
+### Libraries
+
 * libopenal-dev
 * libsdl2-dev
 
 Windows環境で実行する際は [OpenAL](https://openal.org/downloads/) のインストールを行ってください。
+
+### Compiler and BuildTool
+
+* dmd 2.075.0
+* dub 1.0.0
 
 ## Build
 
