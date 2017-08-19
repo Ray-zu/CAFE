@@ -181,8 +181,7 @@ private class EffectGroupPanelFrame : GroupPanelFrame
                     return true;
                 };
             // エフェクトプロパティ表示 or 非表示
-            alignment( Align.VCenter )
-                .clickable( true )
+            main.clickable( true )
                 .click = delegate ( Widget w )
                 {
                     e.propertiesOpened = !e.propertiesOpened;
