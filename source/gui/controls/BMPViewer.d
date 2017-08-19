@@ -32,4 +32,20 @@ class BMPViewer : ImageWidget
             super( id );
             backgroundColor = 0x000000;
         }
+
+        override void measure ( int pw, int ph )
+        {
+            if ( buf && buf.width != SIZE_UNSPECIFIED &&buf.height != SIZE_UNSPECIFIED ) {
+                auto w = buf.width;
+                auto h = buf.height;
+
+                auto zoom = pw / w.to!float;
+                if ( pw < w*zoom || ph < h*zoom )
+                    zoom = ph / h.to!float;
+
+                w = (w * zoom).to!int;
+                h = (h * zoom).to!int;
+                measuredContent( pw, ph, w, h );
+            } else super.measure( pw, ph );
+        }
 }

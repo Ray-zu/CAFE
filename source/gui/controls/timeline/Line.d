@@ -5,10 +5,12 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.Line;
-import cafe.gui.utils.Font,
+import cafe.config,
+       cafe.gui.utils.Font,
        cafe.gui.utils.Rect,
        cafe.gui.controls.timeline.Action,
        cafe.gui.controls.timeline.Cache,
+       cafe.gui.controls.timeline.SnapCorrector,
        cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.property.Property,
@@ -58,9 +60,14 @@ abstract class Line
             return false;
         }
 
-        bool onContentLeftClicked ( uint )
+        bool onContentLeftClicked ( float )
         {
             return false;
+        }
+
+        CursorType cursor ( float )
+        {
+            return CursorType.Arrow;
         }
 
         MenuItem headerMenu  ()
@@ -68,7 +75,7 @@ abstract class Line
             return null;
         }
 
-        MenuItem contentMenu ( uint )
+        MenuItem contentMenu ( float )
         {
             return null;
         }
@@ -76,8 +83,11 @@ abstract class Line
 
 class LayerLine : Line
 {
-    enum TitleFormat = "Layer %d";
     enum ContentStyle = "TIMELINE_LAYER_LINE";
+    static @property TitleFormat ()
+    {
+        return config( "text/timeline/LayerTitle" ).strDef( "Layer %d" );
+    }
 
     private:
         int lindex;
@@ -124,19 +134,20 @@ class LayerLine : Line
             }
         }
 
-        override bool onContentLeftClicked ( uint f )
+        override bool onContentLeftClicked ( float f )
         {
+            auto vf = cache.correct( f );
             auto index = objs.countUntil!
-                ( x => x.place.frame.isInRange( new FrameAt(f) ) );
+                ( x => x.place.frame.isInRange( new FrameAt(vf) ) || x.place.frame.end.value == vf );
             auto obj = (index >= 0 ? objs[index] : null);
             if ( obj ) {
                 cache.operation.operatingObject = obj;
-                cache.operation.frameOffset = f - obj.place.frame.start.value;
+                cache.operation.frameOffset = vf - obj.place.frame.start.value;
 
                 auto state = cache.operation.State.Clicking;
-                if ( f == obj.place.frame.start.value )
+                if ( vf == obj.place.frame.start.value )
                     state = cache.operation.State.ResizingStart;
-                if ( f == obj.place.frame.end.value-1 )
+                if ( vf == obj.place.frame.end.value )
                     state = cache.operation.State.ResizingEnd;
 
                 cache.operation.clicking( state );
@@ -144,16 +155,25 @@ class LayerLine : Line
             } else return false;
         }
 
-        override MenuItem contentMenu ( uint f )
+        override CursorType cursor ( float f )
         {
+            auto vf = cache.correct( f );
             auto index = objs.countUntil!
-                ( x => x.place.frame.isInRange( new FrameAt(f) ) );
+                ( x => x.place.frame.start.value == vf || x.place.frame.end.value == vf );
+            return ( index >= 0 ) ? CursorType.SizeWE : CursorType.Arrow;
+        }
+
+        override MenuItem contentMenu ( float f )
+        {
+            auto vf = cache.correct( f );
+            auto index = objs.countUntil!
+                ( x => x.place.frame.isInRange( new FrameAt(vf) ) );
             auto root = new MenuItem;
             if ( index >= 0 ? objs[index] : null ) {
-                root.add( new Action_Dlg_AddEffect( f, layerIndex ) );
-                root.add( new Action_RmObject( f, layerIndex ) );
+                root.add( new Action_Dlg_AddEffect( vf, layerIndex ) );
+                root.add( new Action_RmObject( vf, layerIndex ) );
             } else {
-                root.add( new Action_Dlg_AddObject( f, layerIndex ) );
+                root.add( new Action_Dlg_AddObject( vf, layerIndex ) );
             }
             return root;
         }
@@ -163,21 +183,30 @@ class PropertyLine : Line
 {
     enum ContentStyle = "TIMELINE_PROPERTY_LINE";
     enum MPDrawable = "tl_propline_mp";
-    enum MPSize = 12;
+
+    static @property MPSize ()
+    {
+        return config( "layout/timeline/MiddlePointSize" ).uintegerDef( 12 ).to!int;
+    }
 
     private:
         Style    style;
         Property property;
 
+        @property parentObjectStartFrame ()
+        {
+            return cache.timeline.selecting.place.frame.start.value.to!int;
+        }
+
         void drawNormal ( DrawBuf b, Rect r )
         {
             auto st     = cache.timeline.leftFrame;
             auto ppf    = cache.pxPerFrame;
-            auto parent = cache.timeline.selecting.place.frame.start.value.to!int;
+            auto parent = parentObjectStartFrame;
 
             auto drawMiddlePoint ( uint f )
             {
-                enum sz = MPSize/2;
+                auto sz = MPSize/2;
                 auto rf = f.to!int + parent - st.to!int;
                 auto x  = r.left + (rf * ppf).to!int;
                 auto y  = r.top + (r.bottom-r.top)/2;
@@ -226,16 +255,46 @@ class PropertyLine : Line
             return true;
         }
 
-        override bool onContentLeftClicked ( uint f )
+        override bool onContentLeftClicked ( float f )
         {
+            auto vf = cache.correct( f ).to!int;
+            vf -= parentObjectStartFrame;
             auto index = property.middlePoints.countUntil!
-                ( x => x.frame.start.value == f );
+                ( x => x.frame.start.value == vf );
             if ( index >= 0 && index < property.middlePoints.length ) {
                 cache.operation.operatingProperty = property;
                 cache.operation.middlePointIndex  = index.to!uint;
                 cache.operation.clicking;
                 return true;
             } else return false;
+        }
+
+        override CursorType cursor ( float f )
+        {
+            auto vf = cache.correct( f ).to!int;
+            vf -= parentObjectStartFrame;
+            auto index = property.middlePoints.countUntil!
+                ( x => x.frame.start.value == vf );
+            return ( index > 0 ) ? CursorType.SizeWE : CursorType.Arrow;
+        }
+
+        override MenuItem contentMenu ( float f )
+        {
+            auto vf = cache.correct( f ).to!int;
+            vf -= parentObjectStartFrame;
+            if ( vf < 0 || vf > property.frame.value ) return null;
+
+            auto index = property.middlePoints.countUntil!
+                ( x => x.frame.isInRange( new FrameAt(vf) ) );
+            if ( index >= 0 ) {
+                auto root = new MenuItem;
+                with ( root ) {
+                    add( new Action_Dlg_EaseMiddlePoint( property, index.to!uint ) );
+                    if ( index > 0 )
+                        add( new Action_RmMiddlePoint( property, index.to!uint ) );
+                }
+                return root;
+            } else return null;
         }
 }
 
@@ -257,6 +316,13 @@ class EffectLine : Line
                 cache.timeline.selecting.effectList.remove( effect );
             else return false;
             return true;
+        }
+
+        @property isInRange ( uint f )
+        {
+            auto est = cache.timeline.selecting.place.frame.start.value;
+            auto eed = cache.timeline.selecting.place.frame.end.value;
+            return (f >= est && f < eed);
         }
 
     public:
@@ -311,18 +377,19 @@ class EffectLine : Line
             return true;
         }
 
-        override bool onContentLeftClicked ( uint f )
+        override bool onContentLeftClicked ( float f )
         {
-            auto est = cache.timeline.selecting.place.frame.start.value;
-            auto eed = cache.timeline.selecting.place.frame.end.value;
-            return (f >= est && f < eed) ? onHeaderLeftClicked : false;
+            return isInRange(f.to!int) ? onHeaderLeftClicked : false;
         }
 
-        override MenuItem contentMenu ( uint f )
+        override CursorType cursor ( float f )
         {
-            auto est = cache.timeline.selecting.place.frame.start.value;
-            auto eed = cache.timeline.selecting.place.frame.end.value;
-            if ( f >= est && f < eed ) {
+            return isInRange(f.to!int) ? CursorType.Hand : CursorType.Arrow;
+        }
+
+        override MenuItem contentMenu ( float f )
+        {
+            if ( isInRange(f.to!int) ) {
                 auto root = new MenuItem;
                 with ( root ) {
                     add( up );

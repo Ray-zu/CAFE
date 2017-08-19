@@ -10,11 +10,11 @@ import cafe.json,
        cafe.project.timeline.property.Easing,
        cafe.project.timeline.property.MiddlePoint,
        cafe.project.timeline.property.LimitedProperty,
-       cafe.project.timeline.property.RendererProperty,
        cafe.project.timeline.property.BoolProperty;
 import std.algorithm,
        std.array,
        std.conv,
+       std.format,
        std.json,
        std.traits;
 
@@ -24,6 +24,8 @@ debug = 0;
 interface Property
 {
     public:
+        @property string typeToString ();
+
         @property Property copy ( FrameLength );
 
         @property FrameLength   frame        ();
@@ -37,8 +39,14 @@ interface Property
         MiddlePoint middlePointAtFrame ( FrameAt );
 
         /+ 中間点を削除 +/
-        void removeMiddlePoint ( int );
+        void removeMiddlePoint ( uint );
         void removeMiddlePoint ( MiddlePoint );
+
+        /+ 指定した中間点を指定フレームに近づける +/
+        void moveMP ( uint, uint );
+
+        /+ 中間点を破壊してリサイズ +/
+        void resizeDestroy ( uint );
 
         /+ ユーザーの入力した文字列をプロパティに変換 +/
         void   setString ( FrameAt, string );
@@ -83,9 +91,6 @@ interface Property
                 case "float/LimitedProperty":
                     return new LimitedProperty!float( mps, f, value.getFloating,
                             j["max"].getFloating, j["min"].getFloating );
-
-                case "Renderer":
-                    return new RendererProperty( mps, f, value.str );
 
                 default: throw new Exception( "The type is not supported." );
             }
@@ -137,9 +142,9 @@ class PropertyBase (T) : Property
             middle_points.insertInPlace( middle_points.countUntil(w)+1, mp );
         }
 
-    protected:
+    public:
         /+ 型名を文字列へ +/
-        @property string typeToString ()
+        override @property string typeToString ()
         {
             static if ( is(T == int) )
                 return "int";
@@ -150,7 +155,6 @@ class PropertyBase (T) : Property
             else throw new Exception( "The type is not supported." );
         }
 
-    public:
         override @property Property copy ( FrameLength f )
         {
             return new PropertyBase!T( this, f );
@@ -212,17 +216,75 @@ class PropertyBase (T) : Property
         {
             foreach ( mp; middlePoints )
                 if ( mp.frame.isInRange(f) ) return mp;
-            throw new Exception( "We can't find middle point at that frame." );
+            throw new Exception( "MiddlePoint(frame:%d) Not Found".format( f.value ) );
         }
 
-        override void removeMiddlePoint ( int i )
+        override void removeMiddlePoint ( uint i )
         {
+            if ( i >= middlePoints.length )
+                throw new Exception( "MiddlePoint(index:%d) Undefined".format(i) );
+            if ( i == 0 )
+                throw new Exception( "Cannot Remove First Middle Point" );
+
+            auto next_mp = frame.value;
+            if ( i < middlePoints.length-1 )
+                next_mp = middlePoints[i+1].frame.start.value;
+            auto left = middlePoints[i-1];
+            left.frame.length.value = next_mp - left.frame.start.value;
+
             middle_points = middle_points.remove( i );
         }
 
         override void removeMiddlePoint ( MiddlePoint mp )
         {
-            middle_points = middle_points.remove!( x => x is mp );
+            removeMiddlePoint( middlePoints.countUntil!( x => x is mp ).to!uint );
+        }
+
+        override void moveMP ( uint f, uint n )
+        {
+            auto mps = middlePoints;
+            if ( n >= mps.length )
+                throw new Exception( "MiddlePoint(index:%d) Undefined".format(n) );
+
+            if ( n == 0 ) return;   // 0番目の中間点は動かせない
+
+            auto curr = mps[n];
+            auto prev = mps[n-1];
+            auto next = n < mps.length-1 ? mps[n+1] : null;
+
+            auto next_frame = next ? next.frame.start.value : frame.value - 1;
+
+            f = max( prev.frame.start.value + 1, min( f, next_frame - 1 ) );
+
+            if ( prev ) prev.frame.length.value = f - prev.frame.start.value;
+            curr.frame.start.value  = f;
+            curr.frame.length.value = next_frame - f;
+        }
+
+        override void resizeDestroy ( uint len )
+        {
+            auto cut_mp = middlePoints.countUntil
+                !( x => x.frame.start.value >= len-1 );
+
+            if ( cut_mp == -1 || cut_mp == 0 ) {
+                // 最後の中間点からを伸ばす
+                auto mp = middlePoints[$-1];
+                mp.frame.length.value =
+                    (len - mp.frame.start.value).to!uint;
+            } else {
+                // 余分な中間点を消す
+                auto last_mp  = middlePoints[cut_mp-1];
+                auto new_len = len - last_mp.frame.start.value.to!int;
+                if ( new_len > 0 )
+                    last_mp.frame.length.value = new_len;
+                else cut_mp--;
+            }
+
+            // cut_mp以降の中間点を削除
+            if ( cut_mp >= 0 ) {
+                if ( cut_mp == 0 ) cut_mp = 1;
+                middle_points = middle_points[ 0 .. cut_mp ];
+            }
         }
 
         /+ 元の型でプロパティを設定 +/
@@ -269,8 +331,6 @@ class PropertyBase (T) : Property
             static if ( !isNumeric!T ) return st;
             else {
                 auto easing_type = mp.easing;
-                if ( easing_type == EasingType.None ) return st;
-
                 auto ed = nextValue(mp);
                 auto easing = EasingFunction.create( easing_type, st.to!float, ed.to!float,
                         mp.frame.length );

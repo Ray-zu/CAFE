@@ -7,7 +7,9 @@
 module cafe.gui.controls.timeline.Grid;
 import cafe.gui.Action,
        cafe.gui.utils.Font,
+       cafe.gui.controls.timeline.Action,
        cafe.gui.controls.timeline.Cache;
+import std.algorithm;
 import dlangui,
        dlangui.widgets.metadata;
 
@@ -70,6 +72,8 @@ class TimelineGrid : CanvasWidget
 
         override bool onMouseEvent ( MouseEvent e )
         {
+            auto f = cache.xToFrame( e.x - pos.left );
+
             auto left ()
             {
                 switch ( e.action ) with ( MouseAction ) {
@@ -85,19 +89,50 @@ class TimelineGrid : CanvasWidget
                     default:
                 }
             }
+            auto right ()
+            {
+                if ( e.action == MouseAction.ButtonDown ) {
+                    auto root = new MenuItem;
+                    root.add( new Action_SetLastFrame( f, 0 ) );
+                    auto pmenu = new PopupMenu( root );
+                    auto popup = window.showPopup( pmenu, this,
+                            PopupAlign.Point | PopupAlign.Right, e.x, e.y );
+                    pmenu.menuItemAction = &handleMenuAction;
+                    popup.flags = PopupFlags.CloseOnClickOutside;
+                }
+            }
             switch ( e.button ) with ( MouseButton ) {
                 case Left: left;
+                    break;
+                case Right: right;
                     break;
                 default:
             }
 
             if ( dragging ) {
                 auto temp = cache.timeline.frame.value;
-                auto f = cache.xToFrame( e.x - pos.left );
-                cache.timeline.frame.value = f;
+                cache.timeline.frame.value = min( f, cache.timeline.length.value-1 );
 
-                if ( temp != f ) window.mainWidget.handleAction( Action_ChangeFrame );
+                if ( temp != f )
+                    window.mainWidget.handleAction( Action_ChangeFrame );
+                invalidate;
             }
             return super.onMouseEvent( e );
+        }
+
+        bool handleMenuAction ( const Action a )
+        {
+            switch ( a.id ) with ( TimelineActions ) {
+                case SetLastFrame:
+                    auto ev = cast(Action_SetLastFrame) a;
+                    auto vf = cache.timeline.objects.length > 0 ?
+                        cache.timeline.objects.maxElement
+                            !( x => x.place.frame.end.value ).place.frame.end.value : 0;
+                    vf = max( vf, ev.frame, 1 );
+                    cache.timeline.length.value = vf;
+                    return true;
+
+                default: return false;
+            }
         }
 }

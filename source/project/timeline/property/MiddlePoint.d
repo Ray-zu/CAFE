@@ -7,8 +7,7 @@
 module cafe.project.timeline.property.MiddlePoint;
 import cafe.json,
        cafe.project.ObjectPlacingInfo,
-       cafe.project.timeline.property.Easing,
-       cafe.project.timeline.property.RendererProperty;
+       cafe.project.timeline.property.Easing;
 import std.conv,
        std.traits,
        std.json;
@@ -18,11 +17,12 @@ debug = 0;
 /+ 中間点データのインターフェース +/
 interface MiddlePoint
 {
+    enum DefaultEasing = "Linear";
     public:
         @property FramePeriod frame ();
 
-        @property EasingType easing ();
-        @property void easing ( EasingType );
+        @property string easing ();
+        @property void easing ( string );
 
         @property JSONValue json ();
 
@@ -31,7 +31,7 @@ interface MiddlePoint
         {
             auto value = j["value"];
             auto frame = new FramePeriod( j["frame"], f );
-            auto easing = j["easing"].str.to!EasingType;
+            auto easing = j["easing"].str;
             switch ( type )
             {
                 case "int":
@@ -66,12 +66,12 @@ class MiddlePointBase (T) : MiddlePoint
 
         /+ データ型が数値かどうかでイージング関連の処理を分岐させます +/
         static if ( isNumeric!T ) {
-            private EasingType easing_func;
-            override @property EasingType easing ()               { return easing_func; }
-            override @property void       easing ( EasingType t ) { easing_func = t;    }
+            private string easing_func;
+            override @property string easing ()           { return easing_func; }
+            override @property void   easing ( string t ) { easing_func = t;    }
         } else {
-            override @property EasingType easing ()             { return EasingType.None; }
-            override @property void       easing ( EasingType ) {
+            override @property string easing () { return DefaultEasing; }
+            override @property void   easing ( string ) {
                 throw new Exception( "This property is not increasable." );
             }
         }
@@ -84,7 +84,7 @@ class MiddlePointBase (T) : MiddlePoint
                 easing_func = src.easing;
         }
 
-        this ( T s, FramePeriod f, EasingType e = EasingType.None )
+        this ( T s, FramePeriod f, string e = DefaultEasing )
         {
             value = s;
             frame_period = f;
@@ -100,14 +100,14 @@ class MiddlePointBase (T) : MiddlePoint
             else
                 j["value"] = JSONValue(value.to!string);
             j["frame"]  = JSONValue(frame.json);
-            j["easing"] = JSONValue(easing.to!string);
+            j["easing"] = JSONValue(easing);
             return j;
         }
 
         debug (1) unittest {
             auto frame = new FramePeriod( new FrameLength( 100 ), new FrameAt( 50 ), new FrameLength( 20 ) );
             auto hoge = new MiddlePointBase!string( "5000chouen hoshii", frame );
-            assert( hoge.easing == EasingType.None );
+            assert( hoge.easing == DefaultEasing );
             assert( hoge.value == "5000chouen hoshii" );
 
             auto hoge2 = cast(MiddlePointBase!string)MiddlePoint.create( "string",
@@ -115,8 +115,8 @@ class MiddlePointBase (T) : MiddlePoint
             assert( hoge2.value == hoge.value );
 
             auto huge = new MiddlePointBase!float( 114.514, frame );
-            huge.easing = EasingType.Linear;
-            assert( huge.easing == EasingType.Linear );
+            huge.easing = "Linear";
+            assert( huge.easing == "Linear" );
             assert( huge.value == 114.514f );
             huge.json;
         }

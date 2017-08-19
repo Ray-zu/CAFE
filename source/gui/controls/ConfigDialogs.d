@@ -10,11 +10,14 @@ import cafe.app,
        cafe.project.Project,
        cafe.project.Component,
        cafe.project.ComponentList;
-import std.format,
+import std.algorithm,
+       std.array,
+       std.format,
        std.regex;
 import dlangui,
        dlangui.dialogs.dialog,
-       dlangui.dialogs.settingsdialog;
+       dlangui.dialogs.settingsdialog,
+       dlangui.widgets.metadata;
 
 /+ プロジェクト設定 +/
 class ProjectConfigDialog : Dialog
@@ -103,6 +106,8 @@ class ComponentConfigDialog : Dialog
             EditLine { id:name; minWidth:200 }
             TextWidget { text:"author" }
             EditLine { id:author }
+            TextWidget { text:"renderer" }
+            RendererSelector { id:renderer }
             TextWidget { text:"width" }
             EditLine { id:width }
             TextWidget { text:"height" }
@@ -134,10 +139,11 @@ class ComponentConfigDialog : Dialog
         override void initialize ()
         {
             if ( !component ) component = new Component;
-            childById("name"  ).text = comp_id         .to!dstring;
-            childById("author").text = component.author.to!dstring;
-            childById("width" ).text = component.width .to!dstring;
-            childById("height").text = component.height.to!dstring;
+            childById("name"    ).text = comp_id               .to!dstring;
+            childById("author"  ).text = component.author      .to!dstring;
+            childById("renderer").text = component.rendererName.to!dstring;
+            childById("width"   ).text = component.width       .to!dstring;
+            childById("height"  ).text = component.height      .to!dstring;
 
             childById("name").enabled = comp_id != ComponentList.RootId;
         }
@@ -151,9 +157,11 @@ class ComponentConfigDialog : Dialog
             }
 
             if ( a.id == ACTION_OK.id ) {
-                auto w = childById("width" ).text.to!string;
-                auto h = childById("height").text.to!string;
-                auto n = childById("name").text.to!string;
+                auto n = childById("name"    ).text.to!string;
+                auto w = childById("width"   ).text.to!string;
+                auto h = childById("height"  ).text.to!string;
+
+                auto r = cast(ComboBox) childById("renderer");
 
                 if ( !matchInteger(w) || !matchInteger(h) ) {
                     childById("error").text = "Invalid Integer"d;
@@ -161,6 +169,10 @@ class ComponentConfigDialog : Dialog
                 }
                 if ( n == "" ) {
                     childById("error").text = "name is required.";
+                    return false;
+                }
+                if ( r.selectedItemIndex == -1 ) {
+                    childById("error").text = "Undefined Renderer"d;
                     return false;
                 }
                 if ( n !in project.componentList.components ) {
@@ -175,6 +187,7 @@ class ComponentConfigDialog : Dialog
                 }
                 component.resize( w.to!uint, h.to!uint );
                 component.author = childById("author").text.to!string;
+                component.rendererName = r.text.to!string;
 
                 window.mainWidget.handleAction( Action_CompTreeRefresh );
             }

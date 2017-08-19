@@ -5,15 +5,21 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.Chooser;
+import cafe.config,
+       cafe.project.ObjectPlacingInfo,
+       cafe.project.timeline.Timeline,
+       cafe.project.timeline.PlaceableObject,
+       cafe.project.timeline.effect.Effect,
+       cafe.project.timeline.property.MiddlePoint,
+       cafe.project.timeline.property.Easing,
+       cafe.gui.Action;
+import std.string;
 import dlangui,
        dlangui.dialogs.dialog;
 
 class Chooser : Dialog
 {
-    enum DlgWidth  = 400;
-    enum DlgHeight = 600;
     enum DlgFlag = DialogFlag.Popup;
-
     enum SearchLayout = q{
        HorizontalLayout {
            ImageWidget {
@@ -25,6 +31,15 @@ class Chooser : Dialog
            EditLine { id:search }
        }
     };
+
+    static @property DlgWidth ()
+    {
+        return config( "layout/chooser_dialog/Width" ).uintegerDef( 400 ).to!int;
+    }
+    static @property DlgHeight ()
+    {
+        return config( "layout/chooser_dialog/Height" ).uintegerDef( 600 ).to!int;
+    }
 
     protected:
         ImageWidget search_icon;
@@ -72,10 +87,17 @@ class Chooser : Dialog
 class ChooserItem : VerticalLayout
 {
     enum Style  = "CHOOSER_ITEM";
-    enum Width  = 100;
-    enum Height = 100;
+    static @property Width ()
+    {
+        return config( "layout/chooser_dialog/ItemWidth" ).uintegerDef( 100 ).to!int;
+    }
+    static @property Height ()
+    {
+        return config( "layout/chooser_dialog/ItemHeight" ).uintegerDef( 100 ).to!int;
+    }
 
     private:
+
         ImageWidget icon;
         TextWidget  name;
 
@@ -106,5 +128,116 @@ class ChooserItem : VerticalLayout
         override uint getCursorType ( int x, int y )
         {
             return CursorType.Hand;
+        }
+}
+
+/+ オブジェクト選択ダイアログ +/
+class ObjectChooser : Chooser
+{
+    private:
+        Timeline          timeline;
+        ObjectPlacingInfo opi;
+
+    protected:
+        override void updateSearchResult ( EditableContent = null )
+        {
+            super.updateSearchResult;
+            auto word = search.text;
+            foreach ( i; PlaceableObject.registeredObjects ) {
+                if ( i.name != "" && i.name.indexOf( word ) == -1 ) continue;
+
+                auto item = list.addChild( new ChooserItem(i.name, i.icon) );
+                item.click = delegate ( Widget w )
+                {
+                    timeline += i.createAt(opi);
+                    window.mainWidget.handleAction( Action_ObjectRefresh );
+                    window.mainWidget.handleAction( Action_TimelineRefresh );
+                    close( null );
+                    return true;
+                };
+            }
+        }
+
+    public:
+        this ( uint f, uint l, Timeline t, Window w = null )
+        {
+            timeline = t;
+
+            auto layer  = new LayerId( l );
+            auto frame  = new FrameAt( f );
+            auto length = new FrameLength( 1 );
+            opi = new ObjectPlacingInfo( layer,
+                    new FramePeriod( timeline.length, frame, length ) );
+            super( UIString.fromRaw("Choose Object"), w );
+        }
+}
+
+/+ エフェクト追加 +/
+class EffectChooser : Chooser
+{
+    private:
+        PlaceableObject obj;
+
+    protected:
+        override void updateSearchResult ( EditableContent = null )
+        {
+            super.updateSearchResult;
+            auto word = search.text;
+            list.removeAllChildren;
+            foreach ( i; Effect.registeredEffects ) {
+                if ( word != "" && i.name.indexOf( word ) == -1 ) continue;
+
+                auto item = list.addChild( new ChooserItem( i.name, i.icon ) );
+                item.click = delegate ( Widget w )
+                {
+                    obj.effectList += i.createNew( obj.place.frame.length );
+                    window.mainWidget.handleAction( Action_ObjectRefresh );
+                    window.mainWidget.handleAction( Action_TimelineRefresh );
+                    close( null );
+                    return true;
+                };
+            }
+        }
+
+    public:
+        this ( PlaceableObject o, Window w = null )
+        {
+            obj = o;
+            super( UIString.fromRaw("Choose Effect"), w );
+        }
+}
+
+/+ イージング設定 +/
+class EasingChooser : Chooser
+{
+    private:
+        MiddlePoint mp;
+
+    protected:
+        override void updateSearchResult ( EditableContent = null )
+        {
+            super.updateSearchResult;
+            auto word = search.text;
+            list.removeAllChildren;
+            foreach ( i; EasingFunction.registeredEasings ) {
+                if ( word != "" && i.name.indexOf( word ) == -1 ) continue;
+
+                auto item = list.addChild( new ChooserItem( i.name, i.icon ) );
+                item.click = delegate ( Widget w )
+                {
+                    mp.easing = i.name;
+                    window.mainWidget.handleAction( Action_ObjectRefresh );
+                    window.mainWidget.handleAction( Action_TimelineRefresh );
+                    close( null );
+                    return true;
+                };
+            }
+        }
+
+    public:
+        this ( MiddlePoint m, Window w = null )
+        {
+            mp = m;
+            super( UIString.fromRaw("Choose Easing"), w );
         }
 }

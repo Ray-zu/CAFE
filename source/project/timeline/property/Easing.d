@@ -7,16 +7,11 @@
 module cafe.project.timeline.property.Easing;
 import cafe.json,
        cafe.project.ObjectPlacingInfo;
-import std.conv;
+import std.algorithm,
+       std.conv,
+       std.format;
 
 debug = 0;
-
-/+ イージング関数の一覧 +/
-enum EasingType
-{
-    None,
-    Linear
-}
 
 /+ イージング関数のベースクラス +/
 abstract class EasingFunction
@@ -53,21 +48,47 @@ abstract class EasingFunction
 
         float at ( FrameAt f );
 
-        /+ EasingTypeから対応するイージング関数のインスタンスを返す +
-         + EasingType.Noneに関しては例外を返します。                +/
-        static EasingFunction create ( EasingType t, float s, float e, FrameLength d )
+
+        /+ イージング登録用 +/
+        struct RegisteredEasing
         {
-            switch ( t ) {
-                case EasingType.Linear: return new LinearEasing( s, e, d );
-                default: throw new Exception( "No Easing Type" );
+            string name;
+            string icon;
+            EasingFunction delegate ( float s, float e, FrameLength d ) create;
+        }
+        static RegisteredEasing[] registeredEasings;
+
+        template register ( T )
+        {
+            static this ()
+            {
+                RegisteredEasing r;
+                r.name = T.name;
+                r.icon = T.icon;
+                r.create = delegate ( float s, float e, FrameLength d )
+                {
+                    return new T( s, e, d );
+                };
+                registeredEasings ~= r;
             }
+        }
+
+        static EasingFunction create ( string n, float s, float e, FrameLength d )
+        {
+            auto i = registeredEasings.countUntil
+                !( x => x.name == n );
+            if ( i == -1 ) throw new Exception( "Easing(%s) Undefined".format(n) );
+            return registeredEasings[i].create( s, e, d );
         }
 }
 
 /+ イージング関数クラスの共通コンストラクタ +/
-private template EasingFunctionConstructor ()
+private template EasingFunctionConstructor ( alias NAME, alias ICON )
 {
     public:
+        static @property name () { return NAME; }
+        static @property icon () { return ICON; }
+
         this ( float s, float e, FrameLength d )
         {
             super( s, e, d );
@@ -77,16 +98,26 @@ private template EasingFunctionConstructor ()
 /+ simple linear tweening +/
 class LinearEasing : EasingFunction
 {
-    mixin EasingFunctionConstructor;
+    mixin register!LinearEasing;
+    mixin EasingFunctionConstructor!("Linear","obj_ctg_others");
     public:
         override float at ( FrameAt current )
         {
             auto c = current.value;
             return slope*c + start;
         }
+}
 
-        debug (1) unittest {
-            auto hoge = new LinearEasing( 0, 75, new FrameLength(20) );
-            assert( hoge.at( new FrameAt(10) ) == 37.5 );
+/+ quadratic easing in +/
+class QuadraticEasingIn : EasingFunction
+{
+    mixin register!QuadraticEasingIn;
+    mixin EasingFunctionConstructor!("QuadraticIn","obj_ctg_others");
+    public:
+        override float at ( FrameAt current )
+        {
+            auto c = current.value;
+            auto t = c/duration.value.to!float;
+            return changeInValue*t*t + start;
         }
 }

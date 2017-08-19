@@ -9,7 +9,9 @@ import dlangui;
 
 enum EditorActions : int
 {
-    ProjectNew = 10000,
+    UpdateStatus = 10000,
+
+    ProjectNew,
     ProjectOpen,
     ProjectSave,
     ProjectSaveAs,
@@ -35,7 +37,20 @@ enum EditorActions : int
     CompTreeAdd,
     CompTreeConfig,
     CompTreeDelete,
-    CompTreeOpen
+    CompTreeOpen,
+
+    Configure,
+    VersionDlg,
+    HomePage
+}
+
+class Action_UpdateStatus : Action
+{
+    public:
+        this ( T ) ( T t )
+        {
+            super( cast(int)EditorActions.UpdateStatus, t );
+        }
 }
 
 const Action_ProjectNew    = new Action( cast(int)EditorActions.ProjectNew   , "ProjectNew"   , "new" );
@@ -64,3 +79,7 @@ const Action_CompTreeAdd    = new Action( cast(int)EditorActions.CompTreeAdd   ,
 const Action_CompTreeConfig = new Action( cast(int)EditorActions.CompTreeConfig, "CompTreeConfig", "config" );
 const Action_CompTreeDelete = new Action( cast(int)EditorActions.CompTreeDelete, "CompTreeDelete", "quit"   );
 const Action_CompTreeOpen   = new Action( cast(int)EditorActions.CompTreeOpen  , "CompTreeOpen"  , "open"   );
+
+const Action_Configure  = new Action( cast(int)EditorActions.Configure , "Configure" );
+const Action_VersionDlg = new Action( cast(int)EditorActions.VersionDlg, "VersionDialog" );
+const Action_HomePage   = new Action( cast(int)EditorActions.HomePage  , "HomePage" );

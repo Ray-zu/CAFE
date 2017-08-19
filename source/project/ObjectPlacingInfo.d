@@ -122,8 +122,7 @@ class FramePeriod
         {
             auto f_st = f.start.value;
             auto f_ed = f.end.value;
-            return ( f_st >= start.value && f_st < end.value ) ||
-                   ( f_ed < end.value && f_ed > start.value );
+            return ( f_st < end.value && f_ed > start.value );
         }
 
         /+ 長さを保ったまま開始地点を移動 +/

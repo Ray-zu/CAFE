@@ -5,7 +5,8 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.app;
-import cafe.project.Project,
+import cafe.config,
+       cafe.project.Project,
        cafe.gui.Action,
        cafe.gui.controls.MainFrame;
 import dlangui;
@@ -33,12 +34,13 @@ class Cafe
             Platform.instance.uiTheme="cafe";
 
             Log.setStdoutLogger;
-            Log.setLogLevel( LogLevel.Info );
 
-            auto window = Platform.instance.createWindow("Hello dlang!",null,WindowFlag.Resizable,800,500);
+            auto window = Platform.instance.createWindow(
+                    AppText, null, WindowFlag.Resizable, 800,500 );
             window.mainWidget = main_frame = new MainFrame;
             window.windowOrContentResizeMode = WindowOrContentResizeMode.shrinkWidgets;
             window.windowIcon = drawableCache.getImage( "cafe_logo" );
+            window.onCanClose = &mainFrame.canClose;
             window.show;
         }
 
@@ -49,23 +51,13 @@ class Cafe
         @property curProject ( Project p )
         {
             cur_project = p;
-            handleAction( Action_ProjectRefresh );
+            mainFrame.handleAction( Action_ProjectRefresh );
         }
 
         this ( string[] args )
         {
             loadLibraries;
             setupGUI;
-        }
-
-        @property void setStatus ( dstring v )
-        {
-            mainFrame.statusLine.setStatusText( v );
-        }
-
-        @property bool handleAction ( const Action a )
-        {
-            return mainFrame.handleAction( a );
         }
 }
 

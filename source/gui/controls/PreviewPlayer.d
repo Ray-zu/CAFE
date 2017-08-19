@@ -10,6 +10,7 @@ import cafe.gui.Action,
        cafe.gui.controls.BMPViewer,
        cafe.project.Project,
        cafe.renderer.Renderer;
+import std.format;
 import core.memory,
        core.thread;
 import dlangui,
@@ -56,11 +57,27 @@ class PreviewPlayer : VerticalLayout
         void frameChanged ()
         {
             if ( !project ) return;
+
+            /+ 別スレッドから翻訳内容を取得できない為事前に取得 +/
+            const rendering      = i18n.get("Status_Rendering");
+            const rendered       = i18n.get("Status_Rendered");
+            const rendering_fail = i18n.get( "Status_RenderingFailure" );
+
             render_th.create( delegate () {
-                auto r = project.render;
-                synchronized {
-                    preview.drawable = r.bitmap;
-                    window.invalidate;
+                try {
+                    window.mainWidget.handleAction(
+                        new Action_UpdateStatus( rendering ) );
+                    auto r = project.render;
+                    synchronized {
+                        preview.drawable = r.bitmap;
+                        window.invalidate;
+                        window.mainWidget.handleAction(
+                            new Action_UpdateStatus( rendered ) );
+                    }
+                } catch ( Exception e ) {
+                    auto mes = rendering_fail ~ e.msg.to!dstring;
+                    window.mainWidget.handleAction(
+                        new Action_UpdateStatus( mes ) );
                 }
             } );
         }

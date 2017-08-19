@@ -74,6 +74,42 @@ abstract class PlaceableObject : PropertyKeepableObject
             throw new Exception( "Not Implemented" );
         }
 
+        /+ 中間点を破壊しながらリサイズ +/
+        void resizeDestroy ( uint len )
+        {
+            if ( len <= 0 )
+                throw new Exception( "Cannot Resize Length to Under 1" );
+
+            void proc ( PropertyList ps )
+            {
+                ps.properties.values.each!( x => x.resizeDestroy(len) );
+            }
+            proc( propertyList );
+            effectList.effects.each!( x => proc( x.propertyList ) );
+        }
+
+        /+ 左端をリサイズ +/
+        void resizeStart ( FrameAt f )
+        {
+            auto ed = place.frame.end.value;
+            f.value = f.value >= ed ? ed - 1 : f.value;
+        
+            auto new_len = ed - f.value;
+            resizeDestroy( new_len );
+            place.frame.resizeStart( f );
+        }
+
+        /+ 右端をリサイズ +/
+        void resizeEnd ( FrameAt f )
+        {
+            auto st = place.frame.start.value;
+            f.value = f.value <= st ? st + 1 : f.value;
+
+            auto new_len = f.value - st;
+            resizeDestroy( new_len );
+            place.frame.resizeEnd( f );
+        }
+
         override @property JSONValue json ()
         {
             auto j = JSONValue( null );

@@ -7,10 +7,10 @@
 module cafe.gui.controls.timeline.LinesCanvas;
 import cafe.gui.Action,
        cafe.gui.utils.Rect,
+       cafe.gui.controls.Chooser,
        cafe.gui.controls.PropertyEditor,
        cafe.gui.controls.timeline.Action,
        cafe.gui.controls.timeline.Cache,
-       cafe.gui.controls.timeline.ObjectChooser,
        cafe.project.ObjectPlacingInfo;
 import std.algorithm,
        std.conv,
@@ -39,6 +39,24 @@ class LinesCanvas : CanvasWidget
             return (cache.lines[index].heightMag*baseLineHeight*fraction).to!int;
         }
 
+        @property yToLineId ( int y )
+        {
+            auto ry = y - pos.top;
+            auto i  = cache.timeline.topLineIndex.to!int;
+            auto h  = -topHiddenPx;
+            while ( h < ry && i < cache.lines.length )
+                h += (cache.lines[i++].heightMag * baseLineHeight).to!int;
+            return max( 0, i-1 );
+        }
+
+        @property xToFrame ( int x )
+        {
+            auto st      = cache.timeline.leftFrame.to!int;
+            auto ppf     = cache.pxPerFrame;
+            auto f       = st + ((x-pos.left-cache.headerWidth.to!int)/ppf);
+            return max( 0, f );
+        }
+
     public:
         @property baseLineHeight () { return base_line_height; }
         @property baseLineHeight ( uint blh )
@@ -60,6 +78,17 @@ class LinesCanvas : CanvasWidget
             if ( cache )
                 throw new Exception( "Can't redefine cache." );
             cache = c;
+        }
+
+        override uint getCursorType ( int x, int y )
+        {
+            auto header  = (x-pos.left) < cache.headerWidth;
+            auto f = xToFrame( x );
+            auto l = yToLineId( y );
+            if ( l < -1 || l >= cache.lines.length )
+                return cast(uint) CursorType.Arrow;
+            else return cast(uint) header ?
+                CursorType.Arrow : cache.lines[l].cursor( f );
         }
 
         override void measure ( int w, int h )
@@ -103,35 +132,29 @@ class LinesCanvas : CanvasWidget
             auto st  = cache.timeline.leftFrame;
             auto ed  = cache.timeline.rightFrame;
             auto ppf = cache.pxPerFrame;
-            auto cf  = cache.timeline.frame.value;
-
-            if ( cf >= st && cf < ed ) {
-                auto x = pos.left + cache.headerWidth + ((cf-st)*ppf).to!int;
-                auto col = style.customColor( "timeline_line_canvas_current_frame" );
-                b.drawLine( Point(x,pos.top), Point(x,pos.bottom), col );
+            void drawLine ( uint f, string coln )
+            {
+                if ( f >= st && f < ed ) {
+                    auto x = pos.left + cache.headerWidth + ((f-st)*ppf).to!int;
+                    auto col = style.customColor( coln );
+                    b.drawLine( Point(x,pos.top), Point(x,pos.bottom), col );
+                }
             }
+            drawLine( cache.timeline.frame .value, "timeline_line_canvas_current_frame" );
+            drawLine( cache.timeline.length.value, "timeline_line_canvas_last_frame"    );
         }
 
         override bool onMouseEvent ( MouseEvent e )
         {
+            auto line_id = yToLineId( e.y );
+            if ( line_id >= cache.lines.length ) return false;
+
             /+ 関連データ取得 +/
-            auto line_id = delegate ()
-            {
-                auto ry = e.y - pos.top;
-                auto i  = cache.timeline.topLineIndex.to!int;
-                auto h  = -topHiddenPx;
-                while ( h < ry && i < cache.lines.length )
-                    h += (cache.lines[i++].heightMag * baseLineHeight).to!int;
-                return max( 0, min( cache.lines.length, h < ry ? -1 : i-1 ) );
-            }();
-            auto header = (e.x-pos.left) < cache.headerWidth;
-            auto line   = cache.lines[line_id];
-            auto st     = cache.timeline.leftFrame.to!int;
-            auto ppf    = cache.pxPerFrame;
-            auto left   = e.button == MouseButton.Left;
-            auto right  = e.button == MouseButton.Right;
-            auto f      = st + ((e.x-pos.left-cache.headerWidth.to!int)/ppf).to!int;
-            f = max( 0, min( f, cache.timeline.length.value-1 ) );
+            auto line    = cache.lines[line_id];
+            auto header  = (e.x-pos.left) < cache.headerWidth;
+            auto left    = e.button == MouseButton.Left;
+            auto right   = e.button == MouseButton.Right;
+            auto f       = xToFrame( e.x );
 
             auto trans_ev   = dragging;
             auto redraw_obj = false;
@@ -173,10 +196,12 @@ class LinesCanvas : CanvasWidget
             }
             if ( trans_ev ) parent.childById( "grid" ).onMouseEvent( e );
 
-            if ( redraw_obj ) window.mainWidget.handleAction( Action_ObjectRefresh );
+            if ( redraw_obj ) {
+                window.mainWidget.handleAction( Action_ObjectRefresh );
+                invalidate;
+            }
 
-            super.onMouseEvent( e );
-            return true;
+            return super.onMouseEvent( e ) || trans_ev || redraw_obj;
         }
 
         bool handleMenuAction ( const Action a )
@@ -198,6 +223,13 @@ class LinesCanvas : CanvasWidget
                     if ( obj ) new EffectChooser( obj, window ).show;
                     return true;
 
+                case Dlg_EaseMiddlePoint:
+                    auto ev = cast(Action_Dlg_EaseMiddlePoint) a;
+                    auto mp = ev.property.middlePoints[ev.mpIndex];
+                    if ( ev.property.increasable )
+                        new EasingChooser( mp, window ).show;
+                    return true;
+
                 case RmObject:
                     auto ev  = cast(Action_RmObject) a;
                     auto obj = cache.timeline[new FrameAt(ev.frame),new LayerId(ev.line)];
@@ -210,6 +242,11 @@ class LinesCanvas : CanvasWidget
                         return true;
                     }
                     return false;
+
+                case RmMiddlePoint:
+                    auto ev = cast(Action_RmMiddlePoint) a;
+                    ev.property.removeMiddlePoint( ev.mpIndex );
+                    return true;
 
                 default: return false;
             }

@@ -6,6 +6,7 @@
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.MainFrame;
 import cafe.app,
+       cafe.config,
        cafe.gui.Action,
        cafe.gui.controls.BMPViewer,
        cafe.gui.controls.ConfigDialogs,
@@ -21,14 +22,11 @@ import std.conv,
        std.json;
 import dlangui,
        dlangui.dialogs.dialog,
-       dlangui.dialogs.filedlg;
+       dlangui.dialogs.filedlg,
+       dlangui.dialogs.settingsdialog;
 
 class MainFrame : AppFrame
 {
-    enum AppName = "CAFEditor";
-    enum AppVer  = "0.99 beta";
-    enum AppText = "%s %s".format( AppName, AppVer );
-
     enum Layout = q{
         HorizontalLayout {
             VerticalLayout {
@@ -42,14 +40,16 @@ class MainFrame : AppFrame
         }
     };
 
-    private:
-        struct LayoutInfo
-        {
-            int preview_height = 350;
-            int config_width   = 400;
-        }
-        LayoutInfo layout_info;
+    static @property PreviewHeight ()
+    {
+        return config( "layout/main/PreviewHeight" ).uintegerDef( 350 ).to!int;
+    }
+    static @property ConfigWidth ()
+    {
+        return config( "layout/main/ConfigWidth" ).uintegerDef( 400 ).to!int;
+    }
 
+    private:
         MenuItem top_menu;
 
         PreviewPlayer     preview;
@@ -118,8 +118,9 @@ class MainFrame : AppFrame
     protected:
         override void initialize ()
         {
-            _appName = AppText;
             super.initialize();
+            _appName = AppName;
+            CafeConf.load( settingsDir~"/config.json" );
         }
 
         override Widget createBody ()
@@ -159,6 +160,13 @@ class MainFrame : AppFrame
             }
             top_menu.add( menu );
 
+            with ( menu = new MenuItem( new Action( 1, "TopMenu_Info" ) ) ) {
+                add( Action_Configure  );
+                add( Action_VersionDlg );
+                add( Action_HomePage   );
+            }
+            top_menu.add( menu );
+
             return new MainMenu( top_menu );
         }
 
@@ -188,63 +196,76 @@ class MainFrame : AppFrame
         this ()
         {
             super();
-            statusLine.setStatusText( i18n.get( "Status_Boot" ) );
+            handleAction( new Action_UpdateStatus( "Status_Boot" ) );
             last_saved_file = "";
+        }
+
+        /+ ウィンドウ破棄リクエストを受理するかどうか +/
+        auto canClose ()
+        {
+            CafeConf.save;
+            return true;
         }
 
         override void measure ( int w, int h )
         {
-            preview.minHeight  = layout_info.preview_height;
+            preview.minHeight  = PreviewHeight;
             timeline.maxHeight = h - preview.minHeight;
-            tabs.minWidth      = layout_info.config_width;
+            tabs.minWidth      = ConfigWidth;
             super.measure( w, h );
         }
 
         override bool handleAction ( const Action a )
         {
+            if ( !a ) return false;
+
             import cafe.gui.Action;
-            if ( a ) {
-                switch ( a.id ) with( EditorActions ) {
-                    case ProjectNew:
-                        new ProjectConfigDialog( true, window ).show;
-                        return true;
-                    case ProjectOpen:
-                        open;
-                        return true;
-                    case ProjectSave:
-                        save;
-                        return true;
-                    case ProjectSaveAs:
-                        saveAs;
-                        return true;
+            switch ( a.id ) with( EditorActions ) {
+                case UpdateStatus:
+                    statusLine.setStatusText( a.label );
+                    return true;
 
-                    case ProjectRefresh:
-                        return projectRefresh;
-                    case PreviewRefresh:
-                        return preview.handleAction( a );
-                    case ObjectRefresh:
-                        tabs.propertyEditor.updateWidgets;
-                        return true;
-                    case CompTreeRefresh:
-                        return tabs.componentTree.handleAction( a );
-                    case TimelineRefresh:
-                        timeline.updateWidgets;
-                        return true;
+                case ProjectNew:
+                    new ProjectConfigDialog( true, window ).show;
+                    return true;
+                case ProjectOpen:
+                    open;
+                    return true;
+                case ProjectSave:
+                    save;
+                    return true;
+                case ProjectSaveAs:
+                    saveAs;
+                    return true;
 
-                    case ChangeFrame:
-                        handleAction( Action_ObjectRefresh );
-                        handleAction( Action_PreviewRefresh );
-                        return true;
+                case ProjectRefresh:
+                    return projectRefresh;
+                case PreviewRefresh:
+                    return preview.handleAction( a );
+                case ObjectRefresh:
+                    tabs.propertyEditor.updateWidgets;
+                    return true;
+                case CompTreeRefresh:
+                    return tabs.componentTree.handleAction( a );
+                case TimelineRefresh:
+                    timeline.updateWidgets;
+                    return true;
 
-                    case CompTreeOpen:
-                        timeline.addTab(
-                                tabs.componentTree.items.selectedItem.id );
-                        return true;
+                case ChangeFrame:
+                    handleAction( Action_ObjectRefresh );
+                    handleAction( Action_PreviewRefresh );
+                    return true;
 
-                    default:
-                        return super.handleAction( a );
-                }
+                case CompTreeOpen:
+                    timeline.addTab(
+                            tabs.componentTree.items.selectedItem.id );
+                    return true;
+
+                case Configure:
+                    return true;
+
+                default:
+                    return super.handleAction( a );
             }
-            return false;
         }
 }

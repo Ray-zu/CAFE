@@ -6,6 +6,7 @@
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.StartPanel;
 import cafe.app,
+       cafe.config,
        cafe.gui.Action,
        cafe.gui.controls.MainFrame,
        cafe.project.Project;
@@ -57,12 +58,11 @@ class StartPanel : Dialog
         override void initialize ()
         {
             addChild( parseML(Layout) );
-            childById( "header" ).text = MainFrame.AppText;
+            childById( "header" ).text = AppText;
             childById( "releaseNote" ).text = import( "releaseNote.txt" );
             childById( "test" ).click = delegate ( Widget w )
             {
                 // TODO test
-                close( null );
                 auto p = new Project;
                 auto tl = p.componentList.root.timeline;
                 tl.length.value = 100;
@@ -72,12 +72,13 @@ class StartPanel : Dialog
                         new FramePeriod( tl.length, new FrameAt(0), new FrameLength(50) )) );
                 p.componentList.root.timeline.selecting = tl.objects[0];
                 Cafe.instance.curProject = p;
+                close( null );
                 return true;
             };
             childById( "create" ).click = delegate ( Widget w )
             {
+                window.mainWidget.handleAction( Action_ProjectNew );
                 close( null );
-                Cafe.instance.handleAction( Action_ProjectNew );
                 return true;
             };
             childById( "close" ).click = delegate ( Widget w )

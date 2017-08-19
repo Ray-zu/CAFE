@@ -12,8 +12,7 @@ import cafe.project.Project,
        cafe.project.timeline.property.Property,
        cafe.gui.controls.timeline.Cache,
        cafe.gui.controls.timeline.Line,
-       cafe.gui.controls.timeline.ObjectEditor,
-       cafe.gui.controls.timeline.PropertyEditor;
+       cafe.gui.controls.timeline.SnapCorrector;
 import std.algorithm;
 import dlangui;
 
@@ -36,26 +35,27 @@ class Operation
         Cache cache;
         State state;
 
-        void moveObj ( uint f, uint l )
+        void moveObj ( float f, uint l )
         {
             auto line = cache.lines[l];
             auto obj  = operatingObject;
-            auto rf   = f.to!int - frameOffset;
-            rf = max( 0, min( rf, cache.timeline.length.value-1 ) );
 
             if ( line.layerIndex == -1 )
                 moveObj( f, l+1 );
             else {
-                obj.place.frame.move( new FrameAt( rf ) );
-                obj.place.layer.value = line.layerIndex;
+                auto rf = cache.correct( f.to!int - frameOffset );
+                cache.timeline.move( obj,
+                        new FrameAt(rf), new LayerId(line.layerIndex), f.to!int );
                 cache.updateLinesCache;
             }
         }
 
-        auto moveProp ( uint f, uint l )
+        auto moveProp ( float f, uint l )
         {
+            auto vf = cache.correct( f );
             auto prop = operatingProperty;
-            prop.moveMP( f, middlePointIndex );
+            vf -= cache.timeline.selecting.place.frame.start.value;
+            prop.moveMP( vf, middlePointIndex );
         }
 
     public:
@@ -105,7 +105,7 @@ class Operation
             if ( !isHandled ) state = s;
         }
 
-        auto move ( uint f, uint l )
+        auto move ( float f, uint l )
         {
             switch ( state ) with ( State ) {
                 case Clicking:
@@ -117,18 +117,19 @@ class Operation
                     break;
                 case ResizingStart:
                     if ( operatingObject )
-                        operatingObject.resizeStart( new FrameAt(f) );
+                        operatingObject.resizeStart( new FrameAt(cache.correct(f)) );
                     break;
                 case ResizingEnd:
                     if ( operatingObject )
-                        operatingObject.resizeEnd( new FrameAt(f) );
+                        operatingObject.resizeEnd( new FrameAt(cache.correct(f)) );
                     break;
                 default:
             }
         }
 
-        auto release ( uint f )
+        auto release ( float f )
         {
+            auto vf = cache.correct( f );
             if ( state == State.Clicking ) {
                 if ( operatingObject ) {
                     // オブジェクトを左クリック

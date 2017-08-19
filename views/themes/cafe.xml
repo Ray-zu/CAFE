@@ -330,8 +330,21 @@
         padding="3,3,3,3">
     </style>
 
-    <style id="PROPERTY_EDITOR_INPUT"
-        backgroundColor="#00444444">
+    <style id="PROPERTY_EDITOR_SWITCH"
+        parent="SWITCH"
+        backgroundImageId="cafe_switch">
+    </style>
+
+    <style id="PROPERTY_EDITOR_INPUT_SL"
+        backgroundColor="#00444444"
+        padding="2,2,2,2"
+        minWidth="150">
+    </style>
+
+    <style id="PROPERTY_EDITOR_INPUT_ML"
+        backgroundColor="#00444444"
+        minWidth="200"
+        minHeight="100">
     </style>
 
     <style id="TIMELINE"
@@ -346,6 +359,7 @@
     <style id="TIMELINE_LINES_CANVAS"
         textColor="#00888888">
         <color id="timeline_line_canvas_current_frame" value="#00999999" />
+        <color id="timeline_line_canvas_last_frame" value="#00666666" />
     </style>
 
     <style id="TIMELINE_LINE_HEADER"

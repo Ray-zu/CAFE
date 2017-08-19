@@ -199,47 +199,60 @@ private class EffectGroupPanelFrame : GroupPanelFrame
 /+ プロパティ編集 +/
 private class PropertyPanel : VerticalLayout
 {
+    enum SwitchStyle   = "PROPERTY_EDITOR_SWITCH";
+    enum InputStyle_SL = "PROPERTY_EDITOR_INPUT_SL";
+    enum InputStyle_ML = "PROPERTY_EDITOR_INPUT_ML";
     private:
         PropertyList props;
         FrameAt frame;
 
+        Widget createWidget ( Property p )
+        {
+            switch ( p.typeToString ) {
+                case "bool":
+                    auto w = new SwitchButton;
+                    w.styleId = SwitchStyle;
+                    w.checked = p.getString( frame ).to!bool;
+                    w.checkChange = delegate ( Widget w, bool f )
+                    {
+                        p.setString( frame, f.to!string );
+                        return true;
+                    };
+                    return w;
+                default:
+                    auto w     = p.allowMultiline ? new EditBox   : new EditLine;
+                    w.styleId  = p.allowMultiline ? InputStyle_ML : InputStyle_SL;
+
+                    w.text = p.getString( frame ).to!dstring;
+                    w.focusChange = delegate ( Widget w, bool f )
+                    {
+                        auto new_text = p.getString( frame ).to!dstring;
+                        if ( w.text != new_text ) w.text = new_text;
+                        return true;
+                    };
+                    w.contentChange = delegate ( EditableContent e )
+                    {
+                        auto new_text = w.text.to!string;
+                        auto now_text = p.getString( frame );
+                        try {
+                            if ( new_text != now_text )
+                                p.setString( frame, new_text );
+                        } catch ( Exception e ) {
+                            w.text = now_text.to!dstring;
+                        }
+                    };
+                    return w;
+            }
+        }
+
         void addProperty ( Property p, string name )
         {
             addChild( new TextWidget( "", name.to!dstring ) );
-
-            auto l = addChild( new HorizontalLayout );
-            l.layoutWidth = FILL_PARENT;
-            l.addChild( new HSpacer );
-            auto input = cast(EditWidgetBase)l.addChild( p.allowMultiline ?
-                    new EditBox( name ) : new EditLine( name ) );
-            l.addChild( new HSpacer );
-
-            input.styleId  = "PROPERTY_EDITOR_INPUT";
-            input.minWidth = 200;
-            if ( p.allowMultiline )
-                input.minHeight = 100;
-            else {
-                input.padding = Rect( 2,2,2,2 );
+            with ( addChild( new HorizontalLayout ).layoutWidth( FILL_PARENT ) ) {
+                addChild( new HSpacer );
+                addChild( createWidget( p ) );
+                addChild( new HSpacer );
             }
-            input.text = p.getString( frame ).to!dstring;
-
-            input.focusChange = delegate ( Widget w, bool f )
-            {
-                auto new_text = p.getString( frame ).to!dstring;
-                if ( input.text != new_text ) input.text = new_text;
-                return true;
-            };
-            input.contentChange = delegate ( EditableContent e )
-            {
-                auto new_text = input.text.to!string;
-                auto now_text = p.getString( frame );
-                try {
-                    if ( new_text != now_text )
-                        p.setString( frame, new_text );
-                } catch ( Exception e ) {
-                    input.text = now_text.to!dstring;
-                }
-            };
         }
 
     public:
@@ -257,40 +270,5 @@ private class PropertyPanel : VerticalLayout
             foreach ( k,v; props.properties )
                 addProperty( v, k );
             invalidate;
-        }
-}
-
-/+ エフェクト追加 +/
-class EffectChooser : Chooser
-{
-    private:
-        PlaceableObject obj;
-
-    protected:
-        override void updateSearchResult ( EditableContent = null )
-        {
-            super.updateSearchResult;
-            auto word = search.text;
-            list.removeAllChildren;
-            foreach ( i; Effect.registeredEffects ) {
-                if ( word != "" && i.name.indexOf( word ) == -1 ) continue;
-
-                auto item = list.addChild( new ChooserItem( i.name, i.icon ) );
-                item.click = delegate ( Widget w )
-                {
-                    obj.effectList += i.createNew( obj.place.frame.length );
-                    window.mainWidget.handleAction( Action_ObjectRefresh );
-                    window.mainWidget.handleAction( Action_TimelineRefresh );
-                    close( null );
-                    return true;
-                };
-            }
-        }
-
-    public:
-        this ( PlaceableObject o, Window w = null )
-        {
-            obj = o;
-            super( UIString.fromRaw("Choose Effect"), w );
         }
 }

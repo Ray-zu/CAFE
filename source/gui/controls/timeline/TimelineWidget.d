@@ -5,18 +5,18 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.timeline.TimelineWidget;
-import cafe.project.Project,
+import cafe.config,
+       cafe.project.Project,
        cafe.project.timeline.Timeline,
        cafe.gui.controls.timeline.Cache,
        cafe.gui.controls.timeline.Grid,
        cafe.gui.controls.timeline.LinesCanvas;
+import std.algorithm;
 import dlangui;
 
 /+ タイムラインウィジェット +/
 class TimelineWidget : VerticalLayout
 {
-    enum VScrollMag = 10.0;
-
     enum HScrollLayout = q{
         ScrollBar {
             id:hscroll;
@@ -39,6 +39,19 @@ class TimelineWidget : VerticalLayout
         }
     };
 
+    static @property WheelMag ()
+    {
+        return config( "behaviour/timeline/WheelMagnification" ).floatingDef( 2.0 );
+    }
+    static @property VScrollMag ()
+    {
+        return config( "behaviour/timeline/VScrollMagnification" ).floatingDef( 10.0 );
+    }
+    static @property FrameRemnant ()
+    {
+        return config( "behaviour/timeline/FrameRemnant" ).floatingDef( 0.3 );
+    }
+
     private:
         Cache cache;
 
@@ -47,9 +60,16 @@ class TimelineWidget : VerticalLayout
         TimelineGrid grid;
         LinesCanvas  canvas;
 
+        void correctScroll ( ScrollBar s )
+        {
+            s.position = max( 0, min( s.maxValue - s.pageSize, s.position ) );
+        }
+
         auto hscrolled ( AbstractSlider = null, ScrollEvent e = null )
         {
             if ( !cache.timeline ) return false;
+            hscroll.setRange( 0, (cache.timeline.length.value+(hscroll.pageSize*FrameRemnant)).to!int );
+            correctScroll( hscroll );
             cache.timeline.leftFrame  = hscroll.position;
             cache.timeline.rightFrame = cache.timeline.leftFrame + hscroll.pageSize;
             invalidate;
@@ -59,10 +79,48 @@ class TimelineWidget : VerticalLayout
         {
             if ( !cache.timeline ) return false;
             vscroll.setRange( 0, (cache.lines.length*VScrollMag).to!int );
+            correctScroll( vscroll );
             vscroll.pageSize = VScrollMag.to!int;
             cache.timeline.topLineIndex  = vscroll.position/VScrollMag;
             invalidate;
             return true;
+        }
+
+    protected:
+        override bool onMouseEvent ( MouseEvent e )
+        {
+            auto delta = (-e.wheelDelta * WheelMag).to!int;
+            void frameWheel ()
+            {
+                hscroll.position = hscroll.position + delta;
+                hscrolled;
+            }
+            void lineWheel ()
+            {
+                vscroll.position = vscroll.position + delta;
+                vscrolled;
+            }
+            void frameZoom ()
+            {
+                hscroll.pageSize = hscroll.pageSize + delta;
+                hscrolled;
+            }
+            void lineZoom ()
+            {
+                vscroll.pageSize = vscroll.pageSize + delta;
+                vscrolled;
+            }
+
+            switch ( e.action ) with ( MouseAction ) {
+                case Wheel:
+                    if      ( e.keyFlags & KeyFlag.LControl ) frameZoom;
+                    else if ( e.keyFlags & KeyFlag.LShift   ) lineZoom;
+                    else if ( e.keyFlags & KeyFlag.LAlt     ) lineWheel;
+                    else                                      frameWheel;
+                    return true;
+
+                default: return false;
+            }
         }
 
     public:
