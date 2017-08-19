@@ -91,6 +91,8 @@ abstract class PlaceableObject : PropertyKeepableObject
         /+ 左端をリサイズ +/
         void resizeStart ( FrameAt f )
         {
+            f.value = min( f.value, place.frame.parentLength.value );
+
             auto ed = place.frame.end.value;
             f.value = f.value >= ed ? ed - 1 : f.value;
         
@@ -102,6 +104,8 @@ abstract class PlaceableObject : PropertyKeepableObject
         /+ 右端をリサイズ +/
         void resizeEnd ( FrameAt f )
         {
+            f.value = min( f.value, place.frame.parentLength.value );
+
             auto st = place.frame.start.value;
             f.value = f.value <= st ? st + 1 : f.value;
 
