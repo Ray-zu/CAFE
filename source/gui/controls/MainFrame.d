@@ -10,6 +10,7 @@ import cafe.app,
        cafe.gui.Action,
        cafe.gui.controls.AppInfoPanel,
        cafe.gui.controls.BMPViewer,
+       cafe.gui.controls.CafeConfDialog,
        cafe.gui.controls.ConfigDialogs,
        cafe.gui.controls.ConfigTabs,
        cafe.gui.controls.PreviewPlayer,
@@ -263,6 +264,7 @@ class MainFrame : AppFrame
                     return true;
 
                 case Configure:
+                    new CafeConfDialog( window ).show;
                     return true;
                 case VersionDlg:
                     new AppInfoPanel( window ).show;
