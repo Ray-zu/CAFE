@@ -15,7 +15,8 @@ CAFE(Creator's Advanced Film Editor)は、AviUtlの後継として考案され�
 
 動作確認済みOS
 
-* Windows 7 Professional
+* Windows 10 Home 64bit
+* Windows 7 Professional 64bit
 * Ubuntu 14.04 LTS (Unity)
 
 ### Libraries
