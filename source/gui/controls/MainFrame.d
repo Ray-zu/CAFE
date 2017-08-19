@@ -8,6 +8,7 @@ module cafe.gui.controls.MainFrame;
 import cafe.app,
        cafe.config,
        cafe.gui.Action,
+       cafe.gui.controls.AppInfoPanel,
        cafe.gui.controls.BMPViewer,
        cafe.gui.controls.ConfigDialogs,
        cafe.gui.controls.ConfigTabs,
@@ -262,6 +263,9 @@ class MainFrame : AppFrame
                     return true;
 
                 case Configure:
+                    return true;
+                case VersionDlg:
+                    new AppInfoPanel( window ).show;
                     return true;
                 case HomePage:
                     Platform.instance.openURL( AppURL );
