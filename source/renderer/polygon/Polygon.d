@@ -37,13 +37,13 @@ class Polygon
         @property transform () { return trans; }
         @property transform (Transform t) { trans = t; }
 
-        this ( BMP t, vec3[] p, uint[] vi, vec2[] uv, Transform t, GLenum m = GL_TRIANGLES )
+        this ( BMP t, vec3[] p, uint[] vi, vec2[] uv, Transform tr, GLenum m = GL_TRIANGLES )
         {
             tex = t;
             pos = p;
             vidx = vi;
             uvpos = uv;
-            trans = t;
+            trans = tr;
             dmode = m;
         }
 }
