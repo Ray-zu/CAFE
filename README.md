@@ -24,21 +24,26 @@ CAFE(Creator's Advanced Film Editor)は、AviUtlの後継として考案され�
 #### Windows
 * OpenGL
 * [OpenAL](https://openal.org/downloads/)
+* SDL2 (同梱)
+* freetype (同梱)
 
 #### Linux
 * libopenal-dev
 * libsdl2-dev
 * freeglut3-dev
 * libglew1.5-dev
+* [freetype](http://download.savannah.gnu.org/releases/freetype/)
 
-apt-get example : `sudo apt-get install libopenal-dev libsdl2-dev freeglut3-dev libglew1.5-dev`
+apt-get : `sudo apt-get install libopenal-dev libsdl2-dev freeglut3-dev libglew1.5-dev`  
+freetypeは手動でインストールしてください。
 
 #### OS X
+* freetype
 * openal
 * opengl
 * sdl2
 
-brew example : `brew install openal; brew install opengl; brew install sdl2`
+brew : `brew install freetype; brew install openal; brew install sdl2`
 
 ### Compiler and BuildTool
 
