@@ -22,7 +22,7 @@ struct Transform
             tm.rotate(radians(Rotate.z), vec3( 0.0, 0.0, 1.0));
             tm.rotate(radians(Rotate.y), vec3( 0.0, 1.0, 0.0));
             tm.rotate(radians(Rotate.x), vec3(-1.0, 0.0, 0.0));
-            tm.translate(Translate);
+            tm.translate(vec3(Translate.x, -Translate.y, -Translate.z));
             return tm;
         }
 
@@ -32,5 +32,4 @@ struct Transform
             Rotate = r;
             Scale = s;
         }
-        this() {}
 }
