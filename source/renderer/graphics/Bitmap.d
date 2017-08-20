@@ -30,6 +30,19 @@ class Bitmap (T)
             resize( w, h );
         }
 
+        this ( uint w, uint h, T[] pix )
+        {
+            resize( w, h );
+            for (uint y = 0;y<h;y++)
+            {
+                for (uint x = 0;x<w;x++)
+                {
+                    bmp[y*w+x] = pix[y*w+x];
+                }
+            }
+
+        }
+
         ~this ()
         {
             destroy;
