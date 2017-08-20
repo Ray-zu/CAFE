@@ -1,7 +1,9 @@
-attribute vec2 position;
-attribute vec4 color;
-varying   vec4 vColor;
+#version 330
+attribute vec3 position;
+attribute vec2 uv;
+varying   vec2 uvpos;
+uniform   mat4 MVP;
 void main(void){
-    gl_Position = vec4(position, 0.0, 1.0);
-    vColor = color;
+    gl_Position = MVP * vec4(position, 1.0);
+    uvpos = uv;
 }
