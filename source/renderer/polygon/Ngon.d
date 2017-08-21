@@ -62,6 +62,7 @@ class Ngon : Polygon
     }
 }
 
+/* 頂点を指定するタイプの四角形 */
 class Quadrangle : Polygon
 {
     public:
@@ -87,6 +88,7 @@ class Quadrangle : Polygon
     }
 }
 
+/* サイズだけ渡せば座標を自動計算してくれる四角形 */
 class Rectangle : Quadrangle
 {
     public:

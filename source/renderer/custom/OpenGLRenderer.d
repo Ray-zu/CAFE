@@ -50,10 +50,10 @@ class OpenGLRenderer : Renderer
         @property sample (uint s) { samplenum = s; }
 
         this (uint wi, uint he) {
-            glEnable(GL_MULTISAMPLE);
+            // 非表示のウィンドウを生成(コンテキストの生成に必須のため)
             GLFWwindow *Invisible_Window = glfwCreateWindow( 1280, 720, "Invisible Window", null, null );
             glfwMakeContextCurrent( Invisible_Window );
-
+            // DerelictGLのリロードのついでに読んだGLのバージョンを表示
             ("    OpenGL version : "~(DerelictGL3.reload().to!string)).writeln();
 
             // マルチサンプリング用のレンダーバッファを生成
@@ -73,37 +73,44 @@ class OpenGLRenderer : Renderer
             glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                    GL_RENDERBUFFER, Renderbuffer);
 
-            // テクスチャを通常の
+            // テクスチャを通常のフレームバッファに割り当て
             glGenFramebuffers(1, &framebuffer);
             glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                    GL_TEXTURE_2D, mtexid, 0);
+
             BufferWidth = wi;
             BufferHeight = he;
+
             // シェーダー作るよ
             uint Vshader = glCreateShader(GL_VERTEX_SHADER);
             uint Fshader = glCreateShader(GL_FRAGMENT_SHADER);
+
             // シェーダーのソース読み込むよ
             string VSSource = import("Vertex_Shader.vert");
             string FSSource = import("Fragment_Shader.frag");
+
             // コンパイル関数に渡せる文字列にするよ
             auto vsstr = VSSource.toStringz;
             int vslen = VSSource.length;
             auto fsstr = FSSource.toStringz;
             int fslen = FSSource.length;
+
             // シェーダーとソースを結び付けてコンパイルするよ
             glShaderSource(Vshader, 1, &vsstr, &vslen);
             glShaderSource(Fshader, 1, &fsstr, &fslen);
             glCompileShader(Vshader);
             glCompileShader(Fshader);
+
             // プログラム作ってシェーダーを紐づけるよ
             ProgramID = glCreateProgram();
             glAttachShader(ProgramID, Vshader);
             glAttachShader(ProgramID, Fshader);
+
             // 最後にリンクして使える状態にするよ
             glLinkProgram(ProgramID);
 
-            glDrawBuffer(GL_COLOR_ATTACHMENT0);
+            // フレームバッファの割り当てを解除
             glBindBuffer(GL_FRAMEBUFFER, 0);
 
         }
@@ -122,11 +129,15 @@ class OpenGLRenderer : Renderer
             glEnable(GL_MULTISAMPLE);
             BMP ResultImage = new BMP(wi, he);
             glViewport(0, 0, wi, he);
+            // 現在のテクスチャのサイズと指定されたサイズが合わない場合は再生成
             if (BufferWidth!=wi||BufferHeight!=he) {
             glRenderbufferStorageMultisample(GL_RENDERBUFFER, samplenum, GL_RGBA, wi, he);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
                          wi, he, 0, GL_RGBA, GL_FLOAT, null);
             }
+
+            // 描画するバッファの指定とフレームバッファの割り当て
+            glDrawBuffer(GL_COLOR_ATTACHMENT0);
             glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_msaa);
 
             glUseProgram(ProgramID);
@@ -137,8 +148,11 @@ class OpenGLRenderer : Renderer
 
             glClear(GL_COLOR_BUFFER_BIT);
             vec2 halfsize = vec2(wi/2, he/2);
+
+            // 並行投影用の行列
             mat4 orthmat = mat4.orthographic(-halfsize.x, halfsize.x, -halfsize.y, halfsize.y, 10000.0, -10000.0);
 
+            // Worldに含まれるポリゴンオブジェクト分繰り返す
             for(uint n = 0;n<w.polygons.length;n++){
                 Polygon Polyobj = w.polygons[n];
                 BMP Texture = Polyobj.texture;
@@ -150,10 +164,12 @@ class OpenGLRenderer : Renderer
                 for(uint vn;vn<Polyobj.vindex.length;vn++){
                     pos ~= Polyobj.position[Polyobj.vindex[vn]];
                 }
+
                 // 平行投影用の行列を渡す
                 mat4 mvp = orthmat * Polyobj.transform.mat;
                 GLuint MatrixID = glGetUniformLocation(ProgramID, "MVP");
                 glUniformMatrix4fv(MatrixID,  1, GL_TRUE, &mvp[0][0]);
+
                 // UV座標に乗算する画像サイズ-1の値を渡す(矩形テクスチャなのでUV座標をピクセル値にしないといけない)
                 GLuint SizemID = glGetUniformLocation(ProgramID, "sizemag");
                 glUniform2fv(SizemID,  1, sizem.value_ptr);
@@ -261,22 +277,22 @@ class OpenGLRenderer : Renderer
 
             // 多角形クラス
             Ngon Ng = new Ngon( 5, 640, Transform(
-                    vec3( 100.0, 0.0, 0.0 ),
-                    vec3( 0.0, 0.0, -15.0 ),
-                    vec3( 1.0, 1.0, 1.0 )
+                    vec3( 200.0, 150.0, -120.0 ),
+                    vec3( 0.0, 0.0, -35.0 ),
+                    vec3( 0.5, 0.3, 1.0 )
                 ), color_bmp );
 
             // 四角形(頂点自由)
             Quadrangle Quad = new Quadrangle( [
-                    vec3(-320,  320, 3),
+                    vec3(-320,  320, 0),
                     vec3( 320,  320, 0),
                     vec3( 320, -320, 0),
                     vec3(-320, -320, 0)
                 ], Transform(
-                    vec3( 0.0, 0.0, 0.0 ),
+                    vec3( 50.0, 45.0, 120.0 ),
                     vec3( 0.0, 0.0, 5.0 ),
                     vec3( 1.0, 1.0, 1.0 )
-                ), white_bmp,[
+                ), color_bmp,[
                     vec2( 0.0, 0.0 ),
                     vec2( 1.0, 0.0 ),
                     vec2( 1.0, 1.0 ),
