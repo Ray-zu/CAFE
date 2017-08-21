@@ -92,9 +92,9 @@ class OpenGLRenderer : Renderer
 
             // コンパイル関数に渡せる文字列にするよ
             auto vsstr = VSSource.toStringz;
-            int vslen = VSSource.length;
+            int vslen = cast(int)VSSource.length;
             auto fsstr = FSSource.toStringz;
-            int fslen = FSSource.length;
+            int fslen = cast(int)FSSource.length;
 
             // シェーダーとソースを結び付けてコンパイルするよ
             glShaderSource(Vshader, 1, &vsstr, &vslen);
@@ -218,7 +218,7 @@ class OpenGLRenderer : Renderer
                 glUniform1i(Sampler_ID, 0);
 
                 // 受け取った頂点座標を元にすべて描画
-                glDrawArrays(Polyobj.drawmode, 0, Polyobj.vindex.length);
+                glDrawArrays(Polyobj.drawmode, 0, cast(int)Polyobj.vindex.length);
 
             }
 
