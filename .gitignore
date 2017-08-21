@@ -10,14 +10,6 @@ __dummy.html
 *.o
 *.obj
 
-# ライブラリファイル
-*.dll
-*.so
-
 # 実行ファイル
-cafe.exe
-cafe
+bin/
 ui.log
-__test__library__.exe
-__test__library__
-cafe-test-library
