@@ -21,18 +21,22 @@ import cafe.renderer.Renderer,
        cafe.renderer.polygon.Ngon,
        cafe.renderer.polygon.PolygonData;
 import derelict.opengl3.gl3;
-import derelict.glfw3.glfw3;
 import gl3n.linalg,
        gl3n.math;
 import std.stdio;
 import std.string;
 import std.conv;
+import derelict.sdl2.sdl,
+       derelict.sdl2.types;
 
 debug = 1;
 /+ OpenGLを利用したレンダラ +/
 class OpenGLRenderer : Renderer
 {
     mixin register!OpenGLRenderer;
+
+    __gshared SDL_Window* window = null;
+    __gshared SDL_GLContext context;
 
     private:
     uint framebuffer;
@@ -41,7 +45,7 @@ class OpenGLRenderer : Renderer
     uint mtexid;
     uint BufferWidth;
     uint BufferHeight;
-    uint samplenum = 8;
+    uint samplenum = 4;
     int ProgramID;
     public:
         static @property name () { return "OpenGLRenderer"; }
@@ -51,8 +55,13 @@ class OpenGLRenderer : Renderer
 
         this (uint wi, uint he) {
             // 非表示のウィンドウを生成(コンテキストの生成に必須のため)
-            GLFWwindow *Invisible_Window = glfwCreateWindow( 1280, 720, "Invisible Window", null, null );
-            glfwMakeContextCurrent( Invisible_Window );
+            if ( window == null ) {
+                window = SDL_CreateWindow(
+                        "", 0, 0, 100, 100, SDL_WINDOW_OPENGL );
+                context = SDL_GL_CreateContext( window );
+            }
+            SDL_GL_MakeCurrent( window, context );
+
             // DerelictGLのリロードのついでに読んだGLのバージョンを表示
             ("    OpenGL version : "~(DerelictGL3.reload().to!string)).writeln();
 
@@ -111,8 +120,7 @@ class OpenGLRenderer : Renderer
             glLinkProgram(ProgramID);
 
             // フレームバッファの割り当てを解除
-            glBindBuffer(GL_FRAMEBUFFER, 0);
-
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
 
         this () {
@@ -126,6 +134,8 @@ class OpenGLRenderer : Renderer
 
         override BMP bmpRender ( World w, Camera c, uint wi, uint he )
         {
+            SDL_GL_MakeCurrent( window, context );
+
             glEnable(GL_MULTISAMPLE);
             BMP ResultImage = new BMP(wi, he);
             glViewport(0, 0, wi, he);
@@ -137,7 +147,7 @@ class OpenGLRenderer : Renderer
             }
 
             // 描画するバッファの指定とフレームバッファの割り当て
-            glDrawBuffer(GL_COLOR_ATTACHMENT0);
+            //glDrawBuffer(GL_COLOR_ATTACHMENT0);
             glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_msaa);
 
             glUseProgram(ProgramID);
@@ -239,6 +249,7 @@ class OpenGLRenderer : Renderer
             // フレームバッファの割り当てを解除
             glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 
+            { import dlangui; Log.i( glGetError() ); }
             //Gradation(ResultImage);
             return ResultImage;
         }

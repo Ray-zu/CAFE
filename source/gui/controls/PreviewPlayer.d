@@ -63,23 +63,19 @@ class PreviewPlayer : VerticalLayout
             const rendered       = i18n.get("Status_Rendered");
             const rendering_fail = i18n.get( "Status_RenderingFailure" );
 
-            render_th.create( delegate () {
-                try {
-                    window.mainWidget.handleAction(
+            try {
+                window.mainWidget.handleAction(
                         new Action_UpdateStatus( rendering ) );
-                    auto r = project.render;
-                    synchronized {
-                        preview.drawable = r.bitmap;
-                        window.invalidate;
-                        window.mainWidget.handleAction(
-                            new Action_UpdateStatus( rendered ) );
-                    }
-                } catch ( Exception e ) {
-                    auto mes = rendering_fail ~ e.msg.to!dstring;
-                    window.mainWidget.handleAction(
+                auto r = project.render;
+                preview.drawable = r.bitmap;
+                window.invalidate;
+                window.mainWidget.handleAction(
+                        new Action_UpdateStatus( rendered ) );
+            } catch ( Exception e ) {
+                auto mes = rendering_fail ~ e.msg.to!dstring;
+                window.mainWidget.handleAction(
                         new Action_UpdateStatus( mes ) );
-                }
-            } );
+            }
         }
 
     public:
