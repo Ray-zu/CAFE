@@ -1,0 +1,40 @@
+extends ./common/layout.pug
+
+block title
+    title CAFE CHANGELOG
+block stylesheet
+    link(rel="stylesheet" href="./assets/css/changelog/bundle.css")
+
+block body
+    include ./common/nav.pug
+
+    #changelog
+        .bg
+        .contents
+            .title_wrap
+                p.title CHANGELOG
+                p.sub_title CAFEの更新履歴
+            .changelogs
+                .changelog
+                    .version_wrap
+                        .version 0.0.1a
+                    .date_wrap
+                        .date 2017/08/19
+                    .changes
+                        .change
+                            .label_wrap.added
+                                .label ADDED
+                            .text_wrap
+                                .text プロジェクトの保存/読込
+                        .change
+                            .label_wrap.added
+                                .label ADDED
+                            .text_wrap
+                                .text configの保存/読込
+                        .change
+                            .label_wrap.added
+                                .label ADDED
+                            .text_wrap
+                                .text 最低限の編集が可能なGUI
+
+    include ./common/footer.pug
