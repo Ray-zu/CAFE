@@ -15,7 +15,7 @@ block body
                 p.title DOWNLOAD CAFE
                 p.sub_title お使いのプラットフォームに合わせたファイルをダウンロードしてください。
             .buttons_wrap
-                -var pratforms= [{id:"windows",name:"Windows",icon:3,href:"."},{id:"macos",name:"MacOS",icon:2,href:"."},{id:"linux",name:"Linux",icon:3,href:"."}]
+                -var pratforms= [{id:"windows",name:"Windows",icon:3,href:"https://github.com/aoitofu/CAFE/releases/download/v0.0.1_pre-alpha/CAFEditor.v0.0.1_pre-alpha.Windows.x86_64.zip"},{id:"macos",name:"MacOS",icon:2,href:"CAFEditor_v0.0.1_pre-alpha.OS-X.x86_64.zip"}]
                 each pratform in pratforms
                     .button
                         a.link(href=pratform.href)
