@@ -8,7 +8,9 @@ module cafe.app;
 import cafe.config,
        cafe.project.Project,
        cafe.gui.Action,
-       cafe.gui.controls.MainFrame;
+       cafe.gui.controls.MainFrame,
+       cafe.gui.controls.BMPViewer,
+       cafe.renderer.custom.OpenGLRenderer;
 import dlangui;
 
 class Cafe
@@ -22,8 +24,12 @@ class Cafe
         {
             import derelict.opengl3.gl3;
             import derelict.openal.al;
+            import derelict.glfw3.glfw3;
             DerelictGL3.load();
+            DerelictGLFW3.load();
             DerelictAL.load();
+            glfwInit();
+            glfwWindowHint( GLFW_VISIBLE, GL_FALSE );
         }
 
         void setupGUI ()
