@@ -28,13 +28,13 @@ struct RGBA
         {
             ubyte n ( float f )
             {
-                return max( min( f, ubyte.max ), ubyte.min ).to!ubyte;
+                return max( min( f*255, ubyte.max ), ubyte.min ).to!ubyte;
             }
             return (n(r) << 16) | (n(g) << 8) | n(b) | (n(a) << 24);
         }
 
         debug (1) unittest {
-            auto hoge = RGBA( 255, 0, 0 );
+            auto hoge = RGBA( 1, 0, 0 );
             assert( hoge.toHex == 0xff0000 );
         }
 }

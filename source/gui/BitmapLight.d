@@ -28,7 +28,7 @@ class BitmapLight : ColorDrawBufNoGC
             for ( auto i = 0; i < len; i++ ) {
                 // dlangui用にアルファ値を反転します
                 col = bmp[i];
-                col.a = ubyte.max - col.a;
+                col.a = 1.0 - col.a;
                 _buf[i] = col.toHex;
             }
         }
