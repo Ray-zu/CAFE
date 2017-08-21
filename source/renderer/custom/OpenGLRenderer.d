@@ -249,7 +249,8 @@ class OpenGLRenderer : Renderer
             // フレームバッファの割り当てを解除
             glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 
-            { import dlangui; Log.i( glGetError() ); }
+            { import dlangui; Log.i( "polygon : ", w.polygons.length ); }
+            { import dlangui; Log.i( "error : ", glGetError() ); }
             //Gradation(ResultImage);
             return ResultImage;
         }
