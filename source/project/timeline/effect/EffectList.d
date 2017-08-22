@@ -39,6 +39,11 @@ class EffectList
             j.array.each!( x => effs ~= Effect.create( x, f ) );
         }
 
+        void clear ()
+        {
+            effs = [];
+        }
+
         void remove ( Effect e )
         {
             effs = effects.remove!( x => x is e );
@@ -71,12 +76,11 @@ class EffectList
         }
 
         /+ WorldクラスにEffectをかける +/
-        World apply ( World w )
+        void apply ( World r, FrameAt f )
         {
             effects
                 .filter!( x => x.enable )
-                .each!( x => w = x.apply( w ) );
-            return w;
+                .each!( x => x.apply( r, f ) );
         }
 
         /+ this += v : エフェクト追加演算子 +/

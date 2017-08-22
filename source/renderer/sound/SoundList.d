@@ -21,6 +21,11 @@ class SoundList
             snds = s;
         }
 
+        void clear ()
+        {
+            snds = [];
+        }
+
         void add ( Sound s )
         {
             snds ~= s;

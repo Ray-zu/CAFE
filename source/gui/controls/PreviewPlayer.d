@@ -68,7 +68,7 @@ class PreviewPlayer : VerticalLayout
             const rendered       = i18n.get("Status_Rendered");
             const rendering_fail = i18n.get( "Status_RenderingFailure" );
 
-            //void render () {
+            void render () {
                 synchronized {
                     try {
                         window.mainWidget.handleAction(
@@ -84,8 +84,10 @@ class PreviewPlayer : VerticalLayout
                                 new Action_UpdateStatus( mes ) );
                     }
                 }
-            //}
-            //render_th.create( &render );
+            }
+            version(MultiThread)
+                render_th.create( &render );
+            else render;
         }
 
     public:

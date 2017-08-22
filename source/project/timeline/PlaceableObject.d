@@ -11,7 +11,7 @@ import cafe.json,
        cafe.project.timeline.PropertyKeepableObject,
        cafe.project.timeline.effect.EffectList,
        cafe.project.timeline.property.PropertyList,
-       cafe.project.timeline.custom.NullObject;
+       cafe.renderer.World;
 import std.algorithm,
        std.json;
 import dlangui;
@@ -70,8 +70,11 @@ abstract class PlaceableObject : PropertyKeepableObject
 
         override void initProperties ( FrameLength f )
         {
-            // 継承したインターフェースの実体は抽象クラスでも書かなきゃいけないっぽい？
-            throw new Exception( "Not Implemented" );
+            import cafe.project.timeline.effect.custom.Position,
+                   cafe.project.timeline.effect.custom.Disable;
+            effectList.clear;
+            effectList += new Position( f );
+            effectList += new Disable( f );
         }
 
         /+ 中間点を破壊しながらリサイズ +/
@@ -138,7 +141,14 @@ abstract class PlaceableObject : PropertyKeepableObject
         }
 
         /+ レンダリング情報にオブジェクトの内容を適用 +/
-        void apply ( RenderingInfo );
+        void apply ( RenderingInfo r )
+        {
+            auto f = new FrameAt( r.frame.value - place.frame.start.value );
+            auto w = createWorld( r, f );
+            effectList.apply( w, f );
+            r.effectStage += w;
+        }
+        World createWorld ( RenderingInfo, FrameAt );
 
 
         /+ オブジェクト登録処理 +/

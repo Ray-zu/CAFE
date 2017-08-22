@@ -6,6 +6,7 @@
  + ------------------------------------------------------------ +/
 module cafe.project.timeline.effect.custom.Position;
 import cafe.project.ObjectPlacingInfo,
+       cafe.project.RenderingInfo,
        cafe.project.timeline.effect.Effect,
        cafe.project.timeline.property.LimitedProperty,
        cafe.renderer.World;
@@ -57,9 +58,18 @@ class Position : Effect
             propertyList["Z"] = new LimitedProperty!float( f, 0, MaxPosition, -MaxPosition );
         }
 
-        override World apply ( World w )
+        override void apply ( World w, FrameAt f )
         {
-            // TODO ポリゴンの位置を一つ一つずらす
-            return w;
+            auto x = castedProperty!float( "X" ).get( f );
+            auto y = castedProperty!float( "Y" ).get( f );
+            auto z = castedProperty!float( "Z" ).get( f );
+
+            foreach ( poly; w.polygons ) {
+                foreach ( ref vec; poly.position ) {
+                    vec.vector[0] += x;
+                    vec.vector[1] += y;
+                    vec.vector[2] += z;
+                }
+            }
         }
 }

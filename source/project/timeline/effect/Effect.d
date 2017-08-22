@@ -87,11 +87,7 @@ abstract class Effect : PropertyKeepableObject
         }
 
         /+ Worldクラスにエフェクトをかける +/
-        World apply ( World w )
-        {
-            return w;
-        }
-
+        void apply ( World, FrameAt f );
 
         /+ エフェクト登録処理 +/
 

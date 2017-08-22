@@ -4,7 +4,7 @@
  + ------------------------------------------------------------ +
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
-module cafe.project.timeline.custom.NullObject;
+module cafe.project.timeline.custom.RectangleObject;
 import cafe.project.RenderingInfo,
        cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.PlaceableObject,
@@ -18,16 +18,17 @@ import gl3n.linalg;
 import std.conv,
        std.json;
 
-debug = 0;
-
 /+ デバッグ用の何もしないオブジェクト +/
-class NullObject : PlaceableObject
+class RectangleObject : PlaceableObject
 {
-    mixin register!NullObject;
+    mixin register!RectangleObject;
+
+    enum MaxSize = 10000;
+
     public:
         static @property type ()
         {
-            return "NullObject";
+            return "Rectangle";
         }
         static @property icon ()
         {
@@ -38,15 +39,15 @@ class NullObject : PlaceableObject
 
         override @property string name ()
         {
-            return "NullObject";
+            return type;
         }
 
         override @property PlaceableObject copy ()
         {
-            return new NullObject( this );
+            return new RectangleObject( this );
         }
 
-        this ( NullObject src )
+        this ( RectangleObject src )
         {
             super( src );
         }
@@ -54,10 +55,6 @@ class NullObject : PlaceableObject
         this ( ObjectPlacingInfo f )
         {
             super( f );
-
-            // TODO test
-            import cafe.project.timeline.effect.custom.Position;
-            effectList += new Position( f.frame.length );
         }
 
         this ( JSONValue j, FrameLength f )
@@ -67,33 +64,34 @@ class NullObject : PlaceableObject
 
         override void initProperties ( FrameLength f )
         {
-            import cafe.project.timeline.property.Property;
-            propertyList["hoge"] = new PropertyBase!string( f, "hogera" );
+            super.initProperties( f );
+
+            import cafe.project.timeline.property.LimitedProperty;
+            propertyList["Size"] = new LimitedProperty!float( f, 200, MaxSize, 0 );
         }
 
-        override World createWorld ( RenderingInfo rinfo, FrameAt f )
+        override World createWorld ( RenderingInfo r, FrameAt f )
         {
-            BMP color_bmp = new BMP(2, 2,[
-                    RGBA(0.0, 1.0, 0.0, 1.0),
-                    RGBA(1.0, 0.0, 0.0, 1.0),
-                    RGBA(0.0, 1.0, 1.0, 1.0),
-                    RGBA(1.0, 0.0, 1.0, 1.0)
-                ]);
+            BMP color = new BMP( 1, 1 );
+            color[0,0] = RGBA( 1.0, 1.0, 1.0, 1.0 );
+
+            /+ 実際のポリゴン生成プロセス +/
             World w = new World;
-            w += new Ngon( 5, 640, Transform(
-                    vec3( 200.0, 150.0, -120.0 ),
-                    vec3( 0.0, 0.0, -35.0 ),
-                    vec3( 0.5, 0.3, 1.0 )
-                ), color_bmp );
+
+            auto sz = castedProperty!float("Size").get(f) / 2;
+            auto pos = [
+                vec3(-sz, sz,0),
+                vec3( sz, sz,0),
+                vec3( sz,-sz,0),
+                vec3(-sz,-sz,0)
+            ];
+            auto trans = Transform(
+                vec3( 0.0, 0.0, 0.0 ),
+                vec3( 0.0, 0.0, 0.0 ),
+                vec3( 1.0, 1.0, 1.0 )
+            );
+            w += new Quadrangle( pos, trans, color );
+
             return w;
-        }
-
-        debug (1) unittest {
-            auto hoge = new NullObject(
-                    new ObjectPlacingInfo( new LayerId(0),
-                        new FramePeriod( new FrameLength(5), new FrameAt(0), new FrameLength(1) ) ) );
-
-            auto hoge2 = PlaceableObject.create( hoge.json, hoge.place.frame.length );
-            assert( hoge.json.to!string == hoge2.json.to!string );
         }
 }
