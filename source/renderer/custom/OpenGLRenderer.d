@@ -57,7 +57,7 @@ class OpenGLRenderer : Renderer
             // 非表示のウィンドウを生成(コンテキストの生成に必須のため)
             if ( window == null ) {
                 window = SDL_CreateWindow(
-                        "", 0, 0, 100, 100, SDL_WINDOW_OPENGL );
+                        "", 0, 0, 100, 100, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN );
                 context = SDL_GL_CreateContext( window );
             }
             SDL_GL_MakeCurrent( window, context );
