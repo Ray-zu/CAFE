@@ -38,8 +38,6 @@ class Cafe
             Platform.instance.uiLanguage="en";
             Platform.instance.uiTheme="cafe";
 
-            Log.setStdoutLogger;
-
             auto window = Platform.instance.createWindow(
                     AppText, null, WindowFlag.Resizable, 800,500 );
             window.mainWidget = main_frame = new MainFrame;
