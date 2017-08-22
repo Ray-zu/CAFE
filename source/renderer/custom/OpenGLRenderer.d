@@ -21,12 +21,13 @@ import cafe.renderer.Renderer,
        cafe.renderer.polygon.Ngon,
        cafe.renderer.polygon.PolygonData;
 import derelict.opengl3.gl3;
-import derelict.glfw3.glfw3;
 import gl3n.linalg,
        gl3n.math;
 import std.stdio;
 import std.string;
 import std.conv;
+import derelict.sdl2.sdl,
+       derelict.sdl2.types;
 
 debug = 1;
 /+ OpenGLを利用したレンダラ +/
@@ -34,15 +35,62 @@ class OpenGLRenderer : Renderer
 {
     mixin register!OpenGLRenderer;
 
+    __gshared SDL_Window* window = null;
+    __gshared SDL_GLContext context;
+
+    __gshared int program;
+
+    static void initialize ()
+    {
+        if ( window == null ) {
+            window = SDL_CreateWindow(
+                    "", 0, 0, 100, 100, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN );
+            context = SDL_GL_CreateContext( window );
+        }
+        SDL_GL_MakeCurrent( window, context );
+        // DerelictGLのリロードのついでに読んだGLのバージョンを表示
+        ("OpenGL version : "~DerelictGL3.reload().to!string).writeln;
+
+        // シェーダー作るよ
+        uint Vshader = glCreateShader(GL_VERTEX_SHADER);
+        uint Fshader = glCreateShader(GL_FRAGMENT_SHADER);
+
+        // シェーダーのソース読み込むよ
+        enum VSSource = import("Vertex_Shader.vert");
+        enum FSSource = import("Fragment_Shader.frag");
+
+        // コンパイル関数に渡せる文字列にするよ
+        auto vsstr = VSSource.toStringz;
+        int vslen = cast(int)VSSource.length;
+        auto fsstr = FSSource.toStringz;
+        int fslen = cast(int)FSSource.length;
+
+        // シェーダーとソースを結び付けてコンパイルするよ
+        glShaderSource(Vshader, 1, &vsstr, &vslen);
+        glShaderSource(Fshader, 1, &fsstr, &fslen);
+        glCompileShader(Vshader);
+        glCompileShader(Fshader);
+
+        // プログラム作ってシェーダーを紐づけるよ
+        program = glCreateProgram();
+        glAttachShader(program, Vshader);
+        glAttachShader(program, Fshader);
+
+        // 最後にリンクして使える状態にするよ
+        glLinkProgram(program);
+
+        ("OpenGL initialized : "~glGetError().to!string).writeln;
+    }
+
     private:
-    uint framebuffer;
-    uint framebuffer_msaa;
-    uint Renderbuffer;
-    uint mtexid;
-    uint BufferWidth;
-    uint BufferHeight;
-    uint samplenum = 8;
-    int ProgramID;
+        uint framebuffer;
+        uint framebuffer_msaa;
+        uint Renderbuffer;
+        uint mtexid;
+        uint BufferWidth;
+        uint BufferHeight;
+        uint samplenum = 4;
+
     public:
         static @property name () { return "OpenGLRenderer"; }
         override @property string nameStr () { return name; }
@@ -50,11 +98,7 @@ class OpenGLRenderer : Renderer
         @property sample (uint s) { samplenum = s; }
 
         this (uint wi, uint he) {
-            // 非表示のウィンドウを生成(コンテキストの生成に必須のため)
-            GLFWwindow *Invisible_Window = glfwCreateWindow( 1280, 720, "Invisible Window", null, null );
-            glfwMakeContextCurrent( Invisible_Window );
-            // DerelictGLのリロードのついでに読んだGLのバージョンを表示
-            ("    OpenGL version : "~(DerelictGL3.reload().to!string)).writeln();
+            SDL_GL_MakeCurrent( window, context );
 
             // マルチサンプリング用のレンダーバッファを生成
             glGenRenderbuffers(1, &Renderbuffer);
@@ -82,37 +126,10 @@ class OpenGLRenderer : Renderer
             BufferWidth = wi;
             BufferHeight = he;
 
-            // シェーダー作るよ
-            uint Vshader = glCreateShader(GL_VERTEX_SHADER);
-            uint Fshader = glCreateShader(GL_FRAGMENT_SHADER);
-
-            // シェーダーのソース読み込むよ
-            string VSSource = import("Vertex_Shader.vert");
-            string FSSource = import("Fragment_Shader.frag");
-
-            // コンパイル関数に渡せる文字列にするよ
-            auto vsstr = VSSource.toStringz;
-            int vslen = cast(int)VSSource.length;
-            auto fsstr = FSSource.toStringz;
-            int fslen = cast(int)FSSource.length;
-
-            // シェーダーとソースを結び付けてコンパイルするよ
-            glShaderSource(Vshader, 1, &vsstr, &vslen);
-            glShaderSource(Fshader, 1, &fsstr, &fslen);
-            glCompileShader(Vshader);
-            glCompileShader(Fshader);
-
-            // プログラム作ってシェーダーを紐づけるよ
-            ProgramID = glCreateProgram();
-            glAttachShader(ProgramID, Vshader);
-            glAttachShader(ProgramID, Fshader);
-
-            // 最後にリンクして使える状態にするよ
-            glLinkProgram(ProgramID);
-
             // フレームバッファの割り当てを解除
-            glBindBuffer(GL_FRAMEBUFFER, 0);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+            { import dlangui; Log.i( "error : ", glGetError() ); }
         }
 
         this () {
@@ -126,6 +143,8 @@ class OpenGLRenderer : Renderer
 
         override BMP bmpRender ( World w, Camera c, uint wi, uint he )
         {
+            SDL_GL_MakeCurrent( window, context );
+
             glEnable(GL_MULTISAMPLE);
             BMP ResultImage = new BMP(wi, he);
             glViewport(0, 0, wi, he);
@@ -137,14 +156,14 @@ class OpenGLRenderer : Renderer
             }
 
             // 描画するバッファの指定とフレームバッファの割り当て
-            glDrawBuffer(GL_COLOR_ATTACHMENT0);
             glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_msaa);
+            glDrawBuffer(GL_COLOR_ATTACHMENT0);
 
-            glUseProgram(ProgramID);
+            glUseProgram(program);
 
             int posloc, uvloc;
-            posloc = glGetAttribLocation(ProgramID, "position");
-            uvloc = glGetAttribLocation(ProgramID, "uv");
+            posloc = glGetAttribLocation(program, "position");
+            uvloc = glGetAttribLocation(program, "uv");
 
             glClear(GL_COLOR_BUFFER_BIT);
             vec2 halfsize = vec2(wi/2, he/2);
@@ -167,11 +186,11 @@ class OpenGLRenderer : Renderer
 
                 // 平行投影用の行列を渡す
                 mat4 mvp = orthmat * Polyobj.transform.mat;
-                GLuint MatrixID = glGetUniformLocation(ProgramID, "MVP");
+                GLuint MatrixID = glGetUniformLocation(program, "MVP");
                 glUniformMatrix4fv(MatrixID,  1, GL_TRUE, &mvp[0][0]);
 
                 // UV座標に乗算する画像サイズ-1の値を渡す(矩形テクスチャなのでUV座標をピクセル値にしないといけない)
-                GLuint SizemID = glGetUniformLocation(ProgramID, "sizemag");
+                GLuint SizemID = glGetUniformLocation(program, "sizemag");
                 glUniform2fv(SizemID,  1, sizem.value_ptr);
 
                 // ポリゴンに含まれるBMPからテクスチャを生成
@@ -183,7 +202,7 @@ class OpenGLRenderer : Renderer
                             GL_RGBA, GL_FLOAT, Texture.bitmap);
                 glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
                 glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                GLuint Sampler_ID = glGetUniformLocation(ProgramID, "sampler");
+                GLuint Sampler_ID = glGetUniformLocation(program, "sampler");
 
                 // サンプラーを生成
                 GLuint sampler;
@@ -192,7 +211,6 @@ class OpenGLRenderer : Renderer
                 glSamplerParameteri (sampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
                 glSamplerParameteri (sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
                 glSamplerParameteri (sampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
 
                 // VBOを作成
                 // 頂点座標のバッファ
@@ -239,6 +257,8 @@ class OpenGLRenderer : Renderer
             // フレームバッファの割り当てを解除
             glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 
+            { import dlangui; Log.i( "polygon : ", w.polygons.length ); }
+            { import dlangui; Log.i( "error : ", glGetError() ); }
             //Gradation(ResultImage);
             return ResultImage;
         }

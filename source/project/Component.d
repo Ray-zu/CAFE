@@ -92,6 +92,7 @@ class Component
                     rinfo.pushEffectStage; // 空白レイヤでレンダリングステージへプッシュ
                 obj.apply( rinfo );
             }
+            rinfo.pushEffectStage;
             return rinfo;
         }
 

@@ -9,7 +9,12 @@ import cafe.project.RenderingInfo,
        cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.PlaceableObject,
        cafe.project.timeline.effect.EffectList,
-       cafe.renderer.World;
+       cafe.renderer.World,
+       cafe.renderer.graphics.Bitmap,
+       cafe.renderer.graphics.Color,
+       cafe.renderer.polygon.Ngon,
+       cafe.renderer.polygon.PolygonData;
+import gl3n.linalg;
 import std.conv,
        std.json;
 
@@ -68,11 +73,21 @@ class NullObject : PlaceableObject
 
         override void apply ( RenderingInfo rinfo )
         {
-            /+ 実際のポリゴン生成プロセス
+            BMP color_bmp = new BMP(2, 2,[
+                    RGBA(0.0, 1.0, 0.0, 1.0),
+                    RGBA(1.0, 0.0, 0.0, 1.0),
+                    RGBA(0.0, 1.0, 1.0, 1.0),
+                    RGBA(1.0, 0.0, 1.0, 1.0)
+                ]);
+
+            /+ 実際のポリゴン生成プロセス +/
             World w = new World;
-            /+ Create Polygons +/
+            w += new Ngon( 5, 640, Transform(
+                    vec3( 200.0, 150.0, -120.0 ),
+                    vec3( 0.0, 0.0, -35.0 ),
+                    vec3( 0.5, 0.3, 1.0 )
+                ), color_bmp );
             rinfo.effectStage += effectList.apply( w );
-            +/
         }
 
         debug (1) unittest {
