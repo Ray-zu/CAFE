@@ -35,10 +35,6 @@
     "configurations": [
         {
             "name": "default"
-        },
-        {
-            "name": "mt",
-            "versions": ["MultiThread"]
         }
     ],
 
