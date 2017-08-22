@@ -87,7 +87,7 @@ class NullObject : PlaceableObject
                     vec3( 0.0, 0.0, -35.0 ),
                     vec3( 0.5, 0.3, 1.0 )
                 ), color_bmp );
-            rinfo.effectStage += effectList.apply( w );
+            //rinfo.effectStage += effectList.apply( rinfo );
         }
 
         debug (1) unittest {

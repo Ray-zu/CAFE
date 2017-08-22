@@ -7,6 +7,7 @@
 module cafe.project.timeline.effect.EffectList;
 import cafe.project.timeline.effect.Effect,
        cafe.project.ObjectPlacingInfo,
+       cafe.project.RenderingInfo,
        cafe.renderer.World;
 import std.algorithm,
        std.exception,
@@ -71,12 +72,11 @@ class EffectList
         }
 
         /+ WorldクラスにEffectをかける +/
-        World apply ( World w )
+        void apply ( RenderingInfo r, FrameAt f )
         {
             effects
                 .filter!( x => x.enable )
-                .each!( x => w = x.apply( w ) );
-            return w;
+                .each!( x => x.apply( r, f ) );
         }
 
         /+ this += v : エフェクト追加演算子 +/

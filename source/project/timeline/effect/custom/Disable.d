@@ -6,6 +6,7 @@
  + ------------------------------------------------------------ +/
 module cafe.project.timeline.effect.custom.Disable;
 import cafe.project.ObjectPlacingInfo,
+       cafe.project.RenderingInfo,
        cafe.project.timeline.effect.Effect,
        cafe.project.timeline.property.BoolProperty,
        cafe.renderer.World;
@@ -53,9 +54,8 @@ class Disable : Effect
             propertyList["disable"] = new BoolProperty( f, false );
         }
 
-        override World apply ( World w )
+        override void apply ( RenderingInfo w, FrameAt f )
         {
             // TODO
-            return w;
         }
 }

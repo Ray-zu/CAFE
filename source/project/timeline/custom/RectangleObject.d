@@ -92,6 +92,6 @@ class RectangleObject : PlaceableObject
             );
             w += new Quadrangle( pos, trans, color );
 
-            rinfo.effectStage += effectList.apply( w );
+            effectList.apply( rinfo, f );
         }
 }

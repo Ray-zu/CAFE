@@ -8,6 +8,7 @@ module cafe.project.timeline.effect.Effect;
 import cafe.project.timeline.property.PropertyList,
        cafe.project.timeline.PropertyKeepableObject,
        cafe.project.ObjectPlacingInfo,
+       cafe.project.RenderingInfo,
        cafe.renderer.World;
 import std.algorithm,
        std.json;
@@ -87,11 +88,7 @@ abstract class Effect : PropertyKeepableObject
         }
 
         /+ Worldクラスにエフェクトをかける +/
-        World apply ( World w )
-        {
-            return w;
-        }
-
+        void apply ( RenderingInfo, FrameAt f );
 
         /+ エフェクト登録処理 +/
 
