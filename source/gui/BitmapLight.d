@@ -25,11 +25,8 @@ class BitmapLight : ColorDrawBufNoGC
             RGBA  col;   // ループ高速化のための前定義
             const len = src.width * src.height;
             const bmp = src.bitmap;
-            for ( auto i = 0; i < len; i++ ) {
-                // dlangui用にアルファ値を反転します
-                col = bmp[i];
-                col.a = 1.0 - col.a;
+            for ( auto i = 0; i < len; i++ )
                 _buf[i] = col.toHex;
-            }
+            invertAlpha;
         }
 }
