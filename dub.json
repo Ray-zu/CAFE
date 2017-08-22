@@ -32,6 +32,16 @@
         "dlangui": "sdl"
     },
 
+    "configurations": [
+        {
+            "name": "default"
+        },
+        {
+            "name": "mt",
+            "versions": ["MultiThread"]
+        }
+    ],
+
     "copyFiles-windows-x86_64": [
         "dll/x86_64/glfw3.dll",
         "dll/OpenAL32.dll"
