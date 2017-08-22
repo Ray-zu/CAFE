@@ -13,7 +13,7 @@ import dlangui,
 mixin( registerWidgets!BMPViewer );
 
 /+ BMPを表示するウィジェット +/
-class BMPViewer : ImageWidget
+class BMPViewer : Widget
 {
     private:
         BitmapLight buf = null;
@@ -22,30 +22,33 @@ class BMPViewer : ImageWidget
         @property void drawable ( BMP b )
         {
             buf = new BitmapLight( b );
-
-            DrawBufRef bmp = buf;
-            super.drawable = new ImageDrawable( bmp );
         }
 
         this ( string id = "" )
         {
             super( id );
             backgroundColor = 0x000000;
+
+            import cafe.renderer.custom.OpenGLRenderer;
+            drawable = new OpenGLRenderer().renderTest;
         }
 
         override void measure ( int pw, int ph )
         {
-            if ( buf && buf.width != SIZE_UNSPECIFIED &&buf.height != SIZE_UNSPECIFIED ) {
+            if ( buf ) {
                 auto w = buf.width;
                 auto h = buf.height;
+                auto z = minHeight / h.to!float;
 
-                auto zoom = pw / w.to!float;
-                if ( pw < w*zoom || ph < h*zoom )
-                    zoom = ph / h.to!float;
-
-                w = (w * zoom).to!int;
-                h = (h * zoom).to!int;
+                w = (w * z).to!int;
+                h = (h * z).to!int;
                 measuredContent( pw, ph, w, h );
             } else super.measure( pw, ph );
+        }
+
+        override void onDraw ( DrawBuf b )
+        {
+            super.onDraw( b );
+            b.drawRescaled( pos, buf, Rect( 0, 0, buf.width, buf.height ) );
         }
 }

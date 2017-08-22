@@ -22,7 +22,12 @@ mixin( registerWidgets!PreviewPlayer );
 class PreviewPlayer : VerticalLayout
 {
     enum Preview = q{
-        BMPViewer { id:preview }
+        HorizontalLayout {
+            layoutWidth:FILL_PARENT;
+            HSpacer {}
+            BMPViewer { id:preview }
+            HSpacer {}
+        }
     };
     enum PlayControler = q{
         HorizontalLayout {
