@@ -23,6 +23,7 @@ import cafe.renderer.Renderer,
 import derelict.opengl3.gl3;
 import gl3n.linalg,
        gl3n.math;
+import core.thread;
 import std.stdio;
 import std.string;
 import std.conv;
@@ -35,6 +36,13 @@ class OpenGLRenderer : Renderer
 {
     mixin register!OpenGLRenderer;
 
+    __gshared static bool processing = false;
+    static void waitOtherThread ()
+    {
+        while ( processing ) Thread.sleep( dur!"msecs"(100) );
+        processing = true;
+    }
+
     __gshared SDL_Window* window = null;
     __gshared SDL_GLContext context;
 
@@ -42,6 +50,9 @@ class OpenGLRenderer : Renderer
 
     static void initialize ()
     {
+        waitOtherThread;
+        scope(exit) processing = false;
+
         if ( window == null ) {
             window = SDL_CreateWindow(
                     "", 0, 0, 100, 100, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN );
@@ -98,6 +109,8 @@ class OpenGLRenderer : Renderer
         @property sample (uint s) { samplenum = s; }
 
         this (uint wi, uint he) {
+            waitOtherThread;
+            scope(exit) processing = false;
             SDL_GL_MakeCurrent( window, context );
 
             // マルチサンプリング用のレンダーバッファを生成
@@ -143,6 +156,8 @@ class OpenGLRenderer : Renderer
 
         override BMP bmpRender ( World w, Camera c, uint wi, uint he )
         {
+            waitOtherThread;
+            scope(exit) processing = false;
             SDL_GL_MakeCurrent( window, context );
 
             glEnable(GL_MULTISAMPLE);
