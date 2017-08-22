@@ -58,10 +58,8 @@ class Position : Effect
             propertyList["Z"] = new LimitedProperty!float( f, 0, MaxPosition, -MaxPosition );
         }
 
-        override void apply ( RenderingInfo r, FrameAt f )
+        override void apply ( World w, FrameAt f )
         {
-            auto w = r.effectStage;
-
             auto x = castedProperty!float( "X" ).get( f );
             auto y = castedProperty!float( "Y" ).get( f );
             auto z = castedProperty!float( "Z" ).get( f );

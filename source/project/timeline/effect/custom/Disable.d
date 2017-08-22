@@ -54,7 +54,7 @@ class Disable : Effect
             propertyList["disable"] = new BoolProperty( f, false );
         }
 
-        override void apply ( RenderingInfo w, FrameAt f )
+        override void apply ( World w, FrameAt f )
         {
             // TODO
         }
