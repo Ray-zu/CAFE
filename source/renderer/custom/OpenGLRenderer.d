@@ -50,6 +50,8 @@ class OpenGLRenderer : Renderer
 
     static void initialize ()
     {
+        import dlangui;
+
         waitOtherThread;
         scope(exit) processing = false;
 
@@ -60,7 +62,7 @@ class OpenGLRenderer : Renderer
         }
         SDL_GL_MakeCurrent( window, context );
         // DerelictGLのリロードのついでに読んだGLのバージョンを表示
-        ("OpenGL version : "~DerelictGL3.reload().to!string).writeln;
+        Log.i("OpenGL version : "~DerelictGL3.reload().to!string);
 
         // シェーダー作るよ
         uint Vshader = glCreateShader(GL_VERTEX_SHADER);
@@ -90,7 +92,7 @@ class OpenGLRenderer : Renderer
         // 最後にリンクして使える状態にするよ
         glLinkProgram(program);
 
-        ("OpenGL initialized : "~glGetError().to!string).writeln;
+        Log.i("OpenGL initialized : "~glGetError().to!string);
     }
 
     private:
