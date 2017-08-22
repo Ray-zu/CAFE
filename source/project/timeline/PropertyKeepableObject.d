@@ -19,4 +19,11 @@ interface PropertyKeepableObject
         void initProperties ( FrameLength );
 
         @property JSONValue json ();
+
+        final auto castedProperty (T) ( string id )
+        {
+            import cafe.project.timeline.property.Property;
+            auto p = propertyList[id];
+            return cast(PropertyBase!T)p;
+        }
 }
