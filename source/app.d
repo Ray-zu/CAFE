@@ -8,9 +8,7 @@ module cafe.app;
 import cafe.config,
        cafe.project.Project,
        cafe.gui.Action,
-       cafe.gui.controls.MainFrame,
-       cafe.gui.controls.BMPViewer,
-       cafe.renderer.custom.OpenGLRenderer;
+       cafe.gui.controls.MainFrame;
 import dlangui;
 
 class Cafe

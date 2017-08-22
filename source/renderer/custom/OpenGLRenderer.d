@@ -36,24 +36,14 @@ class OpenGLRenderer : Renderer
 {
     mixin register!OpenGLRenderer;
 
-    __gshared static bool processing = false;
-    static void waitOtherThread ()
-    {
-        while ( processing ) Thread.sleep( dur!"msecs"(100) );
-        processing = true;
-    }
+    static SDL_Window* window = null;
+    static SDL_GLContext context;
 
-    __gshared SDL_Window* window = null;
-    __gshared SDL_GLContext context;
-
-    __gshared int program;
+    static uint program;
 
     static void initialize ()
     {
         import dlangui;
-
-        waitOtherThread;
-        scope(exit) processing = false;
 
         if ( window == null ) {
             window = SDL_CreateWindow(
@@ -111,8 +101,6 @@ class OpenGLRenderer : Renderer
         @property sample (uint s) { samplenum = s; }
 
         this (uint wi, uint he) {
-            waitOtherThread;
-            scope(exit) processing = false;
             SDL_GL_MakeCurrent( window, context );
 
             // マルチサンプリング用のレンダーバッファを生成
@@ -144,7 +132,7 @@ class OpenGLRenderer : Renderer
             // フレームバッファの割り当てを解除
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-            { import dlangui; Log.i( "error : ", glGetError() ); }
+            { import dlangui; Log.i( "create gl instance : ", glGetError() ); }
         }
 
         this () {
@@ -158,8 +146,6 @@ class OpenGLRenderer : Renderer
 
         override BMP bmpRender ( World w, Camera c, uint wi, uint he )
         {
-            waitOtherThread;
-            scope(exit) processing = false;
             SDL_GL_MakeCurrent( window, context );
 
             glEnable(GL_MULTISAMPLE);
