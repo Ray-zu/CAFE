@@ -34,7 +34,7 @@
         }
         &>.changelogs {
             margin-top: 5rem;
-            width: 50%;
+            width: 60%;
             &>.changelog {
                 margin-bottom: 5rem;
                 &:last-of-type {
@@ -84,7 +84,7 @@
                             &.fixed {
                                 background: #696969;
                             }
-                            &.updated {
+                            &.updated,&.changed {
                                 background: #32C6A6;
                             }
                             &.delated {
@@ -96,6 +96,7 @@
                         }
                         &>.text_wrap {
                             margin-left: 1.5rem;
+                            width: 350px;
                             &>.text {
                                 font-size: 1.25rem;
                                 letter-spacing: 2px;
@@ -169,10 +170,12 @@
                                 }
                             }
                             &>.text_wrap {
+                            width: 100%;
+                            text-align: center;
                                 margin-left: 1.5rem;
                                 &>.text {
-                                    font-size: 1rem;
-                                    letter-spacing: 2px;
+                                    font-size: .9rem;
+                                    letter-spacing: 1px;
                                     color: $theme3;
                                 }
                             }

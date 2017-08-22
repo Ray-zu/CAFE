@@ -16,6 +16,42 @@ block body
                 p.sub_title CAFEの更新履歴
             .changelogs
                 .changelog
+                        .version_wrap
+                            .version 0.0.2a
+                        .date_wrap
+                            .date 2017/08/19
+                        .changes
+                            .change
+                                .label_wrap.added
+                                    .label ADDED
+                                .text_wrap
+                                    .text OpenGLRendererを追加
+                            .change
+                                .label_wrap.fixed
+                                    .label FIXED
+                                .text_wrap
+                                    .text プロジェクトを閉じると落ちるバグの修正
+                            .change
+                                .label_wrap.fixed
+                                    .label FIXED
+                                .text_wrap
+                                    .text 各種ダイアログを閉じると落ちるバグを修正
+                            .change
+                                .label_wrap.fixed
+                                    .label FIXED
+                                .text_wrap
+                                    .text Windowsに於いて事前にライブラリインストールをしなくても動作するように修正
+                            .change
+                                .label_wrap.changed
+                                    .label CHANGED
+                                .text_wrap
+                                    .text Windowsに於けるGUIのバックエンドをWin32APIからSDLに変更
+                            .change
+                                .label_wrap.changed
+                                    .label CHANGED
+                                .text_wrap
+                                    .text ログ出力先をstdoutからファイルに変更
+                .changelog
                     .version_wrap
                         .version 0.0.1a
                     .date_wrap
