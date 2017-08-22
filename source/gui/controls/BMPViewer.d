@@ -28,9 +28,6 @@ class BMPViewer : Widget
         {
             super( id );
             backgroundColor = 0x000000;
-
-            import cafe.renderer.custom.OpenGLRenderer;
-            drawable = new OpenGLRenderer().renderTest;
         }
 
         override void measure ( int pw, int ph )
