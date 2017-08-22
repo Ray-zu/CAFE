@@ -21,6 +21,7 @@ class BMPViewer : Widget
     public:
         @property void drawable ( BMP b )
         {
+            if ( buf ) object.destroy( buf );
             buf = new BitmapLight( b );
         }
 
@@ -46,6 +47,7 @@ class BMPViewer : Widget
         override void onDraw ( DrawBuf b )
         {
             super.onDraw( b );
+            if ( !buf ) return;
             b.drawRescaled( pos, buf, Rect( 0, 0, buf.width, buf.height ) );
         }
 }
