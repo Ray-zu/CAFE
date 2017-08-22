@@ -147,8 +147,8 @@ class OpenGLRenderer : Renderer
             }
 
             // 描画するバッファの指定とフレームバッファの割り当て
-            //glDrawBuffer(GL_COLOR_ATTACHMENT0);
             glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_msaa);
+            glDrawBuffer(GL_COLOR_ATTACHMENT0);
 
             glUseProgram(ProgramID);
 
