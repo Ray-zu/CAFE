@@ -51,11 +51,12 @@ class Disable : Effect
 
         override void initProperties ( FrameLength f )
         {
-            propertyList["disable"] = new BoolProperty( f, false );
+            propertyList["Disable"] = new BoolProperty( f, false );
         }
 
         override void apply ( World w, FrameAt f )
         {
-            // TODO
+            auto disable = castedProperty!bool( "Disable" ).get( f );
+            if ( disable ) w.clear;
         }
 }

@@ -31,6 +31,12 @@ class World
             sound_list = snds;
         }
 
+        void clear ()
+        {
+            polies = [];
+            sound_list.clear;
+        }
+
         Polygon pop ( Polygon p )
         {
             polies = polies.remove!( x => x is p );
