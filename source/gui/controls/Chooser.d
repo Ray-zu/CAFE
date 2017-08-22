@@ -13,7 +13,9 @@ import cafe.config,
        cafe.project.timeline.property.MiddlePoint,
        cafe.project.timeline.property.Easing,
        cafe.gui.Action;
-import std.string;
+import std.algorithm,
+       std.array,
+       std.string;
 import dlangui,
        dlangui.dialogs.dialog;
 
@@ -141,20 +143,23 @@ class ObjectChooser : Chooser
     protected:
         override void updateSearchResult ( EditableContent = null )
         {
+            auto click ( Widget w )
+            {
+                auto i = PlaceableObject.registeredObjects.find
+                    !( x => x.name == w.id ).array[0];
+                timeline += i.createAt(opi);
+                window.mainWidget.handleAction( Action_ObjectRefresh );
+                window.mainWidget.handleAction( Action_TimelineRefresh );
+                close( null );
+                return true;
+            }
+
             super.updateSearchResult;
             auto word = search.text;
             foreach ( i; PlaceableObject.registeredObjects ) {
                 if ( i.name != "" && i.name.indexOf( word ) == -1 ) continue;
-
                 auto item = list.addChild( new ChooserItem(i.name, i.icon) );
-                item.click = delegate ( Widget w )
-                {
-                    timeline += i.createAt(opi);
-                    window.mainWidget.handleAction( Action_ObjectRefresh );
-                    window.mainWidget.handleAction( Action_TimelineRefresh );
-                    close( null );
-                    return true;
-                };
+                item.click = &click;
             }
         }
 
@@ -181,21 +186,24 @@ class EffectChooser : Chooser
     protected:
         override void updateSearchResult ( EditableContent = null )
         {
+            auto click ( Widget w )
+            {
+                auto i = Effect.registeredEffects.find
+                    !( x => x.name == w.id ).array[0];
+                obj.effectList += i.createNew( obj.place.frame.length );
+                window.mainWidget.handleAction( Action_ObjectRefresh );
+                window.mainWidget.handleAction( Action_TimelineRefresh );
+                close( null );
+                return true;
+            }
+
             super.updateSearchResult;
             auto word = search.text;
             list.removeAllChildren;
             foreach ( i; Effect.registeredEffects ) {
                 if ( word != "" && i.name.indexOf( word ) == -1 ) continue;
-
                 auto item = list.addChild( new ChooserItem( i.name, i.icon ) );
-                item.click = delegate ( Widget w )
-                {
-                    obj.effectList += i.createNew( obj.place.frame.length );
-                    window.mainWidget.handleAction( Action_ObjectRefresh );
-                    window.mainWidget.handleAction( Action_TimelineRefresh );
-                    close( null );
-                    return true;
-                };
+                item.click = &click;
             }
         }
 
@@ -216,21 +224,22 @@ class EasingChooser : Chooser
     protected:
         override void updateSearchResult ( EditableContent = null )
         {
+            auto click ( Widget w )
+            {
+                mp.easing = w.id;
+                window.mainWidget.handleAction( Action_ObjectRefresh );
+                window.mainWidget.handleAction( Action_TimelineRefresh );
+                close( null );
+                return true;
+            }
+
             super.updateSearchResult;
             auto word = search.text;
             list.removeAllChildren;
             foreach ( i; EasingFunction.registeredEasings ) {
                 if ( word != "" && i.name.indexOf( word ) == -1 ) continue;
-
                 auto item = list.addChild( new ChooserItem( i.name, i.icon ) );
-                item.click = delegate ( Widget w )
-                {
-                    mp.easing = i.name;
-                    window.mainWidget.handleAction( Action_ObjectRefresh );
-                    window.mainWidget.handleAction( Action_TimelineRefresh );
-                    close( null );
-                    return true;
-                };
+                item.click = &click;
             }
         }
 
