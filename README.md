@@ -23,9 +23,11 @@ CAFE(Creator's Advanced Film Editor)は、AviUtlの後継として考案され�
 
 #### Windows
 * OpenGL
-* [OpenAL](https://openal.org/downloads/)
-* SDL2 (同梱)
-* freetype (同梱)
+* OpenAL
+* SDL2
+* freetype
+
+Windowsに於いてはライブラリが同梱されているので別途インストールの必要はありません。
 
 #### Linux
 * libopenal-dev
@@ -52,7 +54,16 @@ brew : `brew install freetype; brew install openal; brew install sdl2`
 
 ## Build
 
-    dub --build=release -a x86_64
+リリースされているものと同じバイナリを作成するには以下のコマンドを使用します。
+
+    dub build --build=release -a x86_64 --config=mt # マルチスレッド対応
+    dub build --build=release -a x86_64             # マルチスレッド非対応
+
+デバッグ用のバイナリは以下のコマンドで作成します。
+
+    dub build
+
+デバッグコンパイルに於いて、マルチスレッドを利用すると正常に動作しません。
 
 ## Licence
 
