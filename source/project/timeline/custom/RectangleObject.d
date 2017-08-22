@@ -64,14 +64,14 @@ class RectangleObject : PlaceableObject
 
         override void initProperties ( FrameLength f )
         {
+            super.initProperties( f );
+
             import cafe.project.timeline.property.LimitedProperty;
             propertyList["Size"] = new LimitedProperty!float( f, 200, MaxSize, 0 );
         }
 
-        override void apply ( RenderingInfo rinfo )
+        override World createWorld ( RenderingInfo r, FrameAt f )
         {
-            auto f = new FrameAt( rinfo.frame.value - place.frame.start.value );
-
             BMP color = new BMP( 1, 1 );
             color[0,0] = RGBA( 1.0, 1.0, 1.0, 1.0 );
 
@@ -92,7 +92,6 @@ class RectangleObject : PlaceableObject
             );
             w += new Quadrangle( pos, trans, color );
 
-            effectList.apply( w, f );
-            rinfo.effectStage += w;
+            return w;
         }
 }

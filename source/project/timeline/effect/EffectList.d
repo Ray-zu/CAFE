@@ -39,6 +39,11 @@ class EffectList
             j.array.each!( x => effs ~= Effect.create( x, f ) );
         }
 
+        void clear ()
+        {
+            effs = [];
+        }
+
         void remove ( Effect e )
         {
             effs = effects.remove!( x => x is e );

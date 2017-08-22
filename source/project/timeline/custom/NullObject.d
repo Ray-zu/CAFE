@@ -71,7 +71,7 @@ class NullObject : PlaceableObject
             propertyList["hoge"] = new PropertyBase!string( f, "hogera" );
         }
 
-        override void apply ( RenderingInfo rinfo )
+        override World createWorld ( RenderingInfo rinfo, FrameAt f )
         {
             BMP color_bmp = new BMP(2, 2,[
                     RGBA(0.0, 1.0, 0.0, 1.0),
@@ -79,14 +79,13 @@ class NullObject : PlaceableObject
                     RGBA(0.0, 1.0, 1.0, 1.0),
                     RGBA(1.0, 0.0, 1.0, 1.0)
                 ]);
-
-            /+ 実際のポリゴン生成プロセス +/
             World w = new World;
             w += new Ngon( 5, 640, Transform(
                     vec3( 200.0, 150.0, -120.0 ),
                     vec3( 0.0, 0.0, -35.0 ),
                     vec3( 0.5, 0.3, 1.0 )
                 ), color_bmp );
+            return w;
         }
 
         debug (1) unittest {
