@@ -27,18 +27,8 @@ class BMPViewer : Widget
         BitmapLight buf;
 
     public:
-        bool hoge = false;
         @property void drawable ( BMP b )
         {
-            import cafe.renderer.graphics.Color;
-            if ( hoge ) {
-                auto bmp = b.bitmap;
-                auto col = RGBA( 1.0,0.0,0.0,1.0 );
-                for ( auto i = 0; i < 10000; i++ )
-                    bmp[i] = col;
-            }
-            hoge = !hoge;
-
             convert_th.create( ()
             {
                 auto temp = new BitmapLight( b );
