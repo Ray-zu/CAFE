@@ -45,10 +45,24 @@ class OpenGLRenderer : Renderer
     {
         import dlangui;
 
+        auto createContext ( int major, int miner )
+        {
+            SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, major );
+            SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, miner );
+            context = SDL_GL_CreateContext( window );
+            return context != null;
+        }
+
         if ( window == null ) {
             window = SDL_CreateWindow(
                     "", 0, 0, 100, 100, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN );
-            context = SDL_GL_CreateContext( window );
+            bool success = createContext( 4, 0 );
+            //success = success || createContext( 3, 3 );
+            //success = success || createContext( 3, 2 );
+            //success = success || createContext( 3, 1 );
+            //success = success || createContext( 3, 0 );
+            if ( !success )
+                throw new Exception( "CAFEditor needs OpenGL 4.0" );
         }
         SDL_GL_MakeCurrent( window, context );
         // DerelictGLのリロードのついでに読んだGLのバージョンを表示
