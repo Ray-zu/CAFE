@@ -22,11 +22,10 @@ class BitmapLight : ColorDrawBufNoGC
         {
             super( src.width.to!int, src.height.to!int );
 
-            RGBA  col;   // ループ高速化のための前定義
-            const len = src.width * src.height;
-            const bmp = src.bitmap;
+            auto len = src.width * src.height;
+            auto bmp = src.bitmap;
             for ( auto i = 0; i < len; i++ )
-                _buf[i] = col.toHex;
+                _buf[i] = bmp[i].toHex;
             invertAlpha;
         }
 }
