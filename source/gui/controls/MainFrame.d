@@ -77,6 +77,7 @@ class MainFrame : AppFrame
 
         auto save ()
         {
+            if ( !Cafe.instance.curProject ) return;
             if ( last_saved_file.exists ) {
                 auto text = Cafe.instance.curProject.json.to!string;
                 last_saved_file.write( text );
@@ -85,6 +86,7 @@ class MainFrame : AppFrame
 
         auto saveAs ()
         {
+            if ( !Cafe.instance.curProject ) return;
             auto dlg = new FileSaveDialog( UIString.fromRaw("Save project"), window );
             dlg.dialogResult = delegate ( Dialog d, const Action a )
             {

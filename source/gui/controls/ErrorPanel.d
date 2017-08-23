@@ -5,6 +5,7 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.gui.controls.ErrorPanel;
+import cafe.gui.Action;
 import dlangui,
        dlangui.dialogs.dialog;
 
@@ -39,10 +40,12 @@ class ErrorPanel : Dialog
                 .enabled(false).text = error.msg.to!dstring;
             childById("debug_info")
                 .enabled(false).text = error.info.to!dstring;
-            addChild( createButtonsPanel( [ACTION_ABORT,ACTION_IGNORE], 1, 1 ) );
+            addChild( createButtonsPanel( [ACTION_SAVE,ACTION_IGNORE,ACTION_ABORT], 2, 1 ) );
 
             dialogResult = delegate ( Dialog d, const Action a )
             {
+                if ( a.id == ACTION_SAVE.id )
+                    window.mainWidget.handleAction( Action_ProjectSaveAs );
                 if ( a.id == ACTION_ABORT.id )
                     window.close;
             };
