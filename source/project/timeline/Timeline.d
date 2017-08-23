@@ -209,21 +209,4 @@ class Timeline
             j["topLineIndex"] = JSONValue( topLineIndex );
             return j;
         }
-
-        debug (1) unittest {
-            import cafe.project.timeline.custom.NullObject;
-            auto hoge = new Timeline( new FrameLength( 10 ) );
-
-            auto opi = new ObjectPlacingInfo( new LayerId(0),
-                   new FramePeriod( hoge.length, new FrameAt(0), new FrameLength(5) ) );
-            auto obj1 = new NullObject( opi );
-            hoge += obj1;
-
-            assert( hoge[new FrameAt(0)].length == 1 );
-            assert( hoge[new FrameAt(0),new FrameLength(1),new LayerId(0)].length == 1 );
-            assert( hoge[new FrameAt(0),new FrameLength(1),new LayerId(1)].length == 0 );
-
-            auto hoge2 = new Timeline( hoge.json );
-            assert( hoge.objects.length == hoge2.objects.length );
-        }
 }
