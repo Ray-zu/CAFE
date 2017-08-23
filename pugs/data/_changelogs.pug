@@ -3,6 +3,10 @@
         version: "0.0.3a",
         date: [2017, 8, 23],
         title: "OpenGLRendererの安定化(コードのみ)",
+        descripts:[
+            "Windows機が壊れたのでWindows版バイナリの配布が現状できません。ご了承ください。",
+            "レンダリングをマルチスレッドではなくシングルスレッドで行うことによってOpenGLを安定化させましたが動作が少しもっさりしています。"
+        ],
         changes: {
             fixed: [
                 "New Projectを行うとコンテキストの作成で落ちるバグを修正",
@@ -14,6 +18,10 @@
         version: "0.0.2a",
         date: [2017, 8, 22],
         title: "OpenGLRendererを追加",
+        descripts:[
+            "今回のバージョンで追加されたOpenGLRendererはメモリ管理がまだ実装されていません。一度のレンダリングで0.05GB程のメモリが吹っ飛ぶのでお気をつけください。",
+            "また、マルチスレッドにおけるOpenGLはかなり不安定なため、レンダリング時にプログラムが落ちる可能性があります。"
+        ],
         changes: {
             added: [
                 "OpenGLRendererを追加"
@@ -32,6 +40,9 @@
         version: "0.0.1a",
         date: [2017, 8, 19],
         title: "GUI試験用",
+        descripts:[
+            "不安定なので唐突に落ちたりします、ご了承下さい。",
+        ],
         changes: {
             added: [
                 "プロジェクトの保存/読込",
@@ -51,6 +62,9 @@ mixin changelogs()
                     .date #{release.date}
                 .title_wrap
                     .title #{release.title}
+                .descripts_wrap
+                    each descript in release.descripts
+                        .descript #{descript}
                 .changes
                     each changes,label in release.changes
                         each change in changes
@@ -62,9 +76,9 @@ mixin changelogs()
                                     when "fixed"
                                         .label_wrap.fixed
                                             .label FIXED
-                                    when "updated"
-                                        .label_wrap.updated
-                                            .label UPDATED
+                                    when "changed"
+                                        .label_wrap.changed
+                                            .label CHANGED
                                     when "delated"
                                         .label_wrap.delated
                                             .label DELATED

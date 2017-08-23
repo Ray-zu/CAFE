@@ -104,6 +104,10 @@
                 <div class="title_wrap">
                   <div class="title">OpenGLRendererの安定化(コードのみ)</div>
                 </div>
+                <div class="descripts_wrap">
+                  <div class="descript">Windows機が壊れたのでWindows版バイナリの配布が現状できません。ご了承ください。</div>
+                  <div class="descript">レンダリングをマルチスレッドではなくシングルスレッドで行うことによってOpenGLを安定化させましたが動作が少しもっさりしています。</div>
+                </div>
                 <div class="changes">
                   <div class="change">
                     <div class="label_wrap fixed">
@@ -141,6 +145,10 @@
                 <div class="title_wrap">
                   <div class="title">OpenGLRendererを追加</div>
                 </div>
+                <div class="descripts_wrap">
+                  <div class="descript">今回のバージョンで追加されたOpenGLRendererはメモリ管理がまだ実装されていません。一度のレンダリングで0.05GB程のメモリが吹っ飛ぶのでお気をつけください。</div>
+                  <div class="descript">また、マルチスレッドにおけるOpenGLはかなり不安定なため、レンダリング時にプログラムが落ちる可能性があります。</div>
+                </div>
                 <div class="changes">
                   <div class="change">
                     <div class="label_wrap added">
@@ -175,11 +183,17 @@
                     </div>
                   </div>
                   <div class="change">
+                    <div class="label_wrap changed">
+                      <div class="label">CHANGED</div>
+                    </div>
                     <div class="text_wrap">
                       <div class="text">Windowsに於けるGUIのバックエンドをWin32APIからSDLに変更</div>
                     </div>
                   </div>
                   <div class="change">
+                    <div class="label_wrap changed">
+                      <div class="label">CHANGED</div>
+                    </div>
                     <div class="text_wrap">
                       <div class="text">ログ出力先をstdoutからファイルに変更</div>
                     </div>
@@ -195,6 +209,9 @@
                 </div>
                 <div class="title_wrap">
                   <div class="title">GUI試験用</div>
+                </div>
+                <div class="descripts_wrap">
+                  <div class="descript">不安定なので唐突に落ちたりします、ご了承下さい。</div>
                 </div>
                 <div class="changes">
                   <div class="change">
