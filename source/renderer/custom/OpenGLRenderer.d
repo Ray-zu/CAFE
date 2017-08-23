@@ -56,14 +56,12 @@ class OpenGLRenderer : Renderer
         if ( window == null ) {
             window = SDL_CreateWindow(
                     "", 0, 0, 100, 100, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN );
-            bool success = createContext( 4, 5 );
-            success = success || createContext( 4, 0 );
-            //success = success || createContext( 3, 3 );
-            //success = success || createContext( 3, 2 );
-            //success = success || createContext( 3, 1 );
-            //success = success || createContext( 3, 0 );
+            // 動作確認の済んでいるバージョンのみ使用
+            bool success =       createContext( 4, 5 );
+            success = success || createContext( 3, 3 );
+            success = success || createContext( 3, 0 );
             if ( !success )
-                throw new Exception( "CAFEditor needs OpenGL 4.0 or more" );
+                throw new Exception( "CAFEditor needs OpenGL 3.0 or more" );
         }
         SDL_GL_MakeCurrent( window, context );
         // DerelictGLのリロードのついでに読んだGLのバージョンを表示
@@ -108,6 +106,7 @@ class OpenGLRenderer : Renderer
         uint BufferWidth;
         uint BufferHeight;
         uint samplenum = 4;
+        uint vao;
 
     public:
         static @property name () { return "OpenGLRenderer"; }
@@ -141,6 +140,9 @@ class OpenGLRenderer : Renderer
             glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                    GL_TEXTURE_2D, mtexid, 0);
+
+            // VAO生成
+            glGenVertexArrays( 1, &vao );
 
             BufferWidth = wi;
             BufferHeight = he;
@@ -186,6 +188,9 @@ class OpenGLRenderer : Renderer
 
             glClear(GL_COLOR_BUFFER_BIT);
             vec2 halfsize = vec2(wi/2, he/2);
+
+            // VAOを割当
+            glBindVertexArray( vao );
 
             // 並行投影用の行列
             mat4 orthmat = mat4.orthographic(-halfsize.x, halfsize.x, -halfsize.y, halfsize.y, 10000.0, -10000.0);
