@@ -60,6 +60,7 @@ class OpenGLRenderer : Renderer
             bool success =       createContext( 4, 5 );
             success = success || createContext( 3, 3 );
             success = success || createContext( 3, 0 );
+            success = success || createContext( 2, 1 );
             //if ( !success )
             //    throw new Exception( "CAFEditor needs OpenGL 3.0 or more" );
         }
