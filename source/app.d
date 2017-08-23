@@ -24,9 +24,6 @@ class Cafe
             import derelict.openal.al;
             DerelictGL3.load();
             DerelictAL.load();
-
-            import cafe.renderer.custom.OpenGLRenderer;
-            OpenGLRenderer.initialize;
         }
 
         void setupGUI ()

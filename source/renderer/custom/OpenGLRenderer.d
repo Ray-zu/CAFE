@@ -116,6 +116,7 @@ class OpenGLRenderer : Renderer
         @property sample (uint s) { samplenum = s; }
 
         this (uint wi, uint he) {
+            if ( window == null ) initialize;
             SDL_GL_MakeCurrent( window, context );
 
             // マルチサンプリング用のレンダーバッファを生成

@@ -13,6 +13,7 @@ import cafe.app,
        cafe.gui.controls.CafeConfDialog,
        cafe.gui.controls.ConfigDialogs,
        cafe.gui.controls.ConfigTabs,
+       cafe.gui.controls.ErrorPanel,
        cafe.gui.controls.PreviewPlayer,
        cafe.gui.controls.FragmentsExplorer,
        cafe.gui.controls.FileDialogs,
@@ -218,6 +219,7 @@ class MainFrame : AppFrame
         {
             if ( !a ) return false;
 
+            try {
             import cafe.gui.Action;
             switch ( a.id ) with( EditorActions ) {
                 case UpdateStatus:
@@ -275,6 +277,10 @@ class MainFrame : AppFrame
 
                 default:
                     return super.handleAction( a );
+            }
+            } catch ( Throwable e ) {
+                new ErrorPanel( e, window ).show;
+                return false;
             }
         }
 }
