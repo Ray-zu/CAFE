@@ -60,6 +60,25 @@
                         letter-spacing: 2px;
                     }
                 }
+                &>.title_wrap{
+                    margin-top: 2.5rem;
+                    margin-left: 1.5rem;
+                    position: relative;
+                    padding-bottom: 1rem;
+                    &>.title{
+                        font-size: 2rem;
+                        font-family: "Noto Sans Japanese";
+                        color: $theme3;
+                        font-weight: 600;
+                        letter-spacing: 1px;
+                    }
+                    &:after{
+                        content: "";
+                        fill();
+                        width: 25%;
+                        border-bottom: 1px solid $theme3;
+                    }
+                }
                 &>.changes {
                     margin-left: 2.5rem;
                     margin-top: 2.5rem;
@@ -153,6 +172,17 @@
                         margin-left:0;
                         &>.date {
                             font-size: 1.5rem;
+                        }
+                    }
+                    &>.title_wrap {
+                        width: 100%;
+                        text-align: center;
+                        margin-left:0;
+                        &>.title {
+                            font-size: 1.2rem;
+                        }
+                        &:after{
+                            absCenter();
                         }
                     }
                     &>.changes {

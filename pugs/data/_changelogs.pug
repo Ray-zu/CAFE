@@ -1,0 +1,72 @@
+-
+    var changelogs = [{
+        version: "0.0.3a",
+        date: [2017, 8, 23],
+        title: "OpenGLRendererの安定化(コードのみ)",
+        changes: {
+            fixed: [
+                "New Projectを行うとコンテキストの作成で落ちるバグを修正",
+                "OpenGLのレンダリング時にInvalid Operationエラーが発生するバグを修正",
+                "スタートスプラッシュが表示されないバグを修正"
+            ]
+        }
+    }, {
+        version: "0.0.2a",
+        date: [2017, 8, 22],
+        title: "OpenGLRendererを追加",
+        changes: {
+            added: [
+                "OpenGLRendererを追加"
+            ],
+            fixed: [
+                "プロジェクトを閉じると落ちるバグの修正",
+                "各種ダイアログを閉じると落ちるバグを修正",
+                "Windowsに於いて事前にライブラリインストールをしなくても動作するように修正"
+            ],
+            changed: [
+                "Windowsに於けるGUIのバックエンドをWin32APIからSDLに変更",
+                "ログ出力先をstdoutからファイルに変更"
+            ]
+        }
+    }, {
+        version: "0.0.1a",
+        date: [2017, 8, 19],
+        title: "GUI試験用",
+        changes: {
+            added: [
+                "プロジェクトの保存/読込",
+                "configの保存/読込",
+                "最低限の編集が可能なGUI"
+            ]
+        }
+    }]
+
+mixin changelogs()
+    .changelogs
+        each release in changelogs
+            .changelog
+                .version_wrap
+                    .version #{release.version}
+                .date_wrap
+                    .date #{release.date}
+                .title_wrap
+                    .title #{release.title}
+                .changes
+                    each changes,label in release.changes
+                        each change in changes
+                            .change
+                                case label
+                                    when "added"
+                                        .label_wrap.added
+                                            .label ADDED
+                                    when "fixed"
+                                        .label_wrap.fixed
+                                            .label FIXED
+                                    when "updated"
+                                        .label_wrap.updated
+                                            .label UPDATED
+                                    when "delated"
+                                        .label_wrap.delated
+                                            .label DELATED
+                                .text_wrap
+                                    .text #{change}
