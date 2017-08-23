@@ -64,7 +64,6 @@ extern(C) int UIAppMain(string[] args)
 {
     Cafe.instance = new Cafe( args );
 
-    if ( args.length == 0 ) Cafe.instance.curProject = null;
     // TODO 引数ファイルのプロジェクト読み込み
 
     return Platform.instance.enterMessageLoop();

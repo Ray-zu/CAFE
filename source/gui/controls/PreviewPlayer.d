@@ -8,6 +8,7 @@ module cafe.gui.controls.PreviewPlayer;
 import cafe.gui.Action,
        cafe.gui.BitmapLight,
        cafe.gui.controls.BMPViewer,
+       cafe.gui.controls.ErrorPanel,
        cafe.project.Project,
        cafe.renderer.Renderer;
 import std.format;
@@ -77,9 +78,7 @@ class PreviewPlayer : VerticalLayout
                 window.mainWidget.handleAction(
                         new Action_UpdateStatus( rendered ) );
             } catch ( Exception e ) {
-                auto mes = rendering_fail ~ e.msg.to!dstring;
-                window.mainWidget.handleAction(
-                        new Action_UpdateStatus( mes ) );
+                new ErrorPanel( e, window ).show;
             }
         }
 

@@ -52,6 +52,8 @@ class MainFrame : AppFrame
     }
 
     private:
+        bool initialized = false;
+
         MenuItem top_menu;
 
         PreviewPlayer     preview;
@@ -110,7 +112,7 @@ class MainFrame : AppFrame
 
             if ( p ) {
             } else {
-                new StartPanel( window );
+                new StartPanel( window ).show;
             }
             handleAction( Action_PreviewRefresh );
             handleAction( Action_ObjectRefresh  );
@@ -215,6 +217,15 @@ class MainFrame : AppFrame
             timeline.maxHeight = h - preview.minHeight;
             tabs.minWidth      = ConfigWidth;
             super.measure( w, h );
+        }
+
+        override void onDraw ( DrawBuf b )
+        {
+            /+ 最初の描画の時に行う +/
+            if ( !initialized )
+                projectRefresh;
+            initialized = true;
+            super.onDraw( b );
         }
 
         override bool handleAction ( const Action a )

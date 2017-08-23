@@ -52,7 +52,6 @@ class StartPanel : Dialog
         this ( Window w = null )
         {
             super( UIString.fromRaw(""), w, DlgFlag );
-            show;
         }
 
         override void initialize ()
