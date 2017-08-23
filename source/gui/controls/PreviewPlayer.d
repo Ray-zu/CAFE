@@ -72,7 +72,7 @@ class PreviewPlayer : VerticalLayout
                 window.mainWidget.handleAction(
                         new Action_UpdateStatus( rendering ) );
                 auto r = project.render;
-                //preview.drawable = r.bitmap;
+                preview.drawable = r.bitmap;
                 window.invalidate;
                 window.mainWidget.handleAction(
                         new Action_UpdateStatus( rendered ) );
