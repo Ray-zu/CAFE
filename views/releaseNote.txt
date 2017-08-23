@@ -1,2 +1,9 @@
-[v0.99b]
+[v0.0.3_alpha]
+    - Stabilized OpenGL Renderer
+
+[v0.0.2_alpha]
+    - Added OpenGL Renderer
+    - Changed GUI Backend
+
+[v0.0.1_pre-alpha]
     - CAFEditor first release
