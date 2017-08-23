@@ -56,13 +56,14 @@ class OpenGLRenderer : Renderer
         if ( window == null ) {
             window = SDL_CreateWindow(
                     "", 0, 0, 100, 100, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN );
-            bool success = createContext( 4, 0 );
+            bool success = createContext( 4, 5 );
+            success = success || createContext( 4, 0 );
             //success = success || createContext( 3, 3 );
             //success = success || createContext( 3, 2 );
             //success = success || createContext( 3, 1 );
             //success = success || createContext( 3, 0 );
             if ( !success )
-                throw new Exception( "CAFEditor needs OpenGL 4.0" );
+                throw new Exception( "CAFEditor needs OpenGL 4.0 or more" );
         }
         SDL_GL_MakeCurrent( window, context );
         // DerelictGLのリロードのついでに読んだGLのバージョンを表示
