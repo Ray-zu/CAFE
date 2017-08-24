@@ -61,20 +61,10 @@ class PreviewPlayer : VerticalLayout
         void frameChanged ()
         {
             if ( !project ) return;
-
-            /+ 別スレッドから翻訳内容を取得できない為事前に取得 +/
-            const rendering      = i18n.get("Status_Rendering");
-            const rendered       = i18n.get("Status_Rendered");
-            const rendering_fail = i18n.get( "Status_RenderingFailure" );
-
             try {
-                window.mainWidget.handleAction(
-                        new Action_UpdateStatus( rendering ) );
                 auto r = project.render;
                 preview.drawable = r.bitmap;
                 window.invalidate;
-                window.mainWidget.handleAction(
-                        new Action_UpdateStatus( rendered ) );
             } catch ( Exception e ) {
                 new ErrorPanel( e, window ).show;
             }
