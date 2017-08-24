@@ -4,7 +4,7 @@
  + ------------------------------------------------------------ +
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
-module cafe.project.timeline.custom.Rectangle;
+module cafe.project.timeline.custom.Circle;
 import cafe.project.RenderingInfo,
        cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.PlaceableObject,
@@ -18,24 +18,24 @@ import gl3n.linalg;
 import std.conv,
        std.json;
 
-/+ 四角形オブジェクト +/
-class Rectangle : PlaceableObject
+/+ 円形オブジェクト +/
+class Circle : PlaceableObject
 {
-    mixin register!Rectangle;
+    enum MaxRange = 10000;
+    enum MaxPoly  = 10000;
 
-    enum MaxSize = 10000;
+    mixin register!Circle;
 
     public:
         static @property type ()
         {
-            return "Rectangle";
+            return "Circle";
         }
         static @property icon ()
         {
             return "obj_ctg_others";
         }
         override @property string typeStr () { return type; }
-        // static の override ができない！
 
         override @property string name ()
         {
@@ -44,10 +44,10 @@ class Rectangle : PlaceableObject
 
         override @property PlaceableObject copy ()
         {
-            return new Rectangle( this );
+            return new Circle( this );
         }
 
-        this ( Rectangle src )
+        this ( Circle src )
         {
             super( src );
         }
@@ -67,8 +67,8 @@ class Rectangle : PlaceableObject
             super.initProperties( f );
 
             import cafe.project.timeline.property.LimitedProperty;
-            propertyList["Width" ] = new LimitedProperty!float( f, 200, MaxSize, 0 );
-            propertyList["Height"] = new LimitedProperty!float( f, 200, MaxSize, 0 );
+            propertyList["Range"   ] = new LimitedProperty!float( f, 200, MaxRange, 0 );
+            propertyList["Accuracy"] = new LimitedProperty!int  ( f, 100, MaxPoly , 1 );
         }
 
         override World createWorld ( RenderingInfo r, FrameAt f )
@@ -78,16 +78,15 @@ class Rectangle : PlaceableObject
 
             World w = new World;
 
-            auto wi = castedProperty!float("Width" ).get(f);
-            auto he = castedProperty!float("Height").get(f);
-            auto size = vec2( wi, he );
+            auto s = castedProperty!float("Range").get(f);
+            auto p = castedProperty!int("Accuracy").get(f);
             auto trans = Transform(
                 vec3( 0.0, 0.0, 0.0 ),
                 vec3( 0.0, 0.0, 0.0 ),
                 vec3( 1.0, 1.0, 1.0 )
             );
 
-            w += new cafe.renderer.polygon.Ngon.Rectangle( size, trans, color );
+            w += new Ngon( p, s, trans, color );
 
             return w;
         }

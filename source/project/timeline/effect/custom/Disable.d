@@ -27,7 +27,6 @@ class Disable : Effect
             return "obj_ctg_others";
         }
         override @property string name () { return type; }
-        // static の override ができないので
 
         override @property Effect copy ( FrameLength f )
         {
