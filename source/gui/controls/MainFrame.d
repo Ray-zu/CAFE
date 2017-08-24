@@ -152,6 +152,8 @@ class MainFrame : AppFrame
             top_menu.add( menu );
 
             with ( menu = new MenuItem( new Action( 1, "TopMenu_Play" ) ) ) {
+                add( Action_PreviewRefresh );
+
                 add( Action_Play  );
                 add( Action_Pause );
                 add( Action_Stop  );
