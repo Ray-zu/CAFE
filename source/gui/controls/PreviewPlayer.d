@@ -58,8 +58,6 @@ class PreviewPlayer : VerticalLayout
         ImageButton move_ahead;
         ImageButton shift_ahead;
 
-        ThreadGroup render_th;
-
         void frameChanged ()
         {
             if ( !project ) return;
@@ -117,13 +115,6 @@ class PreviewPlayer : VerticalLayout
             stop        .action = Action_Stop       ;
             move_ahead  .action = Action_MoveAHead  ;
             shift_ahead .action = Action_ShiftAHead ;
-
-            render_th = new ThreadGroup;
-        }
-
-        ~this ()
-        {
-            render_th.joinAll;
         }
 
         override bool handleAction ( const Action a )
