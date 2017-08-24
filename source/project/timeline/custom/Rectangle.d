@@ -67,7 +67,8 @@ class Rectangle : PlaceableObject
             super.initProperties( f );
 
             import cafe.project.timeline.property.LimitedProperty;
-            propertyList["Size"] = new LimitedProperty!float( f, 200, MaxSize, 0 );
+            propertyList["Width" ] = new LimitedProperty!float( f, 200, MaxSize, 0 );
+            propertyList["Height"] = new LimitedProperty!float( f, 200, MaxSize, 0 );
         }
 
         override World createWorld ( RenderingInfo r, FrameAt f )
@@ -77,19 +78,16 @@ class Rectangle : PlaceableObject
 
             World w = new World;
 
-            auto sz = castedProperty!float("Size").get(f) / 2;
-            auto pos = [
-                vec3(-sz, sz,0),
-                vec3( sz, sz,0),
-                vec3( sz,-sz,0),
-                vec3(-sz,-sz,0)
-            ];
+            auto wi = castedProperty!float("Width" ).get(f);
+            auto he = castedProperty!float("Height").get(f);
+            auto size = vec2( wi, he );
             auto trans = Transform(
                 vec3( 0.0, 0.0, 0.0 ),
                 vec3( 0.0, 0.0, 0.0 ),
                 vec3( 1.0, 1.0, 1.0 )
             );
-            w += new Quadrangle( pos, trans, color );
+
+            w += new cafe.renderer.polygon.Ngon.Rectangle( size, trans, color );
 
             return w;
         }
