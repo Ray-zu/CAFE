@@ -5,21 +5,21 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.renderer.sound.Sound;
-import cafe.renderer.sound.PCM,
-       cafe.renderer.polygon.Vector;
+import cafe.renderer.sound.PCM;
+import gl3n.linalg;
 
 /+ 音声データとその位置情報 +/
 class Sound
 {
     private:
         PCM pcm_data;
-        Vector3D pos;
+        vec3 pos;
 
     public:
         @property pcm () { return pcm_data; }
         @property position () { return pos; }
 
-        this ( PCM pd, Vector3D po = Vector3D(0,0,0) )
+        this ( PCM pd, vec3 po )
         {
             pcm_data = pd;
             pos = po;

@@ -5,7 +5,7 @@
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
 module cafe.renderer.Camera;
-import cafe.renderer.polygon.Vector;
+import gl3n.linalg;
 
 debug = 0;
 
@@ -13,15 +13,15 @@ debug = 0;
 class Camera
 {
     private:
-        Vector3D pos;
-        Vector3D tarpos;
+        vec3 pos;
+        vec3 tarpos;
         // TODO : カメラの付加情報(深度ボケ等)
 
     public:
         @property position () { return pos; }
         @property targetPosition () { return tarpos; }
 
-        this ( Vector3D p = Vector3D(0,0,-1024), Vector3D t = Vector3D(0,0,0) )
+        this ( vec3 p = vec3(0,0,-1024), vec3 t = vec3(0,0,0) )
         {
             pos = p; tarpos = t;
         }

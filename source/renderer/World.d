@@ -6,12 +6,9 @@
  + ------------------------------------------------------------ +/
 module cafe.renderer.World;
 import cafe.renderer.polygon.Polygon,
-       cafe.renderer.polygon.Vector,
        cafe.renderer.graphics.Bitmap,
        cafe.renderer.sound.SoundList;
 import std.algorithm;
-
-debug = 0;
 
 /+ ポリゴンのリスト                +
  + 1フレームの音声データも含みます +/
@@ -59,14 +56,5 @@ class World
         {
             polies ~= rhs;
             return this;
-        }
-
-        debug (1) unittest {
-            auto v3d = Vector3D( 0, 0, 0 );
-            auto poly = new Polygon( new BMP(5,5), v3d,v3d,v3d,v3d );
-            auto hoge = new World ( [poly] );
-            assert( (hoge+hoge).polygons.length == 2 );
-            assert( hoge.pop( poly ) == poly );
-            assert( hoge.polygons.length == 0 );
         }
 }

@@ -8,7 +8,6 @@
 module cafe.renderer.polygon.Polygon;
 import cafe.renderer.graphics.Bitmap,
        cafe.renderer.polygon.Material,
-       cafe.renderer.polygon.Vertex,
        cafe.renderer.polygon.PolygonData;
 import derelict.opengl3.gl3;
 import gl3n.linalg;
