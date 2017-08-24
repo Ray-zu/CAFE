@@ -14,7 +14,7 @@ import dlangui.core.settings;
  + b : マイナーバージョン                +
  + c : 累積バージョン                    +/
 enum AppName = "CAFEditor";
-enum AppVer  = "0.0.3 Alpha";
+enum AppVer  = "0.0.4 Alpha";
 enum AppText = "%s %s".format( AppName, AppVer );
 enum AppURL  = "https://aoitofu.github.io/CAFE";
 
