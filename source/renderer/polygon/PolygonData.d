@@ -10,11 +10,11 @@ import gl3n.linalg,
 
 struct Transform
 {
-    private:
+    public:
         vec3 Translate;
         vec3 Rotate;
         vec3 Scale;
-    public:
+
         @property mat()
         {
             mat4 tm = mat4.identity;
