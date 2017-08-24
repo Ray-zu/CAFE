@@ -1,3 +1,6 @@
+[v0.0.4 alpha]
+    - Added Figure Objects
+
 [v0.0.3_alpha]
     - Stabilized OpenGL Renderer
 
