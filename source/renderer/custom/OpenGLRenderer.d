@@ -30,11 +30,29 @@ import std.conv;
 import derelict.sdl2.sdl,
        derelict.sdl2.types;
 
-debug = 1;
+debug = 0;
+
+private template glenforce ( alias func )
+{
+    auto glenforce ( string file = __FILE__, int line = __LINE__, Args... ) ( Args args )
+    {
+        scope(success) checkError( __traits(identifier, func), file, line );
+        return func( args );
+    }
+}
+private void checkError ( string context, string file, int line )
+{
+    auto err = glGetError();
+    if ( err )
+        throw new Exception( "OpenGL Error (%s) : %d".format( context, err ), file, line );
+}
+
 /+ OpenGLを利用したレンダラ +/
 class OpenGLRenderer : Renderer
 {
     mixin register!OpenGLRenderer;
+
+    static string glversion;
 
     static SDL_Window* window = null;
     static SDL_GLContext context;
@@ -65,12 +83,11 @@ class OpenGLRenderer : Renderer
                 throw new Exception( "CAFEditor needs OpenGL 3.0 or more" );
         }
         SDL_GL_MakeCurrent( window, context );
-        // DerelictGLのリロードのついでに読んだGLのバージョンを表示
-        Log.i("OpenGL version : "~DerelictGL3.reload().to!string);
+        glversion = DerelictGL3.reload().to!string;
 
         // シェーダー作るよ
-        uint Vshader = glCreateShader(GL_VERTEX_SHADER);
-        uint Fshader = glCreateShader(GL_FRAGMENT_SHADER);
+        uint Vshader = glenforce!glCreateShader(GL_VERTEX_SHADER);
+        uint Fshader = glenforce!glCreateShader(GL_FRAGMENT_SHADER);
 
         // シェーダーのソース読み込むよ
         enum VSSource = import("Vertex_Shader.vert");
@@ -83,18 +100,18 @@ class OpenGLRenderer : Renderer
         int fslen = cast(int)FSSource.length;
 
         // シェーダーとソースを結び付けてコンパイルするよ
-        glShaderSource(Vshader, 1, &vsstr, &vslen);
-        glShaderSource(Fshader, 1, &fsstr, &fslen);
-        glCompileShader(Vshader);
-        glCompileShader(Fshader);
+        glenforce!glShaderSource(Vshader, 1, &vsstr, &vslen);
+        glenforce!glShaderSource(Fshader, 1, &fsstr, &fslen);
+        glenforce!glCompileShader(Vshader);
+        glenforce!glCompileShader(Fshader);
 
         // プログラム作ってシェーダーを紐づけるよ
-        program = glCreateProgram();
-        glAttachShader(program, Vshader);
-        glAttachShader(program, Fshader);
+        program = glenforce!glCreateProgram();
+        glenforce!glAttachShader(program, Vshader);
+        glenforce!glAttachShader(program, Fshader);
 
         // 最後にリンクして使える状態にするよ
-        glLinkProgram(program);
+        glenforce!glLinkProgram(program);
 
         Log.i("OpenGL initialized : "~glGetError().to!string);
     }
@@ -104,8 +121,8 @@ class OpenGLRenderer : Renderer
         uint framebuffer_msaa;
         uint Renderbuffer;
         uint mtexid;
-        uint BufferWidth;
-        uint BufferHeight;
+        uint width;
+        uint height;
         uint samplenum = 4;
         uint vao;
 
@@ -115,47 +132,41 @@ class OpenGLRenderer : Renderer
         @property sample () { return samplenum; }
         @property sample (uint s) { samplenum = s; }
 
-        this (uint wi, uint he) {
+        this ( uint wi = 1920, uint he = 1080 ) {
             if ( window == null ) initialize;
             SDL_GL_MakeCurrent( window, context );
 
             // マルチサンプリング用のレンダーバッファを生成
-            glGenRenderbuffers(1, &Renderbuffer);
-            glBindRenderbuffer(GL_RENDERBUFFER, Renderbuffer);
-            glRenderbufferStorageMultisample(GL_RENDERBUFFER, samplenum, GL_RGBA, wi, he);
+            glenforce!glGenRenderbuffers(1, &Renderbuffer);
+            glenforce!glBindRenderbuffer(GL_RENDERBUFFER, Renderbuffer);
+            glenforce!glRenderbufferStorageMultisample(GL_RENDERBUFFER, samplenum, GL_RGBA, wi, he);
 
             // 描画バッファ取得用のテクスチャを生成
-            glGenTextures(1, &mtexid);
-            glBindTexture(GL_TEXTURE_2D, mtexid);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+            glenforce!glGenTextures(1, &mtexid);
+            glenforce!glBindTexture(GL_TEXTURE_2D, mtexid);
+            glenforce!glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
                          wi, he, 0, GL_RGBA, GL_FLOAT, null);
 
             // レンダーバッファをMSAA用のフレームバッファに割り当て
-            glGenFramebuffers(1, &framebuffer_msaa);
-            glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_msaa);
-            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+            glenforce!glGenFramebuffers(1, &framebuffer_msaa);
+            glenforce!glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_msaa);
+            glenforce!glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                    GL_RENDERBUFFER, Renderbuffer);
 
             // テクスチャを通常のフレームバッファに割り当て
-            glGenFramebuffers(1, &framebuffer);
-            glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+            glenforce!glGenFramebuffers(1, &framebuffer);
+            glenforce!glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+            glenforce!glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                    GL_TEXTURE_2D, mtexid, 0);
 
             // VAO生成
-            glGenVertexArrays( 1, &vao );
+            glenforce!glGenVertexArrays( 1, &vao );
 
-            BufferWidth = wi;
-            BufferHeight = he;
+            width = wi;
+            height = he;
 
             // フレームバッファの割り当てを解除
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-            { import dlangui; Log.i( "create gl instance : ", glGetError() ); }
-        }
-
-        this () {
-            this( 1920, 1080 );
+            glenforce!glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
 
         override PCM soundRender ( SoundList w )
@@ -167,31 +178,31 @@ class OpenGLRenderer : Renderer
         {
             SDL_GL_MakeCurrent( window, context );
 
-            glEnable(GL_MULTISAMPLE);
-            BMP ResultImage = new BMP(wi, he);
-            glViewport(0, 0, wi, he);
+            glenforce!glEnable(GL_MULTISAMPLE);
+            glenforce!glViewport(0, 0, wi, he);
             // 現在のテクスチャのサイズと指定されたサイズが合わない場合は再生成
-            if (BufferWidth!=wi||BufferHeight!=he) {
-            glRenderbufferStorageMultisample(GL_RENDERBUFFER, samplenum, GL_RGBA, wi, he);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-                         wi, he, 0, GL_RGBA, GL_FLOAT, null);
+            if ( width != wi || height != he ) {
+                glenforce!glRenderbufferStorageMultisample(GL_RENDERBUFFER, samplenum, GL_RGBA, wi, he);
+                glenforce!glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+                             wi, he, 0, GL_RGBA, GL_FLOAT, null);
             }
+            BMP result_image = new BMP(wi, he);
 
             // 描画するバッファの指定とフレームバッファの割り当て
-            glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_msaa);
-            glDrawBuffer(GL_COLOR_ATTACHMENT0);
+            glenforce!glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_msaa);
+            glenforce!glDrawBuffer(GL_COLOR_ATTACHMENT0);
 
-            glUseProgram(program);
+            glenforce!glUseProgram(program);
 
             int posloc, uvloc;
-            posloc = glGetAttribLocation(program, "position");
-            uvloc = glGetAttribLocation(program, "uv");
+            posloc = glenforce!glGetAttribLocation(program, "position".toStringz);
+            uvloc  = glenforce!glGetAttribLocation(program, "uv".toStringz);
 
-            glClear(GL_COLOR_BUFFER_BIT);
+            glenforce!glClear(GL_COLOR_BUFFER_BIT);
             vec2 halfsize = vec2(wi/2, he/2);
 
             // VAOを割当
-            glBindVertexArray( vao );
+            glenforce!glBindVertexArray( vao );
 
             // 並行投影用の行列
             mat4 orthmat = mat4.orthographic(-halfsize.x, halfsize.x, -halfsize.y, halfsize.y, 10000.0, -10000.0);
@@ -211,81 +222,76 @@ class OpenGLRenderer : Renderer
 
                 // 平行投影用の行列を渡す
                 mat4 mvp = orthmat * Polyobj.transform.mat;
-                GLuint MatrixID = glGetUniformLocation(program, "MVP");
-                glUniformMatrix4fv(MatrixID,  1, GL_TRUE, &mvp[0][0]);
+                GLuint MatrixID = glenforce!glGetUniformLocation(program, "MVP".toStringz);
+                glenforce!glUniformMatrix4fv(MatrixID,  1, GL_TRUE, &mvp[0][0]);
 
                 // UV座標に乗算する画像サイズ-1の値を渡す(矩形テクスチャなのでUV座標をピクセル値にしないといけない)
-                GLuint SizemID = glGetUniformLocation(program, "sizemag");
-                glUniform2fv(SizemID,  1, sizem.value_ptr);
+                GLuint SizemID = glenforce!glGetUniformLocation(program, "sizemag".toStringz);
+                glenforce!glUniform2fv(SizemID,  1, sizem.value_ptr);
 
                 // ポリゴンに含まれるBMPからテクスチャを生成
                 GLuint Texture_ID;
-                glGenTextures(1, &Texture_ID);
-                glBindTexture(GL_TEXTURE_RECTANGLE, Texture_ID);
-                glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_RGBA,
+                glenforce!glGenTextures(1, &Texture_ID);
+                glenforce!glBindTexture(GL_TEXTURE_RECTANGLE, Texture_ID);
+                glenforce!glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_RGBA,
                             Texture.width, Texture.height, 0,
                             GL_RGBA, GL_FLOAT, Texture.bitmap);
-                glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                GLuint Sampler_ID = glGetUniformLocation(program, "sampler");
+                glenforce!glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                glenforce!glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                GLuint Sampler_ID = glenforce!glGetUniformLocation(program, "sampler".toStringz);
 
                 // サンプラーを生成
                 GLuint sampler;
-                glGenSamplers       (1, &sampler);
-                glSamplerParameteri (sampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-                glSamplerParameteri (sampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-                glSamplerParameteri (sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                glSamplerParameteri (sampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                glenforce!glGenSamplers       (1, &sampler);
+                glenforce!glSamplerParameteri (sampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+                glenforce!glSamplerParameteri (sampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+                glenforce!glSamplerParameteri (sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                glenforce!glSamplerParameteri (sampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
                 // VBOを作成
                 // 頂点座標のバッファ
                 GLuint VertexBuffer;
-                glGenBuffers(1, &VertexBuffer);
-                glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
-                glBufferData(GL_ARRAY_BUFFER, pos.length*vec3.sizeof, pos.ptr, GL_STATIC_DRAW);
-                glEnableVertexAttribArray(posloc);
-                glVertexAttribPointer(posloc, 3, GL_FLOAT, GL_FALSE, 0, null);
+                glenforce!glGenBuffers(1, &VertexBuffer);
+                glenforce!glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
+                glenforce!glBufferData(GL_ARRAY_BUFFER, pos.length*vec3.sizeof, pos.ptr, GL_STATIC_DRAW);
+                glenforce!glEnableVertexAttribArray(posloc);
+                glenforce!glVertexAttribPointer(posloc, 3, GL_FLOAT, GL_FALSE, 0, null);
 
                 // UV座標のバッファ
                 GLuint UVBuffer;
-                glGenBuffers(1, &UVBuffer);
-                glBindBuffer(GL_ARRAY_BUFFER, UVBuffer);
-                glBufferData(GL_ARRAY_BUFFER, uv.length*vec2.sizeof, uv.ptr, GL_STATIC_DRAW);
-                glEnableVertexAttribArray(uvloc);
-                glVertexAttribPointer(uvloc, 2, GL_FLOAT, GL_FALSE, 0, null);
+                glenforce!glGenBuffers(1, &UVBuffer);
+                glenforce!glBindBuffer(GL_ARRAY_BUFFER, UVBuffer);
+                glenforce!glBufferData(GL_ARRAY_BUFFER, uv.length*vec2.sizeof, uv.ptr, GL_STATIC_DRAW);
+                glenforce!glEnableVertexAttribArray(uvloc);
+                glenforce!glVertexAttribPointer(uvloc, 2, GL_FLOAT, GL_FALSE, 0, null);
 
                 // テクスチャを有効化し、サンプラーを渡す
-                glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_RECTANGLE, Texture_ID);
-                glBindSampler(0, sampler);
-                glUniform1i(Sampler_ID, 0);
+                glenforce!glActiveTexture(GL_TEXTURE0);
+                glenforce!glBindTexture(GL_TEXTURE_RECTANGLE, Texture_ID);
+                glenforce!glBindSampler(0, sampler);
+                glenforce!glUniform1i(Sampler_ID, 0);
 
                 // 受け取った頂点座標を元にすべて描画
-                glDrawArrays(Polyobj.drawmode, 0, cast(int)Polyobj.vindex.length);
-
+                glenforce!glDrawArrays(Polyobj.drawmode, 0, cast(int)Polyobj.vindex.length);
             }
 
             // 読み出すためにMSAA用のバッファから通常のバッファに転送
-            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
-            glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer_msaa);
-            glBlitFramebuffer(0 ,0 , wi, he, 0, he, wi, 0, GL_COLOR_BUFFER_BIT,
+            glenforce!glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
+            glenforce!glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer_msaa);
+            glenforce!glBlitFramebuffer(0 ,0 , wi, he, 0, he, wi, 0, GL_COLOR_BUFFER_BIT,
                             GL_LINEAR);
             // 通常のフレームバッファを読みだすバッファに指定
-            glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+            glenforce!glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
             // フレームバッファの読み出し
-            glReadBuffer(GL_COLOR_ATTACHMENT0);
-            float[] bufferpixel = new float[wi*he*4];
-            glReadPixels( 0, 0, wi, he, GL_RGBA, GL_FLOAT,
-                        cast(void*)ResultImage.bitmap);
+            glenforce!glReadBuffer(GL_COLOR_ATTACHMENT0);
+            glenforce!glReadPixels( 0, 0, wi, he, GL_RGBA, GL_FLOAT,
+                        cast(void*)result_image.bitmap);
 
             // フレームバッファの割り当てを解除
-            glBindFramebuffer( GL_FRAMEBUFFER, 0 );
+            glenforce!glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 
-            { import dlangui; Log.i( "polygon : ", w.polygons.length ); }
-            { import dlangui; Log.i( "error : ", glGetError() ); }
-            //Gradation(ResultImage);
-            return ResultImage;
+            return result_image;
         }
 
         /+ レンダリングのテスト +/
