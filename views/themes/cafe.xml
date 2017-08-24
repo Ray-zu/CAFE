@@ -299,96 +299,117 @@
         padding="1pt,1pt,1pt,1pt">
     </style>
 
+    <!-- エフェクトなどの選択ダイアログのアイテム -->
     <style id="CHOOSER_ITEM"
         backgroundColor="@null">
         <state state_pressed="true" backgroundColor="#00555555"/>
         <state state_hovered="true" backgroundColor="#00444444"/>
     </style>
 
+    <!-- プレビュー全体(ボタン含めた) -->
     <style id="PREVIEW_PLAYER"
         backgroundColor="#00111111">
     </style>
 
+    <!-- 素材リスト -->
     <style id="FRAGS_EXPLORER"
         backgroundColor="#00111111">
     </style>
 
+    <!-- コンポーネントのリスト -->
     <style id="COMPONENT_TREE"
         backgroundColor="#00222222">
     </style>
 
+    <!-- プロパティエディタ -->
     <style id="PROPERTY_EDITOR"
         backgroundColor="#00222222">
     </style>
 
+    <!-- プロパティエディタのグループヘッダ(オブジェクトやエフェクトの名前) -->
     <style id="PROPERTY_EDITOR_GROUP_HEADER"
         backgroundColor="#00333333">
     </style>
 
+    <!-- エフェクトの有効化などのボタン -->
     <style id="PROPERTY_EDITOR_HEADER_BUTTON"
         backgroundImageId="cafe_property_editor_header_button"
         padding="3,3,3,3">
     </style>
 
+    <!-- ON/OFF切り替えスイッチ -->
     <style id="PROPERTY_EDITOR_SWITCH"
         parent="SWITCH"
         backgroundImageId="cafe_switch">
     </style>
 
+    <!-- プロパティエディタのシングルライン入力 -->
     <style id="PROPERTY_EDITOR_INPUT_SL"
         backgroundColor="#00444444"
         padding="2,2,2,2"
         minWidth="150">
     </style>
 
+    <!-- プロパティエディタのマルチライン入力 -->
     <style id="PROPERTY_EDITOR_INPUT_ML"
         backgroundColor="#00444444"
         minWidth="200"
         minHeight="100">
     </style>
 
+    <!-- タイムライン全体 -->
     <style id="TIMELINE"
         backgroundColor="#00222222">
     </style>
 
+    <!-- タイムラインのグリッド -->
     <style id="TIMELINE_GRID"
         backgroundColor="#00444444"
         textColor="#00999999">
     </style>
 
+    <!-- タイムラインの情報 -->
     <style id="TIMELINE_LINES_CANVAS"
         textColor="#00888888">
+        <!-- カレントフレームのバーの色 -->
         <color id="timeline_line_canvas_current_frame" value="#00999999" />
+        <!-- 最終フレームのバーの色 -->
         <color id="timeline_line_canvas_last_frame" value="#00666666" />
     </style>
 
+    <!-- ラインの左側 -->
     <style id="TIMELINE_LINE_HEADER"
         backgroundColor="#00444444">
     </style>
 
+    <!-- オブジェクトを配置できるライン -->
     <style id="TIMELINE_LAYER_LINE"
         backgroundColor="#00333333"
         textColor="#00888888"
         padding="3,3,3,3">
     </style>
 
+    <!-- プロパティ編集用のライン -->
     <style id="TIMELINE_PROPERTY_LINE"
         backgroundColor="#00333333"
         textColor="#00888888">
         <drawable id="tl_propline_mp" value="cafe_tl_propline_mp" />
     </style>
 
+    <!-- エフェクト用のライン -->
     <style id="TIMELINE_EFFECT_LINE"
         backgroundColor="#00333333"
         textColor="#00888888"
         padding="3,3,3,3">
     </style>
 
+    <!-- オブジェクトカテゴリ[未分類] -->
     <style id="TIMELINE_UNCATEGORIZED_OBJECT"
         backgroundColor="#00444466"
         padding="5,5,5,5">
     </style>
 
+    <!-- エフェクトカテゴリ[未分類] -->
     <color id="effect_disabled_color" value="#99000000" />
     <style id="TIMELINE_UNCATEGORIZED_EFFECT"
         backgroundColor="#00447744">
