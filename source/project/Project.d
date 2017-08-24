@@ -61,11 +61,12 @@ class Project
 
         auto render ( FrameAt f = null )
         {
-            auto root = componentList.root;
-            auto frame = f ? f : new FrameAt( root.timeline.frame );
-            auto w = root.width;
-            auto h = root.height;
-            return componentList.root.render( frame );
+            auto comp = componentList.selecting ?
+                componentList.selecting : componentList.root;
+            auto frame = f ? f : new FrameAt( comp.timeline.frame );
+            auto w = comp.width;
+            auto h = comp.height;
+            return comp.render( frame );
         }
 
         /+ JSON出力 +/
