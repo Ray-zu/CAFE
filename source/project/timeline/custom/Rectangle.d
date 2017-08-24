@@ -4,7 +4,7 @@
  + ------------------------------------------------------------ +
  + Please see /LICENSE.                                         +
  + ------------------------------------------------------------ +/
-module cafe.project.timeline.custom.RectangleObject;
+module cafe.project.timeline.custom.Rectangle;
 import cafe.project.RenderingInfo,
        cafe.project.ObjectPlacingInfo,
        cafe.project.timeline.PlaceableObject,
@@ -18,10 +18,10 @@ import gl3n.linalg;
 import std.conv,
        std.json;
 
-/+ デバッグ用の何もしないオブジェクト +/
-class RectangleObject : PlaceableObject
+/+ 四角形オブジェクト +/
+class Rectangle : PlaceableObject
 {
-    mixin register!RectangleObject;
+    mixin register!Rectangle;
 
     enum MaxSize = 10000;
 
@@ -44,10 +44,10 @@ class RectangleObject : PlaceableObject
 
         override @property PlaceableObject copy ()
         {
-            return new RectangleObject( this );
+            return new Rectangle( this );
         }
 
-        this ( RectangleObject src )
+        this ( Rectangle src )
         {
             super( src );
         }
@@ -75,7 +75,6 @@ class RectangleObject : PlaceableObject
             BMP color = new BMP( 1, 1 );
             color[0,0] = RGBA( 1.0, 1.0, 1.0, 1.0 );
 
-            /+ 実際のポリゴン生成プロセス +/
             World w = new World;
 
             auto sz = castedProperty!float("Size").get(f) / 2;
