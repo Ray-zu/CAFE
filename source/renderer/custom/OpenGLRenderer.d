@@ -61,8 +61,8 @@ class OpenGLRenderer : Renderer
             success = success || createContext( 3, 3 );
             success = success || createContext( 3, 0 );
             success = success || createContext( 2, 1 );
-            //if ( !success )
-            //    throw new Exception( "CAFEditor needs OpenGL 3.0 or more" );
+            if ( !success )
+                throw new Exception( "CAFEditor needs OpenGL 3.0 or more" );
         }
         SDL_GL_MakeCurrent( window, context );
         // DerelictGLのリロードのついでに読んだGLのバージョンを表示
