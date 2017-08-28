@@ -36,6 +36,17 @@ class Polygon
         @property transform () { return trans; }
         @property transform (Transform t) { trans = t; }
 
+        this ( Polygon src )
+        {
+            tex = new BMP( src.tex );
+            mat = new Material( src.mat );
+            pos = src.pos;
+            vidx = src.vidx;
+            uvpos = src.uvpos;
+            dmode = src.dmode;
+            trans = src.trans;
+        }
+
         this ( BMP t, vec3[] p, uint[] vi, vec2[] uv, Transform tr, GLenum m = GL_TRIANGLES )
         {
             tex = t;

@@ -25,6 +25,12 @@ class Bitmap (T)
         @property width  () { return bmp_width;  }
         @property height () { return bmp_height; }
 
+        this ( Bitmap!T src )
+        {
+            resize( src.width, src.height );
+            memcpy( cast(void*)bmp, cast(void*)src.bmp, width*height*T.sizeof );
+        }
+
         this ( uint w, uint h )
         {
             resize( w, h );
@@ -40,7 +46,6 @@ class Bitmap (T)
                     bmp[y*w+x] = pix[y*w+x];
                 }
             }
-
         }
 
         ~this ()
