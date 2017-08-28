@@ -50,6 +50,7 @@ class Polygon
         this ( BMP t, vec3[] p, uint[] vi, vec2[] uv, Transform tr, GLenum m = GL_TRIANGLES )
         {
             tex = t;
+            mat = new Material;
             pos = p;
             vidx = vi;
             uvpos = uv;
