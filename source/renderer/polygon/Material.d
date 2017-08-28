@@ -17,6 +17,11 @@ class Material
     public:
         @property properties () { return props; }
 
+        this ( Material m )
+        {
+            props = m.properties;
+        }
+
         this ()
         {
         }
