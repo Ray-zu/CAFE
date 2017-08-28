@@ -6,7 +6,8 @@
  + ------------------------------------------------------------ +/
 module cafe.renderer.graphics.Bitmap;
 import cafe.renderer.graphics.Color;
-import core.stdc.stdlib;
+import core.stdc.stdlib,
+       core.stdc.string;
 import std.algorithm;
 
 debug = 0;
