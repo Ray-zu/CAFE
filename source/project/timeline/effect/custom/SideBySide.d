@@ -17,7 +17,6 @@ class SideBySide : Effect
 {
     enum MaxPosition = 10000;
     enum MaxCount    = 10000;
-    enum MaxSeed     = 10000;
 
     mixin register!SideBySide;
 
@@ -100,6 +99,5 @@ class SideBySide : Effect
                     }
                 }
             }
-            import dlangui;Log.i( w.polygons.length );
         }
 }
