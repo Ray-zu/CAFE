@@ -65,11 +65,11 @@ class Position : Effect
             auto z = castedProperty!float( "Z" ).get( f );
 
             foreach ( poly; w.polygons ) {
-                foreach ( ref vec; poly.position ) {
-                    vec.vector[0] += x;
-                    vec.vector[1] += y;
-                    vec.vector[2] += z;
-                }
+                auto trans = poly.transform;
+                trans.Translate.vector[0] += x;
+                trans.Translate.vector[1] += y;
+                trans.Translate.vector[2] += z;
+                poly.transform = trans;
             }
         }
 }
