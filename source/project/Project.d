@@ -59,10 +59,11 @@ class Project
                 null ;
         }
 
+        /+ レンダリング結果を返す                                    +
+         + フレーム数を指定した場合は必ずrootがレンダリングされます。+/
         auto render ( FrameAt f = null )
         {
-            auto comp = componentList.selecting ?
-                componentList.selecting : componentList.root;
+            auto comp = componentList.renderTarget( f !is null );
             auto frame = f ? f : new FrameAt( comp.timeline.frame );
             auto w = comp.width;
             auto h = comp.height;

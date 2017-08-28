@@ -26,7 +26,8 @@ class ComponentList
 
     public:
         /+ 編集情報 +/
-        Component selecting = null;
+        Component selecting = null; // 選択中のコンポーネント
+        Component locked    = null; // 強制的にレンダリングされるコンポーネント
 
         @property components () { return comps; }
 
@@ -43,14 +44,25 @@ class ComponentList
 
         this ( JSONValue j )
         {
-            foreach ( string key,val; j )
+            auto list = j["list"];
+            foreach ( string key,val; list )
                 comps[key] = new Component( val );
+
+            auto locked_name = j["locked"].str;
+            locked = locked_name == "" ? null : this[locked_name];
         }
 
         /+ ルートコンポーネントを返す +/
         @property root ()
         {
             return this[RootId];
+        }
+
+        /+ レンダリングするコンポーネントを返す +/
+        @property renderTarget ( bool encoding = false )
+        {
+            if ( encoding ) return root;
+            return locked ? locked : ( selecting ? selecting : root );
         }
 
         /+ コンポーネントの削除(参照から) +/
@@ -83,6 +95,13 @@ class ComponentList
             return components[i];
         }
 
+        /+ this[c] : コンポーネントの名前 +/
+        auto opIndex ( Component c )
+        {
+            auto id = components.values.countUntil!( x => x is c );
+            return id == -1 ? "" : components.keys[id];
+        }
+
         /+ this[i] = c : コンポーネントの追加 +/
         auto opIndexAssign ( Component c, ComponentID i )
         {
@@ -95,8 +114,13 @@ class ComponentList
         @property json ()
         {
             JSONValue j;
+
+            JSONValue list;
             foreach ( key,val; components )
-                j[key] = JSONValue(val.json);
+                list[key] = JSONValue(val.json);
+
+            j["list"  ] = list;
+            j["locked"] = this[locked];
             return j;
         }
 
