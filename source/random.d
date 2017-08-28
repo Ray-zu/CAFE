@@ -23,6 +23,7 @@ class Random ( T )
 
         T generate ( T min, T max )
         {
+            if ( min >= max ) return min;
             auto t = (x^(x<<11));
             x = y; y = z; z = w;
             w = (w^(w>>19))^(t^(t>>8));
