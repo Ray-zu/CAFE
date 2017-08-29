@@ -54,10 +54,10 @@ brew : `brew install freetype; brew install openal; brew install sdl2`
 
 ## Build
 
-リリースされているものと同じバイナリを作成するには以下のコマンドを使用します。
+リリースされているものと同じバイナリを作成するには以下のコマンドを使用します。  
+binに実行ファイルが生成されます。
 
-    dub build --build=release -a x86_64 --config=mt # マルチスレッド対応
-    dub build --build=release -a x86_64             # マルチスレッド非対応
+    dub build --build=release -a x86_64
 
 デバッグ用のバイナリは以下のコマンドで作成します。
 
