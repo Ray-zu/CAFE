@@ -72,7 +72,7 @@ class FillColor : Effect
             void fill ( BMP b )
             {
                 auto len = b.width * b.height;
-                auto bmp = b.bitmap;
+                auto bmp = b.bitmap.ptr;
                 for ( auto i = 0; i < len; i++ )
                     bmp[i] = col;
             }

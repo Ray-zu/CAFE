@@ -24,13 +24,10 @@ struct RGBA
         }
 
         /+ uint型に正規化して変換 +/
-        @property uint toHex ()
+        @property @nogc uint toHex ()
         {
-            ubyte n ( float f )
-            {
-                return max( min( f*255, ubyte.max ), ubyte.min ).to!ubyte;
-            }
-            return (n(r) << 16) | (n(g) << 8) | n(b) | (n(a) << 24);
+            return (cast(int)(r*ubyte.max) << 16) | (cast(int)(g*ubyte.max) << 8) |
+                cast(int)(b*ubyte.max) | cast(int)(a*ubyte.max) << 24;
         }
 
         debug (1) unittest {
