@@ -6,8 +6,7 @@
  + ------------------------------------------------------------ +/
 module cafe.renderer.graphics.Bitmap;
 import cafe.renderer.graphics.Color;
-import core.stdc.stdlib,
-       core.stdc.string;
+import core.stdc.string;
 import std.algorithm;
 
 debug = 0;
@@ -17,7 +16,7 @@ debug = 0;
 class Bitmap (T)
 {
     private:
-        T* bmp = null;    // Y * width + X でアクセス
+        T[]  bmp; // Y * width + X でアクセス
         uint bmp_width;
         uint bmp_height;
 
@@ -28,8 +27,9 @@ class Bitmap (T)
 
         this ( Bitmap!T src )
         {
-            resize( src.width, src.height );
-            memcpy( cast(void*)bmp, cast(void*)src.bmp, width*height*T.sizeof );
+            bmp_width  = src.width;
+            bmp_height = src.height;
+            bmp        = src.bitmap;
         }
 
         this ( uint w, uint h )
@@ -41,12 +41,8 @@ class Bitmap (T)
         {
             resize( w, h );
             for (uint y = 0;y<h;y++)
-            {
                 for (uint x = 0;x<w;x++)
-                {
-                    bmp[y*w+x] = pix[y*w+x];
-                }
-            }
+                    bmp.ptr[y*w+x] = pix.ptr[y*w+x];
         }
 
         ~this ()
@@ -56,8 +52,7 @@ class Bitmap (T)
 
         void destroy ()
         {
-            if ( bmp != null ) free( cast(void*) bmp );
-            bmp = null;
+            bmp = [];
             bmp_width  = 0;
             bmp_height = 0;
         }
@@ -66,12 +61,11 @@ class Bitmap (T)
         void resize ( uint w, uint h )
         {
             destroy;
-
             w = max( w, 1 ); h = max( h, 1 );
+
             bmp_width  = w;
             bmp_height = h;
-
-            bmp = cast(T*) malloc( w*h*T.sizeof );
+            bmp.length = w*h;
         }
 
         /+ this[x,y]で指定座標のT構造体取得 +/

@@ -233,7 +233,7 @@ class OpenGLRenderer : Renderer
                 glenforce!glBindTexture(GL_TEXTURE_RECTANGLE, Texture_ID);
                 glenforce!glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_RGBA,
                             Texture.width, Texture.height, 0,
-                            GL_RGBA, GL_FLOAT, Texture.bitmap);
+                            GL_RGBA, GL_FLOAT, Texture.bitmap.ptr);
                 glenforce!glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
                 glenforce!glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
                 GLuint Sampler_ID = glenforce!glGetUniformLocation(program, "sampler".toStringz);
@@ -284,7 +284,7 @@ class OpenGLRenderer : Renderer
             // フレームバッファの読み出し
             glenforce!glReadBuffer(GL_COLOR_ATTACHMENT0);
             glenforce!glReadPixels( 0, 0, wi, he, GL_RGBA, GL_FLOAT,
-                        cast(void*)result_image.bitmap);
+                        cast(void*)result_image.bitmap.ptr);
 
             // フレームバッファの割り当てを解除
             glenforce!glBindFramebuffer( GL_FRAMEBUFFER, 0 );
