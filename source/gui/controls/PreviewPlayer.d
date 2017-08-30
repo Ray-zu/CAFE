@@ -12,8 +12,7 @@ import cafe.gui.Action,
        cafe.project.Project,
        cafe.renderer.Renderer;
 import std.format;
-import core.memory,
-       core.thread;
+import core.memory;
 import dlangui,
        dlangui.widgets.metadata;
 
@@ -68,6 +67,7 @@ class PreviewPlayer : VerticalLayout
             } catch ( Exception e ) {
                 new ErrorPanel( e, window ).show;
             }
+            GC.collect;
         }
 
     public:
