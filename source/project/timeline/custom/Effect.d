@@ -12,6 +12,7 @@ import cafe.project.RenderingInfo,
        cafe.renderer.World;
 import gl3n.linalg;
 import std.conv,
+       std.format,
        std.json;
 
 /+ エフェクトオブジェクト +/
@@ -32,7 +33,9 @@ class Effect : PlaceableObject
 
         override @property string name ()
         {
-            return type;
+            if ( effectList.effects.length )
+                return "%s (%s)".format( type, effectList.effects[0].name );
+            else return type;
         }
 
         override @property PlaceableObject copy ()
