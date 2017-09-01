@@ -85,11 +85,12 @@ class Component
             auto objects = timeline[f].sort!
                 ( (a, b) => a.place.layer.value < b.place.layer.value );
 
-            LayerId last_layer = new LayerId(0);
-            foreach ( obj; objects )
-            {
-                if ( last_layer.value+1 < obj.place.layer.value )
-                    rinfo.pushEffectStage; // 空白レイヤでレンダリングステージへプッシュ
+            auto last_layer = 0;
+            foreach ( obj; objects ) {
+                auto layer = obj.place.layer.value;
+                if ( last_layer+1 < layer ) rinfo.pushEffectStage;
+                last_layer = layer;
+
                 obj.apply( rinfo );
             }
             rinfo.pushEffectStage;
